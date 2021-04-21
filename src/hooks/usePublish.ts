@@ -11,6 +11,7 @@ export interface IUsePublishParams {
   token: string;
   message: string;
   isAutomatic?: boolean;
+  isInitialPublish?: boolean;
   isImmediate?: boolean;
   debounceMs?: number;
 }
@@ -18,8 +19,9 @@ export interface IUsePublishParams {
 export const usePublish = ({
   token,
   message,
-  isAutomatic = true,
-  isImmediate = true,
+  isAutomatic = false,
+  isInitialPublish = false,
+  isImmediate = false,
   debounceMs = 300,
 }: IUsePublishParams): IUsePublishResponse => {
   const [lastPublish, setLastPublish] = useState(false);
@@ -31,7 +33,7 @@ export const usePublish = ({
   }, [token, message]);
 
   useEffect(() => {
-    if (isAutomatic) {
+    if (isInitialPublish) {
       publish();
     }
   }, []);

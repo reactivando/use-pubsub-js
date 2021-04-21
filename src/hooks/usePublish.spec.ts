@@ -29,7 +29,7 @@ describe("usePublish", () => {
 
     PubSub.subscribe(token, handler);
 
-    const { result } = defaultRender({ isImmediate: false });
+    const { result } = defaultRender({ isInitialPublish: true });
 
     act(() => {
       jest.advanceTimersByTime(0);
@@ -45,7 +45,7 @@ describe("usePublish", () => {
 
     PubSub.subscribe(token, handler);
 
-    const { result } = defaultRender({ isAutomatic: false });
+    const { result } = defaultRender();
 
     act(() => {
       result.current.publish();
@@ -67,7 +67,7 @@ describe("usePublish", () => {
       usePublish({
         token,
         message: localMessage,
-        isImmediate: false,
+        isAutomatic: true,
       })
     );
 
@@ -75,7 +75,7 @@ describe("usePublish", () => {
       jest.advanceTimersByTime(301);
     });
 
-    expect(handler).toBeCalledTimes(2);
+    expect(handler).toBeCalledTimes(1);
     expect(result.current.lastPublish).toBe(true);
 
     act(() => {
@@ -84,7 +84,7 @@ describe("usePublish", () => {
       jest.advanceTimersByTime(301);
     });
 
-    expect(handler).toBeCalledTimes(3);
+    expect(handler).toBeCalledTimes(2);
     expect(result.current.lastPublish).toBe(true);
   });
   it("should publish again after custom ms when message changes", () => {
@@ -99,7 +99,7 @@ describe("usePublish", () => {
       usePublish({
         token,
         message: localMessage,
-        isImmediate: false,
+        isAutomatic: true,
         debounceMs: 500,
       })
     );
@@ -108,7 +108,7 @@ describe("usePublish", () => {
       jest.advanceTimersByTime(501);
     });
 
-    expect(handler).toBeCalledTimes(2);
+    expect(handler).toBeCalledTimes(1);
     expect(result.current.lastPublish).toBe(true);
 
     act(() => {
@@ -117,7 +117,7 @@ describe("usePublish", () => {
       jest.advanceTimersByTime(501);
     });
 
-    expect(handler).toBeCalledTimes(3);
+    expect(handler).toBeCalledTimes(2);
     expect(result.current.lastPublish).toBe(true);
   });
   it("should not publish again when have debounce pending then unmount", () => {
@@ -130,7 +130,7 @@ describe("usePublish", () => {
 
     const { unmount } = defaultRender({
       message: localMessage,
-      isImmediate: false,
+      isAutomatic: true,
     });
 
     act(() => {
@@ -138,7 +138,7 @@ describe("usePublish", () => {
       jest.advanceTimersByTime(350);
     });
 
-    expect(handler).toBeCalledTimes(1);
+    expect(handler).toBeCalledTimes(0);
   });
   it("should return false on lastPublish when not have a subscribe", () => {
     expect.assertions(1);
