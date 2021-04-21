@@ -2,7 +2,7 @@ import PubSub from "pubsub-js";
 import { useSubscribe } from "./useSubscribe";
 import { renderHook, act } from "@testing-library/react-hooks";
 
-jest.useFakeTimers();
+jest.useFakeTimers("modern");
 
 const token = "test";
 const message = "message";
@@ -10,6 +10,11 @@ const message = "message";
 const publish = () => PubSub.publish(token, message);
 
 describe("useSubscribe", () => {
+  afterEach(() => {
+    jest.clearAllTimers();
+    PubSub.clearAllSubscriptions();
+  });
+
   it("should receive a published message", () => {
     expect.assertions(2);
 
@@ -26,7 +31,7 @@ describe("useSubscribe", () => {
     expect(handler).toBeCalledTimes(1);
     expect(isPublished).toBe(true);
   });
-  it("should unsubscribe when isUnsubscribe is change to true", () => {
+  it("should unsubscribe when isUnsubscribe is changed to true", () => {
     expect.assertions(4);
 
     const handler = jest.fn();

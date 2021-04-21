@@ -3,17 +3,17 @@ import PubSub from "pubsub-js";
 
 type Handler = () => void;
 
-interface IResponse {
+export interface IUseSubscriptionResponse {
   unsubscribe: Handler;
 }
 
-interface IParams {
+export interface IUseSubscriptionParams {
   token: string;
   handler: Handler;
   isUnsubscribe?: boolean;
 }
 
-type UseSubscribe = ({ token, handler, isUnsubscribe }: IParams) => IResponse;
+export type UseSubscribe = (params: IUseSubscriptionParams) => IUseSubscriptionResponse;
 export const useSubscribe: UseSubscribe = ({
   token,
   handler,
