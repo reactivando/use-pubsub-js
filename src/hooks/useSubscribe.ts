@@ -5,6 +5,7 @@ type Handler = () => void;
 
 export interface IUseSubscriptionResponse {
   unsubscribe: Handler;
+  resubscribe: Handler;
 }
 
 export interface IUseSubscriptionParams {
@@ -22,6 +23,12 @@ export const useSubscribe = ({
     PubSub.unsubscribe(token);
   }, [token]);
 
+  const resubscribe = useCallback(() => {
+    PubSub.unsubscribe(token);
+
+    PubSub.subscribe(token, handler);
+  }, [token, handler]);
+
   useEffect(() => {
     PubSub.subscribe(token, handler);
 
@@ -36,5 +43,5 @@ export const useSubscribe = ({
     }
   }, [isUnsubscribe]);
 
-  return { unsubscribe };
+  return { unsubscribe, resubscribe };
 };

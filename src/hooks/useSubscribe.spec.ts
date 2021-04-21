@@ -89,6 +89,35 @@ describe("useSubscribe", () => {
     expect(handler).toBeCalledTimes(1);
     expect(isPublishedChanged).toBe(false);
   });
+  it("should resubscribe after unsubscribe", () => {
+    expect.assertions(4);
+
+    const handler = jest.fn();
+
+    const { result } = renderHook(() => useSubscribe({ token, handler }));
+
+    result.current.unsubscribe();
+
+    const isPublished = publish();
+
+    act(() => {
+      jest.advanceTimersByTime(0);
+    });
+
+    expect(handler).toBeCalledTimes(0);
+    expect(isPublished).toBe(false);
+
+    result.current.resubscribe();
+
+    const isPublishedChanged = publish();
+
+    act(() => {
+      jest.advanceTimersByTime(0);
+    });
+
+    expect(handler).toBeCalledTimes(1);
+    expect(isPublishedChanged).toBe(true);
+  });
   it("should unsubscribe when hook is unmounted", () => {
     expect.assertions(4);
 
