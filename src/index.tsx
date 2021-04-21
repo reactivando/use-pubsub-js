@@ -1,23 +1,6 @@
-import * as React from 'react';
+import PubSub from "pubsub-js";
+import { useSubscribe } from "./hooks/useSubscribe";
 
-export const useMyHook = () => {
-  let [{
-    counter
-  }, setState] = React.useState<{
-    counter: number;
-  }>({
-    counter: 0
-  });
+export { PubSub, useSubscribe };
 
-  React.useEffect(() => {
-    let interval = window.setInterval(() => {
-      counter++;
-      setState({counter})
-    }, 1000)
-    return () => {
-      window.clearInterval(interval);
-    };
-  }, []);
-
-  return counter;
-};
+export default { PubSub, useSubscribe };
