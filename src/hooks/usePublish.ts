@@ -15,14 +15,13 @@ export interface IUsePublishParams {
   debounceMs?: number;
 }
 
-export type UsePublish = (params: IUsePublishParams) => IUsePublishResponse;
-export const usePublish: UsePublish = ({
+export const usePublish = ({
   token,
   message,
   isAutomatic = true,
   isImmediate = true,
   debounceMs = 300,
-}) => {
+}: IUsePublishParams): IUsePublishResponse => {
   const [lastPublish, setLastPublish] = useState(false);
 
   const publish = useCallback(() => {

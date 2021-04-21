@@ -13,12 +13,11 @@ export interface IUseSubscriptionParams {
   isUnsubscribe?: boolean;
 }
 
-export type UseSubscribe = (params: IUseSubscriptionParams) => IUseSubscriptionResponse;
-export const useSubscribe: UseSubscribe = ({
+export const useSubscribe = ({
   token,
   handler,
   isUnsubscribe = false,
-}) => {
+}: IUseSubscriptionParams): IUseSubscriptionResponse => {
   const unsubscribe = useCallback(() => {
     PubSub.unsubscribe(token);
   }, [token]);
