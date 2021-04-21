@@ -22,12 +22,10 @@
     "predeploy": "cd example && yarn install && yarn run build",
     "deploy": "gh-pages -d example/build"
   },
-  "dependencies": {
-    "debounce": "^1.2.1",
-    "pubsub-js": "^1.9.3"
-  },
   "peerDependencies": {
-    "react": "^16.9.0"
+    "debounce": "^1.2.1",
+    "pubsub-js": "^1.9.3",
+    "react": "^17.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.13.16",
@@ -43,7 +41,9 @@
     "@types/pubsub-js": "^1.8.2",
     "@types/react": "^17.0.3",
     "cross-env": "^7.0.3",
+    "debounce": "^1.2.1",
     "gh-pages": "^3.1.0",
+    "pubsub-js": "^1.9.3",
     "react": "^17.0.2",
     "react-scripts": "^4.0.3",
     "react-test-renderer": "^17.0.2",
