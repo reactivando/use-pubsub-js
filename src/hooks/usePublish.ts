@@ -39,15 +39,14 @@ export const usePublish = ({
   }, []);
 
   useEffect(() => {
-    if (isAutomatic) {
-      const debouncedPublished = debounce(publish, debounceMs, isImmediate);
+    const debouncedPublished = debounce(publish, debounceMs, isImmediate);
+    if (isAutomatic && message) {
       debouncedPublished();
-
-      return () => {
-        debouncedPublished.clear();
-      };
     }
-  }, [message, publish, isImmediate, isAutomatic, debounceMs]);
+    return () => {
+      debouncedPublished.clear();
+    };
+  }, [publish, isImmediate, isAutomatic, debounceMs]);
 
   return { lastPublish, publish };
 };
