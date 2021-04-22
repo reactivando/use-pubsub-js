@@ -4,6 +4,15 @@
 
 [![NPM](https://img.shields.io/npm/v/use-pubsub.svg)](https://www.npmjs.com/package/use-pubsub) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
+
+## Table of Contents
+
+- [Install](#install)
+- [Usage](#usage)
+- [Examples](#examples)
+- [API Documentation](#api-documentation)
+- [License](#license)
+
 ## Install
 
 ```bash
@@ -114,48 +123,56 @@ message and false if they don't referring to the last publication.
 
 ### To see more information for PubSub service check the [official documentation](https://github.com/mroderick/PubSubJS)
 
+## Examples
+
+**Checkout the example on [Example folder](https://github.com/reactivando/use-pubsub/blob/master/example/src/App.js)**
+
+or
+
+[![Edit use-pubsub](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/use-pubsub-ei2ly?fontsize=14&hidenavigation=1&theme=dark)
+
 ## API Documentation
 
 ### useSubscribe
 
 * Arguments of `useSubscribe`
 
-key | description | type | default/required
-----|-------------|------|------|
-token | Token is used to subscribe listen a specific publisher | string \| Symbol | required
-handler | Function that is going to be executed when a publication occurs | (token: string \| Symbol, message: any) => void | required
-isUnsubscribe | Is the way to dynamically unsubscribe and subscribe based on some variable | boolean | false
+| key           | description                                                                | type                                            | default/required |
+| ------------- | -------------------------------------------------------------------------- | ----------------------------------------------- | ---------------- |
+| token         | Token is used to subscribe listen a specific publisher                     | string \| Symbol                                | required         |
+| handler       | Function that is going to be executed when a publication occurs            | (token: string \| Symbol, message: any) => void | required         |
+| isUnsubscribe | Is the way to dynamically unsubscribe and subscribe based on some variable | boolean                                         | false            |
 
 * Returns of `useSubscribe`
 
-key | description | type
-----|-------------|-------------
-unsubscribe | A function to manual unsubscribe the token off your handler | () => void
-resubscribe | A function to manual resubscribe the token in your handler, only have effects if the handler is not linked in token  | () => void
+| key         | description                                                                                                         | type       |
+| ----------- | ------------------------------------------------------------------------------------------------------------------- | ---------- |
+| unsubscribe | A function to manual unsubscribe the token off your handler                                                         | () => void |
+| resubscribe | A function to manual resubscribe the token in your handler, only have effects if the handler is not linked in token | () => void |
 
 ### usePublish
 
 * Arguments of usePublish
 
-key | description | type | default/required
-----|-------------|------|-------
-token | Token is used to subscribe listen a specific publisher | string \| Symbol | required
-message | The value that will be send to subscriber | any | required
-isAutomatic | Whether the publication should be automatic | boolean | false
-isInitialPublish | Whether to make a publication in the first render | boolean | false
-isImmediate | To disable debounce and publish without delay any change in the message | boolean | false
-debounceMs | The delay value | number \| string | 300
+| key              | description                                                             | type             | default/required |
+| ---------------- | ----------------------------------------------------------------------- | ---------------- | ---------------- |
+| token            | Token is used to subscribe listen a specific publisher                  | string \| Symbol | required         |
+| message          | The value that will be send to subscriber                               | any              | required         |
+| isAutomatic      | Whether the publication should be automatic                             | boolean          | false            |
+| isInitialPublish | Whether to make a publication in the first render                       | boolean          | false            |
+| isImmediate      | To disable debounce and publish without delay any change in the message | boolean          | false            |
+| debounceMs       | The delay value                                                         | number \| string | 300              |
 
 * Returns of usePublish
 
-key | description | type
-----|-------------|-------------
-lastPublish | The value is true if you have a subscriber on last publication and false if you don't | boolean
-publish | A function to manual publish a message | () => void
+| key         | description                                                                           | type       |
+| ----------- | ------------------------------------------------------------------------------------- | ---------- |
+| lastPublish | The value is true if you have a subscriber on last publication and false if you don't | boolean    |
+| publish     | A function to manual publish a message                                                | () => void |
 
 ## License
 
-MIT © [Reactivando](https://github.com/reactivando/use-pubsub/LICENSE)
+MIT © [Reactivando](https://github.com/reactivando/use-pubsub/blob/master/LICENSE)
 
 ---
 
