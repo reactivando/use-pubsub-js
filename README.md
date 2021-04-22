@@ -2,7 +2,21 @@
 
 > A service and hooks for React to publish or subscribe (wrapper of [pubsub-js](https://github.com/mroderick/PubSubJS))
 
-[![NPM](https://img.shields.io/npm/v/use-pubsub.svg)](https://www.npmjs.com/package/use-pubsub) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+<a target="_blank" href="https://www.npmjs.com/package/use-pubsub">
+  <img src="https://img.shields.io/npm/v/use-pubsub.svg" alt="Coverage Status">
+</a>
+<a target="_blank" href="https://coveralls.io/github/reactivando/use-pubsub?branch=master">
+  <img src="https://coveralls.io/repos/github/reactivando/use-pubsub/badge.svg?branch=master" alt="Coverage Status">
+</a>
+<a target="_blank" href="https://github.com/reactivando/use-pubsub/blob/master/LICENSE">
+  <img src="https://img.shields.io/github/license/reactivando/use-pubsub?style=plastic" alt="LICENSE">
+</a>
+<a target="_blank" href="https://github.com/reactivando/use-pubsub/blob/master/LICENSE">
+  <img src="https://img.shields.io/codacy/grade/b1c4b6ce43164da49a7fa937ee917df7?style=plastic" alt="LICENSE">
+</a>
+<a target="_blank" href="https://bundlephobia.com/result?p=use-pubsub">
+  <img src="https://img.shields.io/bundlephobia/min/use-pubsub?style=plastic" alt="LICENSE">
+</a>
 
 
 ## Table of Contents

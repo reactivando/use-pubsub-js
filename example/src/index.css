@@ -29,7 +29,7 @@ body {
   }
 }
 
-.app > div:after {
+.app > div::after {
   content: "";
   display: block;
   height: 1px;
