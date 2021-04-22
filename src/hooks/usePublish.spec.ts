@@ -1,11 +1,11 @@
-import PubSub from 'pubsub-js';
-import { renderHook, act } from '@testing-library/react-hooks';
-import { usePublish } from './usePublish';
+import PubSub from 'pubsub-js'
+import { renderHook, act } from '@testing-library/react-hooks'
+import { usePublish } from './usePublish'
 
-jest.useFakeTimers('modern');
+jest.useFakeTimers('modern')
 
-const token = 'test';
-const message = 'message';
+const token = 'test'
+const message = 'message'
 
 const defaultRender = ({ ...props } = {}) =>
   renderHook(() =>
@@ -14,54 +14,54 @@ const defaultRender = ({ ...props } = {}) =>
       message,
       ...props,
     }),
-  );
+  )
 
 describe('usePublish', () => {
   afterEach(() => {
-    jest.clearAllTimers();
-    PubSub.clearAllSubscriptions();
-  });
+    jest.clearAllTimers()
+    PubSub.clearAllSubscriptions()
+  })
 
   it('should publish a message when call hook', () => {
-    expect.assertions(2);
+    expect.assertions(2)
 
-    const handler = jest.fn();
+    const handler = jest.fn()
 
-    PubSub.subscribe(token, handler);
+    PubSub.subscribe(token, handler)
 
-    const { result } = defaultRender({ isInitialPublish: true });
+    const { result } = defaultRender({ isInitialPublish: true })
 
     act(() => {
-      jest.advanceTimersByTime(0);
-    });
+      jest.advanceTimersByTime(0)
+    })
 
-    expect(handler).toBeCalledTimes(1);
-    expect(result.current.lastPublish).toBe(true);
-  });
+    expect(handler).toBeCalledTimes(1)
+    expect(result.current.lastPublish).toBe(true)
+  })
   it('should only publish when invoke a returned function', () => {
-    expect.assertions(2);
+    expect.assertions(2)
 
-    const handler = jest.fn();
+    const handler = jest.fn()
 
-    PubSub.subscribe(token, handler);
+    PubSub.subscribe(token, handler)
 
-    const { result } = defaultRender();
+    const { result } = defaultRender()
 
     act(() => {
-      result.current.publish();
-      jest.advanceTimersByTime(0);
-    });
+      result.current.publish()
+      jest.advanceTimersByTime(0)
+    })
 
-    expect(handler).toBeCalledTimes(1);
-    expect(result.current.lastPublish).toBe(true);
-  });
+    expect(handler).toBeCalledTimes(1)
+    expect(result.current.lastPublish).toBe(true)
+  })
   it('should publish again after 300ms when message changes', () => {
-    expect.assertions(4);
+    expect.assertions(4)
 
-    const handler = jest.fn();
-    let localMessage = 'message';
+    const handler = jest.fn()
+    let localMessage = 'message'
 
-    PubSub.subscribe(token, handler);
+    PubSub.subscribe(token, handler)
 
     const { result, rerender } = renderHook(() =>
       usePublish({
@@ -69,31 +69,31 @@ describe('usePublish', () => {
         message: localMessage,
         isAutomatic: true,
       }),
-    );
+    )
 
     act(() => {
-      jest.advanceTimersByTime(301);
-    });
+      jest.advanceTimersByTime(301)
+    })
 
-    expect(handler).toBeCalledTimes(1);
-    expect(result.current.lastPublish).toBe(true);
+    expect(handler).toBeCalledTimes(1)
+    expect(result.current.lastPublish).toBe(true)
 
     act(() => {
-      localMessage = 'new message';
-      rerender();
-      jest.advanceTimersByTime(301);
-    });
+      localMessage = 'new message'
+      rerender()
+      jest.advanceTimersByTime(301)
+    })
 
-    expect(handler).toBeCalledTimes(2);
-    expect(result.current.lastPublish).toBe(true);
-  });
+    expect(handler).toBeCalledTimes(2)
+    expect(result.current.lastPublish).toBe(true)
+  })
   it('should publish again after custom ms when message changes', () => {
-    expect.assertions(4);
+    expect.assertions(4)
 
-    const handler = jest.fn();
-    let localMessage = 'message';
+    const handler = jest.fn()
+    let localMessage = 'message'
 
-    PubSub.subscribe(token, handler);
+    PubSub.subscribe(token, handler)
 
     const { result, rerender } = renderHook(() =>
       usePublish({
@@ -102,53 +102,53 @@ describe('usePublish', () => {
         isAutomatic: true,
         debounceMs: 500,
       }),
-    );
+    )
 
     act(() => {
-      jest.advanceTimersByTime(501);
-    });
+      jest.advanceTimersByTime(501)
+    })
 
-    expect(handler).toBeCalledTimes(1);
-    expect(result.current.lastPublish).toBe(true);
+    expect(handler).toBeCalledTimes(1)
+    expect(result.current.lastPublish).toBe(true)
 
     act(() => {
-      localMessage = 'new message';
-      rerender();
-      jest.advanceTimersByTime(501);
-    });
+      localMessage = 'new message'
+      rerender()
+      jest.advanceTimersByTime(501)
+    })
 
-    expect(handler).toBeCalledTimes(2);
-    expect(result.current.lastPublish).toBe(true);
-  });
+    expect(handler).toBeCalledTimes(2)
+    expect(result.current.lastPublish).toBe(true)
+  })
   it('should not publish again when have debounce pending then unmount', () => {
-    expect.assertions(1);
+    expect.assertions(1)
 
-    const handler = jest.fn();
-    const localMessage = 'message';
+    const handler = jest.fn()
+    const localMessage = 'message'
 
-    PubSub.subscribe(token, handler);
+    PubSub.subscribe(token, handler)
 
     const { unmount } = defaultRender({
       message: localMessage,
       isAutomatic: true,
-    });
+    })
 
     act(() => {
-      unmount();
-      jest.advanceTimersByTime(350);
-    });
+      unmount()
+      jest.advanceTimersByTime(350)
+    })
 
-    expect(handler).toBeCalledTimes(0);
-  });
+    expect(handler).toBeCalledTimes(0)
+  })
   it('should return false on lastPublish when not have a subscribe', () => {
-    expect.assertions(1);
+    expect.assertions(1)
 
-    const { result } = defaultRender();
+    const { result } = defaultRender()
 
     act(() => {
-      jest.advanceTimersByTime(0);
-    });
+      jest.advanceTimersByTime(0)
+    })
 
-    expect(result.current.lastPublish).toBe(false);
-  });
-});
+    expect(result.current.lastPublish).toBe(false)
+  })
+})

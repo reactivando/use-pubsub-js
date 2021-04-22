@@ -23,7 +23,9 @@
   ],
   "rules": {
     "no-plusplus": "off",
-    "prettier/prettier": "error",
+    "prettier/prettier": ["error", {
+      "semi": false
+    }],
     "import/prefer-default-export": "off",
     "import/no-extraneous-dependencies": "off",
     "import/extensions": [

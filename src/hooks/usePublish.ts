@@ -1,19 +1,19 @@
-import { useEffect, useCallback, useState } from 'react';
-import debounce from 'debounce';
-import PubSub from 'pubsub-js';
+import { useEffect, useCallback, useState } from 'react'
+import debounce from 'debounce'
+import PubSub from 'pubsub-js'
 
 export interface IUsePublishResponse {
-  lastPublish: boolean;
-  publish: () => void;
+  lastPublish: boolean
+  publish: () => void
 }
 
 export interface IUsePublishParams {
-  token: string;
-  message: string;
-  isAutomatic?: boolean;
-  isInitialPublish?: boolean;
-  isImmediate?: boolean;
-  debounceMs?: number | string;
+  token: string
+  message: string
+  isAutomatic?: boolean
+  isInitialPublish?: boolean
+  isImmediate?: boolean
+  debounceMs?: number | string
 }
 
 export const usePublish = ({
@@ -24,29 +24,29 @@ export const usePublish = ({
   isImmediate = false,
   debounceMs = 300,
 }: IUsePublishParams): IUsePublishResponse => {
-  const [lastPublish, setLastPublish] = useState(false);
+  const [lastPublish, setLastPublish] = useState(false)
 
   const publish = useCallback(() => {
-    const isPublished = PubSub.publish(token, message);
+    const isPublished = PubSub.publish(token, message)
 
-    setLastPublish(isPublished);
-  }, [token, message]);
+    setLastPublish(isPublished)
+  }, [token, message])
 
   useEffect(() => {
     if (isInitialPublish) {
-      publish();
+      publish()
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    const debouncedPublished = debounce(publish, +debounceMs, isImmediate);
+    const debouncedPublished = debounce(publish, +debounceMs, isImmediate)
     if (isAutomatic && message) {
-      debouncedPublished();
+      debouncedPublished()
     }
     return () => {
-      debouncedPublished.clear();
-    };
-  }, [publish, isImmediate, isAutomatic, debounceMs]);
+      debouncedPublished.clear()
+    }
+  }, [publish, isImmediate, isAutomatic, debounceMs])
 
-  return { lastPublish, publish };
-};
+  return { lastPublish, publish }
+}

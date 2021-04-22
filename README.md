@@ -25,14 +25,14 @@ import { PubSub, usePublish, useSubscribe } from 'use-pubsub'
 ```tsx
 import { PubSub, useSubscribe } from 'use-pubsub'
 
-setTimeout(() => PubSub.publish('token', 'message');, 5000);
+setTimeout(() => PubSub.publish('token', 'message'), 5000)
 
 const ExampleUseSubscribe = () => {
   const handler = (token, message) => {
-    console.log(`Message ${message} - Token ${token}`);
+    console.log(`Message ${message} - Token ${token}`)
   }
 
-  const { unsubscribe, resubscribe } = useSubscribe({ token: 'token', handler });
+  const { unsubscribe, resubscribe } = useSubscribe({ token: 'token', handler })
 
   return (
     <div>
@@ -43,7 +43,7 @@ const ExampleUseSubscribe = () => {
         Resubscribe
       </button>
     </div>
-  );
+  )
 }
 ```
 
@@ -60,13 +60,13 @@ You can only invoke the hook and dynamically unsubscribe and subscribe pass the
 import { PubSub, usePublish } from 'use-pubsub'
 
 const handler = (token, message) => {
-  console.log(`Message ${message} - Token ${token}`);
+  console.log(`Message ${message} - Token ${token}`)
 }
 
 PubSub.subscribe('token_two', handler)
 
 const ExampleUsePublish = () => {
-  const { publish } = usePublish({ token: 'token_two', message: "message" });
+  const { publish } = usePublish({ token: 'token_two', message: 'message' })
 
   return (
     <div>
@@ -74,7 +74,7 @@ const ExampleUsePublish = () => {
         Publish
       </button>
     </div>
-  );
+  )
 }
 ```
 
@@ -85,7 +85,7 @@ to declare your publish function using a React approach with hooks.
 import { PubSub, usePublish } from 'use-pubsub'
 
 const handler = (token, message) => {
-  console.log(`Message ${message} - Token ${token}`);
+  console.log(`Message ${message} - Token ${token}`)
 }
 
 PubSub.subscribe('token_three', handler)
@@ -93,15 +93,15 @@ PubSub.subscribe('token_three', handler)
 const ExampleUsePublish = () => {
   const { lastPublish } = usePublish({
     token: 'token_three',
-    message: "message",
+    message: 'message',
     isAutomatic: true,
-  });
+  })
 
   return (
     <div>
       <p>{lastPublish ? Publishing success : Publication failure}</p>
     </div>
-  );
+  )
 }
 ```
 

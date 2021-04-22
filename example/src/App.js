@@ -1,20 +1,20 @@
-import { useState } from 'react';
-import { usePublish, useSubscribe } from 'use-pubsub';
+import { useState } from 'react'
+import { usePublish, useSubscribe } from 'use-pubsub'
 
-import { Token, TokenTwo, TokenThree, TokenFour } from './service/constants';
-import { PublishService } from './service/publish';
+import { Token, TokenTwo, TokenThree, TokenFour } from './service/constants'
+import { PublishService } from './service/publish'
 
-PublishService.publish(Token);
-PublishService.publish(TokenTwo);
+PublishService.publish(Token)
+PublishService.publish(TokenTwo)
 
 const ManualExternalMessages = () => {
-  const [subscriptionCounter, setSubscriptionCounter] = useState(0);
+  const [subscriptionCounter, setSubscriptionCounter] = useState(0)
 
   const handler = () => {
-    setSubscriptionCounter(c => c + 1);
-  };
+    setSubscriptionCounter(c => c + 1)
+  }
 
-  const { unsubscribe, resubscribe } = useSubscribe({ token: Token, handler });
+  const { unsubscribe, resubscribe } = useSubscribe({ token: Token, handler })
 
   return (
     <div>
@@ -27,18 +27,18 @@ const ManualExternalMessages = () => {
         Resubscribe
       </button>
     </div>
-  );
-};
+  )
+}
 
 const AutoExternalMessages = () => {
-  const [subscriptionCounter, setSubscriptionCounter] = useState(0);
-  const [isUnsubscribe, setIsUnsubscribe] = useState(false);
+  const [subscriptionCounter, setSubscriptionCounter] = useState(0)
+  const [isUnsubscribe, setIsUnsubscribe] = useState(false)
 
   const handler = () => {
-    setSubscriptionCounter(c => c + 1);
-  };
+    setSubscriptionCounter(c => c + 1)
+  }
 
-  useSubscribe({ token: TokenTwo, handler, isUnsubscribe });
+  useSubscribe({ token: TokenTwo, handler, isUnsubscribe })
 
   return (
     <div>
@@ -48,11 +48,11 @@ const AutoExternalMessages = () => {
         Change isUnsubscribe
       </button>
     </div>
-  );
-};
+  )
+}
 
 const ManualPublishMessages = () => {
-  const { publish } = usePublish({ token: TokenThree, message: 'message' });
+  const { publish } = usePublish({ token: TokenThree, message: 'message' })
 
   return (
     <div>
@@ -60,34 +60,34 @@ const ManualPublishMessages = () => {
         Publish
       </button>
     </div>
-  );
-};
+  )
+}
 
 const ReceiveManualPublish = () => {
-  const [subscriptionCounter, setSubscriptionCounter] = useState(0);
+  const [subscriptionCounter, setSubscriptionCounter] = useState(0)
 
   const handler = () => {
-    setSubscriptionCounter(c => c + 1);
-  };
+    setSubscriptionCounter(c => c + 1)
+  }
 
-  useSubscribe({ token: TokenThree, handler });
+  useSubscribe({ token: TokenThree, handler })
 
   return (
     <div>
       <h2>Manual messages received:</h2>
       <p>{subscriptionCounter}</p>
     </div>
-  );
-};
+  )
+}
 
 const AutoPublishMessages = () => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState('')
 
   usePublish({
     token: TokenFour,
     message,
     isAutomatic: true,
-  });
+  })
 
   return (
     <div>
@@ -97,19 +97,19 @@ const AutoPublishMessages = () => {
         onChange={e => setMessage(e.target.value)}
       />
     </div>
-  );
-};
+  )
+}
 
 const ReceiveAutoPublish = () => {
-  const [subscriptionCounter, setSubscriptionCounter] = useState(0);
-  const [lastMessage, setLastMessage] = useState('');
+  const [subscriptionCounter, setSubscriptionCounter] = useState(0)
+  const [lastMessage, setLastMessage] = useState('')
 
   const handler = (_token, data) => {
-    setSubscriptionCounter(c => c + 1);
-    setLastMessage(data);
-  };
+    setSubscriptionCounter(c => c + 1)
+    setLastMessage(data)
+  }
 
-  useSubscribe({ token: TokenFour, handler });
+  useSubscribe({ token: TokenFour, handler })
 
   return (
     <div>
@@ -117,14 +117,14 @@ const ReceiveAutoPublish = () => {
       <p>{subscriptionCounter}</p>
       <p>Last message: {lastMessage}</p>
     </div>
-  );
-};
+  )
+}
 
 const FailPublish = () => {
   const { lastPublish, publish } = usePublish({
     token: 'fail',
     message: 'fail',
-  });
+  })
 
   return (
     <div>
@@ -133,8 +133,8 @@ const FailPublish = () => {
         Publish
       </button>
     </div>
-  );
-};
+  )
+}
 
 const App = () => {
   return (
@@ -159,6 +159,6 @@ const App = () => {
         <FailPublish />
       </div>
     </div>
-  );
-};
-export default App;
+  )
+}
+export default App
