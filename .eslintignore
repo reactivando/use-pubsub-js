@@ -1,0 +1,6 @@
+/*.js
+node_modules
+coverage
+dist
+lib
+*.json
