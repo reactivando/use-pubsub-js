@@ -13,7 +13,7 @@ export interface IUsePublishParams {
   isAutomatic?: boolean;
   isInitialPublish?: boolean;
   isImmediate?: boolean;
-  debounceMs?: number;
+  debounceMs?: number | string;
 }
 
 export const usePublish = ({
@@ -39,7 +39,7 @@ export const usePublish = ({
   }, []);
 
   useEffect(() => {
-    const debouncedPublished = debounce(publish, debounceMs, isImmediate);
+    const debouncedPublished = debounce(publish, +debounceMs, isImmediate);
     if (isAutomatic && message) {
       debouncedPublished();
     }

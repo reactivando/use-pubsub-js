@@ -1,16 +1,14 @@
 import { useEffect, useCallback } from 'react';
 import PubSub from 'pubsub-js';
 
-type Handler = () => void;
-
 export interface IUseSubscriptionResponse {
-  unsubscribe: Handler;
-  resubscribe: Handler;
+  unsubscribe: () => void;
+  resubscribe: () => void;
 }
 
 export interface IUseSubscriptionParams {
-  token: string;
-  handler: Handler;
+  token: string | Symbol;
+  handler: () => void;
   isUnsubscribe?: boolean;
 }
 
