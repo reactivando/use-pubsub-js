@@ -1,7 +1,7 @@
 {
   "name": "use-pubsub",
   "version": "1.0.0",
-  "description": "A hooks for React to publish or subscribe also outside of React",
+  "description": "A service and hooks for React to publish or subscribe",
   "author": "AZagatti",
   "license": "MIT",
   "repository": "reactivando/use-pubsub",
