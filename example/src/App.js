@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { usePublish, useSubscribe } from "use-pubsub";
+import { useState } from 'react';
+import { usePublish, useSubscribe } from 'use-pubsub';
 
-import { Token, TokenTwo, TokenThree, TokenFour } from "./service/constants";
-import { PublishService } from "./service/publish";
+import { Token, TokenTwo, TokenThree, TokenFour } from './service/constants';
+import { PublishService } from './service/publish';
 
 PublishService.publish(Token);
 PublishService.publish(TokenTwo);
@@ -11,7 +11,7 @@ const ManualExternalMessages = () => {
   const [subscriptionCounter, setSubscriptionCounter] = useState(0);
 
   const handler = () => {
-    setSubscriptionCounter((c) => c + 1);
+    setSubscriptionCounter(c => c + 1);
   };
 
   const { unsubscribe, resubscribe } = useSubscribe({ token: Token, handler });
@@ -35,7 +35,7 @@ const AutoExternalMessages = () => {
   const [isUnsubscribe, setIsUnsubscribe] = useState(false);
 
   const handler = () => {
-    setSubscriptionCounter((c) => c + 1);
+    setSubscriptionCounter(c => c + 1);
   };
 
   useSubscribe({ token: TokenTwo, handler, isUnsubscribe });
@@ -44,7 +44,7 @@ const AutoExternalMessages = () => {
     <div>
       <h2>Auto external messages received:</h2>
       <p>{subscriptionCounter}</p>
-      <button type="button" onClick={() => setIsUnsubscribe((s) => !s)}>
+      <button type="button" onClick={() => setIsUnsubscribe(s => !s)}>
         Change isUnsubscribe
       </button>
     </div>
@@ -52,7 +52,7 @@ const AutoExternalMessages = () => {
 };
 
 const ManualPublishMessages = () => {
-  const { publish } = usePublish({ token: TokenThree, message: "message" });
+  const { publish } = usePublish({ token: TokenThree, message: 'message' });
 
   return (
     <div>
@@ -67,7 +67,7 @@ const ReceiveManualPublish = () => {
   const [subscriptionCounter, setSubscriptionCounter] = useState(0);
 
   const handler = () => {
-    setSubscriptionCounter((c) => c + 1);
+    setSubscriptionCounter(c => c + 1);
   };
 
   useSubscribe({ token: TokenThree, handler });
@@ -81,7 +81,7 @@ const ReceiveManualPublish = () => {
 };
 
 const AutoPublishMessages = () => {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
 
   usePublish({
     token: TokenFour,
@@ -94,7 +94,7 @@ const AutoPublishMessages = () => {
       <input
         type="text"
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={e => setMessage(e.target.value)}
       />
     </div>
   );
@@ -102,10 +102,10 @@ const AutoPublishMessages = () => {
 
 const ReceiveAutoPublish = () => {
   const [subscriptionCounter, setSubscriptionCounter] = useState(0);
-  const [lastMessage, setLastMessage] = useState("");
+  const [lastMessage, setLastMessage] = useState('');
 
   const handler = (_token, data) => {
-    setSubscriptionCounter((c) => c + 1);
+    setSubscriptionCounter(c => c + 1);
     setLastMessage(data);
   };
 
@@ -122,8 +122,8 @@ const ReceiveAutoPublish = () => {
 
 const FailPublish = () => {
   const { lastPublish, publish } = usePublish({
-    token: "fail",
-    message: "fail",
+    token: 'fail',
+    message: 'fail',
   });
 
   return (

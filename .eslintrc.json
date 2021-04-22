@@ -1,13 +1,11 @@
 {
   "env": {
     "es6": true,
-    "node": true,
+    "browser": true,
     "jest": true
   },
   "extends": [
     "airbnb-base",
-    "plugin:@typescript-eslint/recommended",
-    "prettier/@typescript-eslint",
     "plugin:prettier/recommended"
   ],
   "globals": {
@@ -27,11 +25,13 @@
     "no-plusplus": "off",
     "prettier/prettier": "error",
     "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": "off",
     "import/extensions": [
       "error",
       "ignorePackages",
       {
-        "ts": "never"
+        "ts": "never",
+        "js": "never"
       }
     ]
   },
