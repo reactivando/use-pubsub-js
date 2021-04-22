@@ -25,7 +25,11 @@ jobs:
         node-version: 14
 
     - name: Install dependencies
-      run: yarn
+      run: |
+        yarn
+        cd example
+        yarn
+        cd ..
 
     - name: Check tests
       run: yarn test --coverage
