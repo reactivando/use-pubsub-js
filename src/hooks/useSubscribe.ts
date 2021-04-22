@@ -30,17 +30,15 @@ export const useSubscribe = ({
   }, [token, handler]);
 
   useEffect(() => {
-    PubSub.subscribe(token, handler);
+    if (isUnsubscribe) {
+      unsubscribe();
+    } else {
+      PubSub.subscribe(token, handler);
+    }
 
     return () => {
       unsubscribe();
     };
-  }, []);
-
-  useEffect(() => {
-    if (isUnsubscribe) {
-      unsubscribe();
-    }
   }, [isUnsubscribe]);
 
   return { unsubscribe, resubscribe };
