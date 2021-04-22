@@ -1,5 +1,39 @@
-/* body {
+body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-} */
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.app > div {
+  width: 600px;
+}
+
+@media (max-width: 599px) {
+  .app > div {
+    width: 400px;
+  }
+}
+
+@media (max-width: 399px) {
+  .app > div {
+    width: 300px;
+  }
+}
+
+.app > div:after {
+  content: "";
+  display: block;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  margin: 8px 0;
+}
