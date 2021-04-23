@@ -1,6 +1,6 @@
 {
-  "short_name": "use-pubsub",
-  "name": "use-pubsub",
+  "short_name": "use-pubsub-js",
+  "name": "use-pubsub-js",
   "start_url": "./index.html",
   "display": "standalone",
   "theme_color": "#000000",

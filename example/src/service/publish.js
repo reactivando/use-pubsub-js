@@ -1,4 +1,4 @@
-import { PubSub } from 'use-pubsub'
+import { PubSub } from 'use-pubsub-js'
 
 export const PublishService = {
   interval: undefined,

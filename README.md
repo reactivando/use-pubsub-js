@@ -1,21 +1,21 @@
-# use-pubsub
+# use-pubsub-js
 
 > A service and hooks for React to publish or subscribe (wrapper of [pubsub-js](https://github.com/mroderick/PubSubJS))
 
-<a target="_blank" href="https://www.npmjs.com/package/use-pubsub">
-  <img src="https://img.shields.io/npm/v/use-pubsub.svg" alt="Coverage Status">
+<a target="_blank" href="https://www.npmjs.com/package/use-pubsub-js">
+  <img src="https://img.shields.io/npm/v/use-pubsub-js.svg" alt="Coverage Status">
 </a>
-<a target="_blank" href="https://coveralls.io/github/reactivando/use-pubsub?branch=master">
-  <img src="https://coveralls.io/repos/github/reactivando/use-pubsub/badge.svg?branch=master" alt="Coverage Status">
+<a target="_blank" href="https://coveralls.io/github/reactivando/use-pubsub-js?branch=master">
+  <img src="https://coveralls.io/repos/github/reactivando/use-pubsub-js/badge.svg?branch=master" alt="Coverage Status">
 </a>
-<a target="_blank" href="https://github.com/reactivando/use-pubsub/blob/master/LICENSE">
-  <img src="https://img.shields.io/github/license/reactivando/use-pubsub?style=plastic" alt="LICENSE">
+<a target="_blank" href="https://github.com/reactivando/use-pubsub-js/blob/master/LICENSE">
+  <img src="https://img.shields.io/github/license/reactivando/use-pubsub-js?style=plastic" alt="LICENSE">
 </a>
-<a target="_blank" href="https://github.com/reactivando/use-pubsub/blob/master/LICENSE">
+<a target="_blank" href="https://app.codacy.com/gh/reactivando/use-pubsub-js/dashboard">
   <img src="https://img.shields.io/codacy/grade/b1c4b6ce43164da49a7fa937ee917df7?style=plastic" alt="LICENSE">
 </a>
-<a target="_blank" href="https://bundlephobia.com/result?p=use-pubsub">
-  <img src="https://img.shields.io/bundlephobia/min/use-pubsub?style=plastic" alt="LICENSE">
+<a target="_blank" href="https://bundlephobia.com/result?p=use-pubsub-js">
+  <img src="https://img.shields.io/bundlephobia/min/use-pubsub-js?style=plastic" alt="LICENSE">
 </a>
 
 
@@ -30,10 +30,10 @@
 ## Install
 
 ```bash
-npm i use-pubsub
+npm i use-pubsub-js
 ```
 ```bash
-yarn add use-pubsub
+yarn add use-pubsub-js
 ```
 
 ## Usage
@@ -41,12 +41,12 @@ yarn add use-pubsub
 You can import the hooks or a service to use where you want
 
 ```ts
-import { PubSub, usePublish, useSubscribe } from 'use-pubsub'
+import { PubSub, usePublish, useSubscribe } from 'use-pubsub-js'
 ```
 
 ### useSubscribe
 ```tsx
-import { PubSub, useSubscribe } from 'use-pubsub'
+import { PubSub, useSubscribe } from 'use-pubsub-js'
 
 setTimeout(() => PubSub.publish('token', 'message'), 5000)
 
@@ -80,7 +80,7 @@ You can only invoke the hook and dynamically unsubscribe and subscribe pass the
 
 ### usePublish
 ```tsx
-import { PubSub, usePublish } from 'use-pubsub'
+import { PubSub, usePublish } from 'use-pubsub-js'
 
 const handler = (token, message) => {
   console.log(`Message ${message} - Token ${token}`)
@@ -105,7 +105,7 @@ The `usePublish` hook have more than one way to use, the above is a simple wrapp
 to declare your publish function using a React approach with hooks.
 
 ```tsx
-import { PubSub, usePublish } from 'use-pubsub'
+import { PubSub, usePublish } from 'use-pubsub-js'
 
 const handler = (token, message) => {
   console.log(`Message ${message} - Token ${token}`)
@@ -139,11 +139,11 @@ message and false if they don't referring to the last publication.
 
 ## Examples
 
-**Checkout the example on [Example folder](https://github.com/reactivando/use-pubsub/blob/master/example/src/App.js)**
+**Checkout the example on [Example folder](https://github.com/reactivando/use-pubsub-js/blob/master/example/src/App.js)**
 
 or
 
-[![Edit use-pubsub](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/use-pubsub-ei2ly?fontsize=14&hidenavigation=1&theme=dark)
+[![Edit use-pubsub-js](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/use-pubsub-js-ei2ly?fontsize=14&hidenavigation=1&theme=dark)
 
 ## API Documentation
 
@@ -186,7 +186,7 @@ or
 
 ## License
 
-MIT © [Reactivando](https://github.com/reactivando/use-pubsub/blob/master/LICENSE)
+MIT © [Reactivando](https://github.com/reactivando/use-pubsub-js/blob/master/LICENSE)
 
 ---
 

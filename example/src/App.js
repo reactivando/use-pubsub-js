@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { usePublish, useSubscribe } from 'use-pubsub'
+import { usePublish, useSubscribe } from 'use-pubsub-js'
 
 import { Token, TokenTwo, TokenThree, TokenFour } from './service/constants'
 import { PublishService } from './service/publish'
