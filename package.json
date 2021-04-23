@@ -1,6 +1,6 @@
 {
   "name": "use-pubsub-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A service and hooks for React to publish or subscribe",
   "author": "AZagatti",
   "license": "MIT",
@@ -21,12 +21,17 @@
     "prepare": "yarn run build && husky install",
     "predeploy": "cd example && yarn install && yarn run build",
     "deploy": "gh-pages -d example/build",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "format": "prettier --write \"src/**/*.ts\" \"example/src/**/*.js\"",
     "lint": "eslint",
     "prepublishOnly": "yarn test && yarn run lint",
     "preversion": "yarn run lint",
     "version": "yarn run format && git add -A src",
     "postversion": "git push && git push --tags"
+  },
+  "dependencies": {
+    "debounce": "^1.2.1",
+    "pubsub-js": "^1.9.3",
+    "react": "^17.0.2"
   },
   "peerDependencies": {
     "debounce": "^1.2.1",
