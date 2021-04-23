@@ -1,6 +1,6 @@
 {
   "name": "use-pubsub-js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A service and hooks for React to publish or subscribe",
   "author": "AZagatti",
   "license": "MIT",
@@ -29,11 +29,12 @@
     "postversion": "git push && git push --tags"
   },
   "dependencies": {
+    "@types/pubsub-js": "^1.8.2",
     "debounce": "^1.2.1",
-    "pubsub-js": "^1.9.3",
-    "react": "^17.0.2"
+    "pubsub-js": "^1.9.3"
   },
   "peerDependencies": {
+    "@types/pubsub-js": "^1.8.2",
     "debounce": "^1.2.1",
     "pubsub-js": "^1.9.3",
     "react": "^17.0.2"
@@ -49,7 +50,6 @@
     "@testing-library/react-hooks": "^5.1.1",
     "@types/debounce": "^1.2.0",
     "@types/jest": "^26.0.22",
-    "@types/pubsub-js": "^1.8.2",
     "@types/react": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",

@@ -139,9 +139,11 @@ message and false if they don't referring to the last publication.
 
 ## Examples
 
-**Checkout the example on [Example folder](https://github.com/reactivando/use-pubsub-js/blob/master/example/src/App.js)**
+**Checkout the simple examples on [Example folder](https://github.com/reactivando/use-pubsub-js/blob/master/example/src/App.js)**
 
 or
+
+More real examples:
 
 [![Edit use-pubsub-js](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/use-pubsub-js-ei2ly?fontsize=14&hidenavigation=1&theme=dark)
 
