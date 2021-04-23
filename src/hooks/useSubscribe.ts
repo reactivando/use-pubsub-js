@@ -7,8 +7,8 @@ export interface IUseSubscriptionResponse {
 }
 
 export interface IUseSubscriptionParams {
-  token: string | Symbol
-  handler: () => void
+  token: string | symbol
+  handler: (token?: string | symbol, message?: string) => void
   isUnsubscribe?: boolean
 }
 
