@@ -18,11 +18,11 @@ export const useSubscribe = ({
   isUnsubscribe = false,
 }: UseSubscriptionParams): UseSubscriptionResponse => {
   const unsubscribe = useCallback(() => {
-    PubSub.unsubscribe(token)
-  }, [token])
+    PubSub.unsubscribe(handler)
+  }, [handler])
 
   const resubscribe = useCallback(() => {
-    PubSub.unsubscribe(token)
+    PubSub.unsubscribe(handler)
 
     PubSub.subscribe(token, handler)
   }, [token, handler])
