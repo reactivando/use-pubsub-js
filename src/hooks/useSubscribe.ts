@@ -1,12 +1,12 @@
 import { useEffect, useCallback } from 'react'
 import PubSub from 'pubsub-js'
 
-export interface IUseSubscriptionResponse {
+export interface UseSubscriptionResponse {
   unsubscribe: () => void
   resubscribe: () => void
 }
 
-export interface IUseSubscriptionParams {
+export interface UseSubscriptionParams {
   token: string | symbol
   handler: (token?: string | symbol, message?: string) => void
   isUnsubscribe?: boolean
@@ -16,7 +16,7 @@ export const useSubscribe = ({
   token,
   handler,
   isUnsubscribe = false,
-}: IUseSubscriptionParams): IUseSubscriptionResponse => {
+}: UseSubscriptionParams): UseSubscriptionResponse => {
   const unsubscribe = useCallback(() => {
     PubSub.unsubscribe(token)
   }, [token])

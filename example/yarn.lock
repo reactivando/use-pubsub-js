@@ -3811,11 +3811,6 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
-debounce@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.2.1.tgz#38881d8f4166a5c5848020c11827b834bcb3e0a5"
-  integrity sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==
-
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -9018,6 +9013,7 @@ react-scripts@^4.0.3:
 
 "react@link:../node_modules/react":
   version "0.0.0"
+  uid ""
 
 read-pkg-up@^2.0.0:
   version "2.0.0"
@@ -10743,11 +10739,8 @@ url@^0.11.0:
     querystring "0.2.0"
 
 "use-pubsub-js@link:..":
-  version "1.0.4"
-  dependencies:
-    "@types/pubsub-js" "^1.8.2"
-    debounce "^1.2.1"
-    pubsub-js "^1.9.3"
+  version "0.0.0"
+  uid ""
 
 use@^3.1.0:
   version "3.1.1"

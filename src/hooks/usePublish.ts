@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useState } from 'react'
-import debounce from 'debounce'
 import PubSub from 'pubsub-js'
+import { debounce } from '../utils/debounce'
 
 export interface IUsePublishResponse {
   lastPublish: boolean
