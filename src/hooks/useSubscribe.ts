@@ -6,17 +6,21 @@ export interface UseSubscriptionResponse {
   resubscribe: () => void
 }
 
-export interface UseSubscriptionParams {
-  token: string | symbol
-  handler: (token?: string | symbol, message?: string) => void
+export interface UseSubscriptionParams<
+  TokenType extends string | symbol = string | symbol,
+> {
+  token: TokenType
+  handler: (token?: TokenType, message?: string) => void
   isUnsubscribe?: boolean
 }
 
-export const useSubscribe = ({
+export const useSubscribe = <
+  TokenType extends string | symbol = string | symbol,
+>({
   token,
   handler,
   isUnsubscribe = false,
-}: UseSubscriptionParams): UseSubscriptionResponse => {
+}: UseSubscriptionParams<TokenType>): UseSubscriptionResponse => {
   const unsubscribe = useCallback(() => {
     PubSub.unsubscribe(handler)
   }, [handler])

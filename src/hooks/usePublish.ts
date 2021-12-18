@@ -7,8 +7,10 @@ export interface IUsePublishResponse {
   publish: () => void
 }
 
-export interface IUsePublishParams {
-  token: string
+export interface IUsePublishParams<
+  TokenType extends string | symbol = string | symbol,
+> {
+  token: TokenType
   message: string
   isAutomatic?: boolean
   isInitialPublish?: boolean
@@ -16,14 +18,16 @@ export interface IUsePublishParams {
   debounceMs?: number | string
 }
 
-export const usePublish = ({
+export const usePublish = <
+  TokenType extends string | symbol = string | symbol,
+>({
   token,
   message,
   isAutomatic = false,
   isInitialPublish = false,
   isImmediate = false,
   debounceMs = 300,
-}: IUsePublishParams): IUsePublishResponse => {
+}: IUsePublishParams<TokenType>): IUsePublishResponse => {
   const [lastPublish, setLastPublish] = useState(false)
 
   const publish = useCallback(() => {
