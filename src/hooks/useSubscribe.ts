@@ -6,17 +6,13 @@ export interface UseSubscriptionResponse {
   resubscribe: () => void
 }
 
-export interface UseSubscriptionParams<
-  TokenType extends string | symbol = string | symbol,
-> {
+export interface UseSubscriptionParams<TokenType extends string | symbol> {
   token: TokenType
   handler: (token?: TokenType, message?: string) => void
   isUnsubscribe?: boolean
 }
 
-export const useSubscribe = <
-  TokenType extends string | symbol = string | symbol,
->({
+export const useSubscribe = <TokenType extends string | symbol>({
   token,
   handler,
   isUnsubscribe = false,

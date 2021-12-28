@@ -7,9 +7,7 @@ export interface IUsePublishResponse {
   publish: () => void
 }
 
-export interface IUsePublishParams<
-  TokenType extends string | symbol = string | symbol,
-> {
+export interface IUsePublishParams<TokenType extends string | symbol> {
   token: TokenType
   message: string
   isAutomatic?: boolean
@@ -18,9 +16,7 @@ export interface IUsePublishParams<
   debounceMs?: number | string
 }
 
-export const usePublish = <
-  TokenType extends string | symbol = string | symbol,
->({
+export const usePublish = <TokenType extends string | symbol>({
   token,
   message,
   isAutomatic = false,
