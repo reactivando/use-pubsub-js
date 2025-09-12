@@ -46,7 +46,7 @@ export const usePublish = <TokenType extends string | symbol>({
     return () => {
       debouncedPublished.clear()
     }
-  }, [publish, isImmediate, isAutomatic, debounceMs])
+  }, [publish, isImmediate, isAutomatic, debounceMs, message])
 
   return { lastPublish, publish }
 }

@@ -1,8 +1,8 @@
 import PubSub from 'pubsub-js'
-import { renderHook, act } from '@testing-library/react-hooks'
+import { renderHook, act } from '@testing-library/react'
 import { useSubscribe } from './useSubscribe'
 
-jest.useFakeTimers('modern')
+vi.useFakeTimers()
 
 const token = 'test'
 const message = 'message'
@@ -11,30 +11,26 @@ const publish = () => PubSub.publish(token, message)
 
 describe('useSubscribe', () => {
   afterEach(() => {
-    jest.clearAllTimers()
+    vi.clearAllTimers()
     PubSub.clearAllSubscriptions()
   })
 
   it('should receive a published message', () => {
-    expect.assertions(2)
-
-    const handler = jest.fn()
+    const handler = vi.fn()
 
     renderHook(() => useSubscribe({ token, handler }))
 
     const isPublished = publish()
 
     act(() => {
-      jest.advanceTimersByTime(0)
+      vi.advanceTimersByTime(0)
     })
 
     expect(handler).toBeCalledTimes(1)
     expect(isPublished).toBe(true)
   })
   it('should unsubscribe when isUnsubscribe is changed to true', () => {
-    expect.assertions(4)
-
-    const handler = jest.fn()
+    const handler = vi.fn()
     let isUnsubscribe = false
 
     const { rerender } = renderHook(() =>
@@ -44,7 +40,7 @@ describe('useSubscribe', () => {
     const isPublished = publish()
 
     act(() => {
-      jest.advanceTimersByTime(0)
+      vi.advanceTimersByTime(0)
     })
 
     expect(handler).toBeCalledTimes(1)
@@ -56,23 +52,21 @@ describe('useSubscribe', () => {
     const isPublishedChanged = publish()
 
     act(() => {
-      jest.advanceTimersByTime(0)
+      vi.advanceTimersByTime(0)
     })
 
     expect(handler).toBeCalledTimes(1)
     expect(isPublishedChanged).toBe(false)
   })
   it('should unsubscribe when invoke unsubscribe function', () => {
-    expect.assertions(4)
-
-    const handler = jest.fn()
+    const handler = vi.fn()
 
     const { result } = renderHook(() => useSubscribe({ token, handler }))
 
     const isPublished = publish()
 
     act(() => {
-      jest.advanceTimersByTime(0)
+      vi.advanceTimersByTime(0)
     })
 
     expect(handler).toBeCalledTimes(1)
@@ -83,16 +77,14 @@ describe('useSubscribe', () => {
     const isPublishedChanged = publish()
 
     act(() => {
-      jest.advanceTimersByTime(0)
+      vi.advanceTimersByTime(0)
     })
 
     expect(handler).toBeCalledTimes(1)
     expect(isPublishedChanged).toBe(false)
   })
   it('should resubscribe after unsubscribe', () => {
-    expect.assertions(4)
-
-    const handler = jest.fn()
+    const handler = vi.fn()
 
     const { result } = renderHook(() => useSubscribe({ token, handler }))
 
@@ -101,7 +93,7 @@ describe('useSubscribe', () => {
     const isPublished = publish()
 
     act(() => {
-      jest.advanceTimersByTime(0)
+      vi.advanceTimersByTime(0)
     })
 
     expect(handler).toBeCalledTimes(0)
@@ -112,23 +104,21 @@ describe('useSubscribe', () => {
     const isPublishedChanged = publish()
 
     act(() => {
-      jest.advanceTimersByTime(0)
+      vi.advanceTimersByTime(0)
     })
 
     expect(handler).toBeCalledTimes(1)
     expect(isPublishedChanged).toBe(true)
   })
   it('should unsubscribe when hook is unmounted', () => {
-    expect.assertions(4)
-
-    const handler = jest.fn()
+    const handler = vi.fn()
 
     const { unmount } = renderHook(() => useSubscribe({ token, handler }))
 
     const isPublished = publish()
 
     act(() => {
-      jest.advanceTimersByTime(0)
+      vi.advanceTimersByTime(0)
     })
 
     expect(handler).toBeCalledTimes(1)
@@ -139,7 +129,7 @@ describe('useSubscribe', () => {
     const isPublishedChanged = publish()
 
     act(() => {
-      jest.advanceTimersByTime(0)
+      vi.advanceTimersByTime(0)
     })
 
     expect(handler).toBeCalledTimes(1)

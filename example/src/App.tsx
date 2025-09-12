@@ -104,7 +104,7 @@ const ReceiveAutoPublish = () => {
   const [subscriptionCounter, setSubscriptionCounter] = useState(0)
   const [lastMessage, setLastMessage] = useState('')
 
-  const handler = (_token, data) => {
+  const handler = (_message: string, data: string) => {
     setSubscriptionCounter(c => c + 1)
     setLastMessage(data)
   }

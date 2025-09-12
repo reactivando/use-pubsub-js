@@ -8,7 +8,7 @@ export interface UseSubscriptionResponse {
 
 export interface UseSubscriptionParams<TokenType extends string | symbol> {
   token: TokenType
-  handler: (token?: TokenType, message?: string) => void
+  handler: (token: TokenType, message: any) => void
   isUnsubscribe?: boolean
 }
 
@@ -17,27 +17,30 @@ export const useSubscribe = <TokenType extends string | symbol>({
   handler,
   isUnsubscribe = false,
 }: UseSubscriptionParams<TokenType>): UseSubscriptionResponse => {
+  const internalHandler = (_: string, message: any) => {
+    handler(token, message)
+  }
+
   const unsubscribe = useCallback(() => {
-    PubSub.unsubscribe(handler)
-  }, [handler])
+    PubSub.unsubscribe(internalHandler)
+  }, [])
 
   const resubscribe = useCallback(() => {
-    PubSub.unsubscribe(handler)
-
-    PubSub.subscribe(token, handler)
-  }, [token, handler])
+    PubSub.unsubscribe(internalHandler)
+    PubSub.subscribe(token, internalHandler)
+  }, [token])
 
   useEffect(() => {
     if (isUnsubscribe) {
       unsubscribe()
     } else {
-      PubSub.subscribe(token, handler)
+      PubSub.subscribe(token, internalHandler)
     }
 
     return () => {
       unsubscribe()
     }
-  }, [isUnsubscribe])
+  }, [isUnsubscribe, token, unsubscribe])
 
   return { unsubscribe, resubscribe }
 }

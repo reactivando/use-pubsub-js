@@ -1,4 +1,4 @@
-name: ci
+name: CI
 
 on:
   push:
@@ -10,32 +10,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    - name: Set up Node
-      uses: actions/setup-node@v1
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
       with:
-        node-version: 14
+        node-version-file: '.nvmrc'
+
+    - name: Install pnpm
+      run: npm install -g pnpm
 
     - name: Install dependencies
       run: |
-        yarn
-        cd example
-        yarn
-        cd ..
+        pnpm install
+        pnpm --prefix ./example install
 
     - name: Check tests
-      run: yarn test --coverage
+      run: pnpm test --coverage
 
     - name: Check linting
-      run: yarn lint
+      run: pnpm lint
 
     - name: Coveralls
       uses: coverallsapp/github-action@master

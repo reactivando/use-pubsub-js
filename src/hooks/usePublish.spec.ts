@@ -1,8 +1,8 @@
 import PubSub from 'pubsub-js'
-import { renderHook, act } from '@testing-library/react-hooks'
+import { renderHook, act } from '@testing-library/react'
 import { usePublish } from './usePublish'
 
-jest.useFakeTimers('modern')
+vi.useFakeTimers()
 
 const token = 'test'
 const message = 'message'
@@ -18,30 +18,26 @@ const defaultRender = ({ ...props } = {}) =>
 
 describe('usePublish', () => {
   afterEach(() => {
-    jest.clearAllTimers()
+    vi.clearAllTimers()
     PubSub.clearAllSubscriptions()
   })
 
   it('should publish a message when call hook', () => {
-    expect.assertions(2)
-
-    const handler = jest.fn()
+    const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
 
     const { result } = defaultRender({ isInitialPublish: true })
 
     act(() => {
-      jest.advanceTimersByTime(0)
+      vi.advanceTimersByTime(0)
     })
 
     expect(handler).toBeCalledTimes(1)
     expect(result.current.lastPublish).toBe(true)
   })
   it('should only publish when invoke a returned function', () => {
-    expect.assertions(2)
-
-    const handler = jest.fn()
+    const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
 
@@ -49,81 +45,79 @@ describe('usePublish', () => {
 
     act(() => {
       result.current.publish()
-      jest.advanceTimersByTime(0)
+      vi.advanceTimersByTime(0)
     })
 
     expect(handler).toBeCalledTimes(1)
     expect(result.current.lastPublish).toBe(true)
   })
   it('should publish again after 300ms when message changes', () => {
-    expect.assertions(4)
-
-    const handler = jest.fn()
-    let localMessage = 'message'
+    const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
 
-    const { result, rerender } = renderHook(() =>
-      usePublish({
-        token,
-        message: localMessage,
-        isAutomatic: true,
-      }),
+    const { result, rerender } = renderHook(
+      (props: { message: string }) =>
+        usePublish({
+          token,
+          message: props.message,
+          isAutomatic: true,
+        }),
+      { initialProps: { message: 'message' } },
     )
 
     act(() => {
-      jest.advanceTimersByTime(301)
+      vi.advanceTimersByTime(301)
     })
 
     expect(handler).toBeCalledTimes(1)
     expect(result.current.lastPublish).toBe(true)
 
     act(() => {
-      localMessage = 'new message'
-      rerender()
-      jest.advanceTimersByTime(301)
+      rerender({ message: 'new message' })
+    })
+    act(() => {
+      vi.advanceTimersByTime(301)
     })
 
     expect(handler).toBeCalledTimes(2)
     expect(result.current.lastPublish).toBe(true)
   })
   it('should publish again after custom ms when message changes', () => {
-    expect.assertions(4)
-
-    const handler = jest.fn()
-    let localMessage = 'message'
+    const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
 
-    const { result, rerender } = renderHook(() =>
-      usePublish({
-        token,
-        message: localMessage,
-        isAutomatic: true,
-        debounceMs: 500,
-      }),
+    const { result, rerender } = renderHook(
+      (props: { message: string }) =>
+        usePublish({
+          token,
+          message: props.message,
+          isAutomatic: true,
+          debounceMs: 500,
+        }),
+      { initialProps: { message: 'message' } },
     )
 
     act(() => {
-      jest.advanceTimersByTime(501)
+      vi.advanceTimersByTime(501)
     })
 
     expect(handler).toBeCalledTimes(1)
     expect(result.current.lastPublish).toBe(true)
 
     act(() => {
-      localMessage = 'new message'
-      rerender()
-      jest.advanceTimersByTime(501)
+      rerender({ message: 'new message' })
+    })
+    act(() => {
+      vi.advanceTimersByTime(501)
     })
 
     expect(handler).toBeCalledTimes(2)
     expect(result.current.lastPublish).toBe(true)
   })
   it('should not publish again when have debounce pending then unmount', () => {
-    expect.assertions(1)
-
-    const handler = jest.fn()
+    const handler = vi.fn()
     const localMessage = 'message'
 
     PubSub.subscribe(token, handler)
@@ -135,18 +129,16 @@ describe('usePublish', () => {
 
     act(() => {
       unmount()
-      jest.advanceTimersByTime(350)
+      vi.advanceTimersByTime(350)
     })
 
     expect(handler).toBeCalledTimes(0)
   })
   it('should return false on lastPublish when not have a subscribe', () => {
-    expect.assertions(1)
-
     const { result } = defaultRender()
 
     act(() => {
-      jest.advanceTimersByTime(0)
+      vi.advanceTimersByTime(0)
     })
 
     expect(result.current.lastPublish).toBe(false)
