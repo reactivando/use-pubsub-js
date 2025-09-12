@@ -10,7 +10,7 @@
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "jsnext:main": "dist/index.es.js",
-  "packageManager": "pnpm@10.0.0",
+  "packageManager": "pnpm@10.13.1",
   "engines": {
     "node": ">=18"
   },
@@ -19,10 +19,10 @@
     "test:watch": "vitest",
     "build": "rolldown -c && tsc -d --emitDeclarationOnly --noEmit false --declarationDir dist",
     "start": "rolldown -c -w",
-    "postinstall": "husky install",
     "deploy": "gh-pages -d example/build",
     "format": "prettier --write \"src/**/*.ts\" \"example/src/**/*.js\"",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prepare": "husky"
   },
   "dependencies": {
     "@types/pubsub-js": "^1.8.6",
