@@ -1,11 +1,8 @@
 /* eslint-disable */
+// @ts-nocheck
 
-/* eslint-disable func-names */
 /* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable prefer-rest-params */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable no-multi-assign */
+
 export function debounce<T extends Function>(
   func: T,
   wait = 100,
@@ -32,7 +29,6 @@ export function debounce<T extends Function>(
   }
 
   const debounced = function (this: unknown, ...args: Parameters<T>) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     context = this
     timestamp = Date.now()
     const callNow = immediate && !timeout

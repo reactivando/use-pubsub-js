@@ -1,6 +1,9 @@
 import { useEffect, useCallback } from 'react'
 import PubSub from 'pubsub-js'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Message = any
+
 export interface UseSubscriptionResponse {
   unsubscribe: () => void
   resubscribe: () => void
@@ -8,7 +11,7 @@ export interface UseSubscriptionResponse {
 
 export interface UseSubscriptionParams<TokenType extends string | symbol> {
   token: TokenType
-  handler: (token: TokenType, message: any) => void
+  handler: (token: TokenType, message: Message) => void
   isUnsubscribe?: boolean
 }
 
@@ -17,7 +20,7 @@ export const useSubscribe = <TokenType extends string | symbol>({
   handler,
   isUnsubscribe = false,
 }: UseSubscriptionParams<TokenType>): UseSubscriptionResponse => {
-  const internalHandler = (_: string, message: any) => {
+  const internalHandler = (_: string, message: Message) => {
     handler(token, message)
   }
 
