@@ -8,6 +8,7 @@ export default defineConfig({
     environment: 'jsdom',
     coverage: {
       include: ['src/**/*.ts'],
+      exclude: ['src/index.ts'],
     },
   },
 })

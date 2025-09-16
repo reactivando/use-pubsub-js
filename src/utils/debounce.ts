@@ -28,8 +28,9 @@ export function debounce<T extends Function>(
     }
   }
 
-  const debounced = function (this: unknown, ...args: Parameters<T>) {
+  const debounced = function (this: unknown, ..._args: Parameters<T>) {
     context = this
+    args = _args
     timestamp = Date.now()
     const callNow = immediate && !timeout
     if (!timeout) timeout = setTimeout(later, wait)
