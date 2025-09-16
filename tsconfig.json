@@ -25,8 +25,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "noFallthroughCasesInSwitch": true,
-    "types": ["vitest/globals"]
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "src"
