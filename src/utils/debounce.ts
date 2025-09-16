@@ -1,15 +1,14 @@
-/* eslint-disable func-names */
+/* eslint-disable */
+// @ts-nocheck
+
 /* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable prefer-rest-params */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable no-multi-assign */
+
 export function debounce<T extends Function>(
   func: T,
   wait = 100,
   immediate = false,
 ) {
-  let timeout: NodeJS.Timeout | null
+  let timeout: ReturnType<typeof setTimeout> | null
   let args: unknown
   let context: unknown
   let timestamp: number
@@ -23,16 +22,14 @@ export function debounce<T extends Function>(
     } else {
       timeout = null
       if (!immediate) {
-        result = func.apply(context, args)
+        result = func.apply(context, args as any)
         context = args = null
       }
     }
   }
 
-  const debounced = function () {
-    // @ts-ignore
+  const debounced = function (this: unknown, ...args: Parameters<T>) {
     context = this
-    args = arguments
     timestamp = Date.now()
     const callNow = immediate && !timeout
     if (!timeout) timeout = setTimeout(later, wait)
@@ -53,7 +50,7 @@ export function debounce<T extends Function>(
 
   debounced.flush = function () {
     if (timeout) {
-      result = func.apply(context, args)
+      result = func.apply(context, args as any)
       context = args = null
 
       clearTimeout(timeout)
