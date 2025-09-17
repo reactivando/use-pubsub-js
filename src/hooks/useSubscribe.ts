@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import PubSub from 'pubsub-js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,30 +20,40 @@ export const useSubscribe = <TokenType extends string | symbol>({
   handler,
   isUnsubscribe = false,
 }: UseSubscriptionParams<TokenType>): UseSubscriptionResponse => {
-  const internalHandler = (_: string, message: Message) => {
-    handler(token, message)
-  }
+  const handlerRef = useRef(handler)
+  const subscriptionToken = useRef<string | null>(null)
+
+  useEffect(() => {
+    handlerRef.current = handler
+  })
+
+  const internalHandler = useCallback(
+    (msg: string, data: Message) => {
+      handlerRef.current(msg as TokenType, data)
+    },
+    [],
+  )
 
   const unsubscribe = useCallback(() => {
-    PubSub.unsubscribe(internalHandler)
+    if (subscriptionToken.current) {
+      PubSub.unsubscribe(subscriptionToken.current)
+      subscriptionToken.current = null
+    }
   }, [])
 
   const resubscribe = useCallback(() => {
-    PubSub.unsubscribe(internalHandler)
-    PubSub.subscribe(token, internalHandler)
-  }, [token])
+    unsubscribe()
+    subscriptionToken.current = PubSub.subscribe(token, internalHandler)
+  }, [token, internalHandler, unsubscribe])
 
   useEffect(() => {
-    if (isUnsubscribe) {
-      unsubscribe()
+    if (!isUnsubscribe) {
+      resubscribe()
     } else {
-      PubSub.subscribe(token, internalHandler)
-    }
-
-    return () => {
       unsubscribe()
     }
-  }, [isUnsubscribe, token, unsubscribe])
+    return unsubscribe
+  }, [isUnsubscribe, token, resubscribe, unsubscribe])
 
   return { unsubscribe, resubscribe }
 }
