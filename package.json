@@ -30,8 +30,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@types/pubsub-js": "^1.8.6",
-    "pubsub-js": "^1.9.5"
+    "@types/pubsub-js": "^1.8.6"
   },
   "peerDependencies": {
     "@types/pubsub-js": "^1.8.2",
