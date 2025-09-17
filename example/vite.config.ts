@@ -7,5 +7,8 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
+  resolve: {
+    dedupe: ['react', 'react-dom', 'pubsub-js'],
+  },
   plugins: [react()],
 })
