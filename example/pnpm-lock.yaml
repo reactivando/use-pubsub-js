@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      pubsub-js:
+        specifier: ^1.9.5
+        version: 1.9.5
       react:
         specifier: ^19.1.1
         version: 19.1.1
@@ -48,9 +51,6 @@ importers:
       globals:
         specifier: ^16.3.0
         version: 16.4.0
-      pubsub-js:
-        specifier: ^1.9.5
-        version: 1.9.5
       typescript:
         specifier: ~5.8.3
         version: 5.8.3
