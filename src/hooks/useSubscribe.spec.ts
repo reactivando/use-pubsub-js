@@ -136,4 +136,34 @@ describe('useSubscribe', () => {
     expect(handler).toBeCalledTimes(1)
     expect(isPublishedChanged).toBe(false)
   })
+
+  it('should not call the old handler when the handler changes', () => {
+    const handler1 = vi.fn()
+    const handler2 = vi.fn()
+
+    let currentHandler = handler1
+
+    const { rerender } = renderHook(() =>
+      useSubscribe({ token, handler: currentHandler }),
+    )
+
+    act(() => {
+      publish()
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler1).toBeCalledTimes(1)
+    expect(handler2).toBeCalledTimes(0)
+
+    currentHandler = handler2
+    rerender()
+
+    act(() => {
+      publish()
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler1).toBeCalledTimes(1)
+    expect(handler2).toBeCalledTimes(1)
+  })
 })
