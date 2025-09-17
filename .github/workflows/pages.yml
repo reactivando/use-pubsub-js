@@ -32,7 +32,9 @@ jobs:
           pnpm --prefix ./example install
 
       - name: Build
-        run: pnpm --prefix ./example build
+        run: |
+          pnpm build
+          pnpm --prefix ./example build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
