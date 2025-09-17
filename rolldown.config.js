@@ -1,7 +1,3 @@
-import typescript from '@rollup/plugin-typescript'
-import external from 'rollup-plugin-peer-deps-external'
-import url from '@rollup/plugin-url'
-
 import pkg from './package.json' with { type: 'json' }
 
 export default {
@@ -20,9 +16,5 @@ export default {
       sourcemap: true,
     },
   ],
-  plugins: [
-    external(),
-    url({ exclude: ['**/*.svg'] }),
-    typescript(),
-  ],
+  plugins: [],
 }
