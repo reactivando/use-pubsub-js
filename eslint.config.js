@@ -48,6 +48,6 @@ export default [
     },
   },
   {
-    ignores: ['dist', 'node_modules', 'example', 'coverage', '*.config.js'],
+    ignores: ['dist', 'node_modules', 'example', 'coverage', '*.config.js', 'e2e'],
   },
 ]

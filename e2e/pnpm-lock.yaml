@@ -1,0 +1,39 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      use-pubsub-js:
+        specifier: file:..
+        version: file:..(react@19.1.1)
+
+packages:
+
+  pubsub-js@1.9.5:
+    resolution: {integrity: sha512-5MZ0I9i5JWVO7SizvOviKvZU2qaBbl2KQX150FAA+fJBwYpwOUId7aNygURWSdPzlsA/xZ/InUKXqBbzM0czTA==}
+
+  react@19.1.1:
+    resolution: {integrity: sha512-w8nqGImo45dmMIfljjMwOGtbmC/mk4CMYhWIicdSflH91J9TyCyczcPFXJzrZ/ZXcgGRFeP6BU0BEJTw6tZdfQ==}
+    engines: {node: '>=0.10.0'}
+
+  use-pubsub-js@file:..:
+    resolution: {directory: .., type: directory}
+    engines: {node: '>=18'}
+    peerDependencies:
+      react: '>17.0.2'
+
+snapshots:
+
+  pubsub-js@1.9.5: {}
+
+  react@19.1.1: {}
+
+  use-pubsub-js@file:..(react@19.1.1):
+    dependencies:
+      pubsub-js: 1.9.5
+      react: 19.1.1
