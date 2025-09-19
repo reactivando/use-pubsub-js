@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.3.0](https://github.com/reactivando/use-pubsub-js/compare/v1.2.0...v1.3.0) (2025-09-19)
+
+
+### Features
+
+* improve the tsdown config ([#53](https://github.com/reactivando/use-pubsub-js/issues/53)) ([1d37b19](https://github.com/reactivando/use-pubsub-js/commit/1d37b19f01eccf11ffd4fef29f68284552fac3ef))
+
 # [1.2.0](https://github.com/reactivando/use-pubsub-js/compare/v1.1.0...v1.2.0) (2025-09-19)
 
 
