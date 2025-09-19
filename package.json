@@ -6,16 +6,36 @@
   "license": "MIT",
   "repository": "reactivando/use-pubsub-js",
   "type": "module",
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./hooks/usePublish": {
+      "types": "./dist/hooks/usePublish.d.ts",
+      "import": "./dist/hooks/usePublish.js",
+      "require": "./dist/hooks/usePublish.cjs"
+    },
+    "./hooks/useSubscribe": {
+      "types": "./dist/hooks/useSubscribe.d.ts",
+      "import": "./dist/hooks/useSubscribe.js",
+      "require": "./dist/hooks/useSubscribe.cjs"
+    },
+    "./utils/debounce": {
+      "types": "./dist/utils/debounce.d.ts",
+      "import": "./dist/utils/debounce.js",
+      "require": "./dist/utils/debounce.cjs"
+    },
+    "./package.json": "./package.json"
   },
+  "files": [
+    "dist"
+  ],
   "packageManager": "pnpm@10.13.1",
   "engines": {
     "node": ">=18"

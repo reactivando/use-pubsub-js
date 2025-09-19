@@ -35,7 +35,7 @@
     "build",
     "dist",
     "example",
-    "rolldown.config.js",
+    "tsdown.config.js",
     "**/*.spec.ts",
     "vitest.config.ts"
   ]
