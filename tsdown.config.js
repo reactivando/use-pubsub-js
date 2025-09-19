@@ -5,6 +5,8 @@ export default defineConfig({
   outDir: 'dist',
   format: ['esm', 'cjs'],
   dts: true,
-  sourcemap: true,
   clean: true,
+  unbundle: true,
+  minify: true,
+  platform: 'browser',
 })
