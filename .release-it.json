@@ -1,0 +1,25 @@
+{
+  "git": {
+    "commitMessage": "chore: release v${version}",
+    "tagName": "v${version}"
+  },
+  "npm": {
+    "publish": true
+  },
+  "github": {
+    "release": true,
+    "releaseName": "Release v${version}"
+  },
+  "hooks": {
+    "before:init": "pnpm test"
+  },
+  "plugins": {
+    "release-it-pnpm": {
+      "publishCommand": "pnpm publish --no-git-checks --tag $tag"
+    },
+    "@release-it/conventional-changelog": {
+      "preset": "angular",
+      "infile": "CHANGELOG.md"
+    }
+  }
+}

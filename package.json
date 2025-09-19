@@ -6,14 +6,25 @@
   "license": "MIT",
   "repository": "reactivando/use-pubsub-js",
   "type": "module",
+  "sideEffects": false,
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
+    },
+    "./hooks/usePublish": {
+      "types": "./dist/hooks/usePublish.d.ts",
+      "import": "./dist/hooks/usePublish.js",
+      "require": "./dist/hooks/usePublish.cjs"
+    },
+    "./hooks/useSubscribe": {
+      "types": "./dist/hooks/useSubscribe.d.ts",
+      "import": "./dist/hooks/useSubscribe.js",
+      "require": "./dist/hooks/useSubscribe.cjs"
     }
   },
   "packageManager": "pnpm@10.13.1",
@@ -27,19 +38,21 @@
     "deploy": "gh-pages -d example/dist",
     "format": "prettier --write \"src/**/*.ts\" \"example/src/**/*.js\"",
     "lint": "eslint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:e2e": "pnpm build && cd e2e && pnpm install && pnpm test",
+    "release": "release-it"
   },
   "dependencies": {
-    "@types/pubsub-js": "^1.8.6"
+    "pubsub-js": "^1.9.3"
   },
   "peerDependencies": {
-    "@types/pubsub-js": "^1.8.2",
-    "pubsub-js": "^1.9.3",
     "react": ">17.0.2"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^10.0.1",
     "@eslint/js": "^9.35.0",
     "@testing-library/react": "^16.3.0",
+    "@types/pubsub-js": "^1.8.6",
     "@types/react": "^19.1.12",
     "@typescript-eslint/eslint-plugin": "^8.43.0",
     "@typescript-eslint/parser": "^8.43.0",
@@ -59,8 +72,9 @@
     "jsdom": "^26.1.0",
     "lint-staged": "^16.1.6",
     "prettier": "^3.6.2",
-    "pubsub-js": "^1.9.3",
     "react": "^19.1.1",
+    "release-it": "^19.0.4",
+    "release-it-pnpm": "^4.6.6",
     "tsdown": "^0.14.2",
     "tslib": "^2.8.1",
     "typescript": "^5.9.2",
