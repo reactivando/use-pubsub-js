@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.2.0](https://github.com/reactivando/use-pubsub-js/compare/v1.1.0...v1.2.0) (2025-09-19)
+
+
+### Features
+
+* Refactor release process and add E2E tests ([#52](https://github.com/reactivando/use-pubsub-js/issues/52)) ([1e0e311](https://github.com/reactivando/use-pubsub-js/commit/1e0e311f4a54ed516415457d59822065bb3338e1))
+
 # [1.1.0](https://github.com/reactivando/use-pubsub-js/compare/v1.0.7...v1.1.0) (2025-09-18)
 
 
