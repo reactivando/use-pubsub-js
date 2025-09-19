@@ -7,9 +7,9 @@
   "repository": "reactivando/use-pubsub-js",
   "type": "module",
   "sideEffects": false,
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -25,8 +25,17 @@
       "types": "./dist/hooks/useSubscribe.d.ts",
       "import": "./dist/hooks/useSubscribe.js",
       "require": "./dist/hooks/useSubscribe.cjs"
-    }
+    },
+    "./utils/debounce": {
+      "types": "./dist/utils/debounce.d.ts",
+      "import": "./dist/utils/debounce.js",
+      "require": "./dist/utils/debounce.cjs"
+    },
+    "./package.json": "./package.json"
   },
+  "files": [
+    "dist"
+  ],
   "packageManager": "pnpm@10.13.1",
   "engines": {
     "node": ">=18"
