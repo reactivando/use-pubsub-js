@@ -85,7 +85,7 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3
       react-dom:
-        specifier: 19.2.3
+        specifier: ^19.2.3
         version: 19.2.3(react@19.2.3)
       release-it:
         specifier: ^19.1.0
