@@ -12,24 +12,44 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./hooks/usePublish": {
-      "types": "./dist/hooks/usePublish.d.ts",
-      "import": "./dist/hooks/usePublish.js",
-      "require": "./dist/hooks/usePublish.cjs"
+      "import": {
+        "types": "./dist/hooks/usePublish.d.ts",
+        "default": "./dist/hooks/usePublish.js"
+      },
+      "require": {
+        "types": "./dist/hooks/usePublish.d.cts",
+        "default": "./dist/hooks/usePublish.cjs"
+      }
     },
     "./hooks/useSubscribe": {
-      "types": "./dist/hooks/useSubscribe.d.ts",
-      "import": "./dist/hooks/useSubscribe.js",
-      "require": "./dist/hooks/useSubscribe.cjs"
+      "import": {
+        "types": "./dist/hooks/useSubscribe.d.ts",
+        "default": "./dist/hooks/useSubscribe.js"
+      },
+      "require": {
+        "types": "./dist/hooks/useSubscribe.d.cts",
+        "default": "./dist/hooks/useSubscribe.cjs"
+      }
     },
     "./utils/debounce": {
-      "types": "./dist/utils/debounce.d.ts",
-      "import": "./dist/utils/debounce.js",
-      "require": "./dist/utils/debounce.cjs"
+      "import": {
+        "types": "./dist/utils/debounce.d.ts",
+        "default": "./dist/utils/debounce.js"
+      },
+      "require": {
+        "types": "./dist/utils/debounce.d.cts",
+        "default": "./dist/utils/debounce.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
