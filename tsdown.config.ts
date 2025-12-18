@@ -9,8 +9,5 @@ export default defineConfig({
   unbundle: true,
   minify: true,
   platform: 'browser',
-  outExtensions({ format }) {
-    if (format === 'esm' || format === 'es') return { js: '.mjs', dts: '.d.mts' }
-    return { js: '.cjs', dts: '.d.cts' }
-  },
+  fixedExtension: true,
 })
