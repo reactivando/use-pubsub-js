@@ -9,5 +9,4 @@ export default defineConfig({
   unbundle: true,
   minify: true,
   platform: 'browser',
-  fixedExtension: true,
 })
