@@ -199,10 +199,19 @@ describe('PubSub contract', () => {
       expect(handler).toBeCalledTimes(1)
     })
 
-    // pubsub-js stringifies symbols, so two distinct Symbol('x') COLLIDE today.
-    // The v2 internal module keys by identity; activate this on the module in M1.
-    it.todo(
-      'does NOT cross-deliver between two distinct Symbol("x") (v2 module)',
-    )
+    // The internal module keys symbols by identity (pubsub-js stringified them,
+    // so two distinct Symbol('x') used to collide). Activated post-swap (M2).
+    it('does NOT cross-deliver between two distinct Symbol("x")', () => {
+      const a = vi.fn()
+      const b = vi.fn()
+      PubSub.subscribe(Symbol('x'), a)
+      PubSub.subscribe(Symbol('x'), b)
+
+      PubSub.publish(Symbol('x'), 'm')
+      flush()
+
+      expect(a).toBeCalledTimes(0)
+      expect(b).toBeCalledTimes(0)
+    })
   })
 })

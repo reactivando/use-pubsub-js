@@ -39,6 +39,11 @@ jobs:
     - name: Check linting
       run: pnpm lint
 
+    - name: Build library and example
+      run: |
+        pnpm build
+        pnpm --prefix ./example build
+
     - name: Coveralls
       uses: coverallsapp/github-action@v2
       with:

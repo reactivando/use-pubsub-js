@@ -65,9 +65,15 @@
   },
   "typesVersions": {
     "*": {
-      "hooks/usePublish": ["./dist/hooks/usePublish.d.ts"],
-      "hooks/useSubscribe": ["./dist/hooks/useSubscribe.d.ts"],
-      "utils/debounce": ["./dist/utils/debounce.d.ts"]
+      "hooks/usePublish": [
+        "./dist/hooks/usePublish.d.ts"
+      ],
+      "hooks/useSubscribe": [
+        "./dist/hooks/useSubscribe.d.ts"
+      ],
+      "utils/debounce": [
+        "./dist/utils/debounce.d.ts"
+      ]
     }
   },
   "files": [
@@ -90,9 +96,6 @@
     "test:e2e": "pnpm build && cd e2e && pnpm install --ignore-workspace && pnpm test",
     "release": "release-it"
   },
-  "dependencies": {
-    "pubsub-js": "^1.9.5"
-  },
   "peerDependencies": {
     "react": ">=17.0.0"
   },
@@ -105,6 +108,7 @@
     "@vitest/coverage-v8": "^4.1.9",
     "jsdom": "^29.1.1",
     "lefthook": "^2.1.9",
+    "pubsub-js": "^1.9.5",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "release-it": "^20.2.0",
