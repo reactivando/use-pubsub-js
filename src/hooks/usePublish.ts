@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { PubSub } from '../pubsub'
 import { debounce } from '../utils/debounce'
 
-export interface IUsePublishResponse {
+export interface UsePublishResponse {
   lastPublish: boolean
   publish: () => void
 }
 
-export interface IUsePublishParams<TokenType extends string | symbol> {
+export interface UsePublishParams<TokenType extends string | symbol> {
   debounceMs?: number | string
   isAutomatic?: boolean
   isImmediate?: boolean
@@ -23,7 +23,7 @@ export const usePublish = <TokenType extends string | symbol>({
   isInitialPublish = false,
   isImmediate = false,
   debounceMs = 300,
-}: IUsePublishParams<TokenType>): IUsePublishResponse => {
+}: UsePublishParams<TokenType>): UsePublishResponse => {
   const [lastPublish, setLastPublish] = useState(false)
   const didInitialPublish = useRef(false)
 

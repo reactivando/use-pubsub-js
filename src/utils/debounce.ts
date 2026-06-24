@@ -1,15 +1,13 @@
-// @ts-nocheck
-
-export function debounce<T extends Function>(
+export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait = 100,
   immediate = false,
 ) {
-  let timeout: ReturnType<typeof setTimeout> | null
-  let args: unknown
+  let timeout: ReturnType<typeof setTimeout> | null = null
+  let args: Parameters<T> | null = null
   let context: unknown
-  let timestamp: number
-  let result: unknown
+  let timestamp = 0
+  let result: ReturnType<T> | undefined
 
   function later() {
     const last = Date.now() - timestamp
@@ -19,7 +17,7 @@ export function debounce<T extends Function>(
     } else {
       timeout = null
       if (!immediate) {
-        result = func.apply(context, args as any)
+        result = func.apply(context, args as Parameters<T>)
         context = args = null
       }
     }
@@ -30,7 +28,9 @@ export function debounce<T extends Function>(
     args = _args
     timestamp = Date.now()
     const callNow = immediate && !timeout
-    if (!timeout) timeout = setTimeout(later, wait)
+    if (!timeout) {
+      timeout = setTimeout(later, wait)
+    }
     if (callNow) {
       result = func.apply(context, args)
       context = args = null
@@ -39,16 +39,16 @@ export function debounce<T extends Function>(
     return result
   }
 
-  debounced.clear = function () {
+  debounced.clear = () => {
     if (timeout) {
       clearTimeout(timeout)
       timeout = null
     }
   }
 
-  debounced.flush = function () {
+  debounced.flush = () => {
     if (timeout) {
-      result = func.apply(context, args as any)
+      result = func.apply(context, args as Parameters<T>)
       context = args = null
 
       clearTimeout(timeout)

@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { PubSub } from '../pubsub'
 
-// biome-ignore lint/suspicious/noExplicitAny: the bus delivers untyped message payloads
-type Message = any
+type Message = unknown
 
 export interface UseSubscriptionResponse {
   resubscribe: () => void
