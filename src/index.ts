@@ -10,6 +10,7 @@ export type {
   EventMap,
   Listener,
   PubSubBus,
+  SubscriptionToken,
   Token,
   TypedPubSub,
 } from './pubsub'
