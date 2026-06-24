@@ -44,8 +44,12 @@ jobs:
       if: matrix.react == '18'
       run: pnpm add -D -E react@18 react-dom@18 @types/react@18 @types/react-dom@18
 
+    # Coverage is gated on the React 19 cell only: the react19/ suite (useEffectEvent)
+    # is skipped on React 18, so coverage there would be incomplete by design.
+    # The `&& '--coverage' || ''` idiom is safe here because '--coverage' is a
+    # non-empty (truthy) string; it would misbehave only with a falsy value.
     - name: Check tests
-      run: pnpm test --coverage
+      run: pnpm test ${{ matrix.react == '19' && '--coverage' || '' }}
 
     # The steps below are React-version-independent, so run them once (on 19).
     - name: Check linting

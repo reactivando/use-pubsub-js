@@ -213,6 +213,20 @@ mount.
 > **Memory:** `retained: true` keeps one entry per distinct token forever, so
 > avoid it with dynamic/unbounded token names.
 
+### React 19.2+: `useEffectEvent` variant (opt-in)
+
+The default entry works on React 18+. If you're on **React 19.2+**, an optional
+`useSubscribe` built on `useEffectEvent` is available from a separate subpath —
+same API, but it reads the latest `handler` through `useEffectEvent` instead of a
+ref, closing a small window where a concurrent-render publish could call the
+previous handler:
+
+```ts
+import { useSubscribe } from 'use-pubsub-js/react19/useSubscribe'
+```
+
+The default `use-pubsub-js` export is unchanged and stays React-18 compatible.
+
 ### Migrating from v1 to v2
 
 - The minimum supported React version is now **18.0.0** (was 17). The hooks use
