@@ -6,13 +6,9 @@ settings:
 
 overrides:
   basic-ftp: ^5.3.1
-  brace-expansion@1: ^1.1.13
-  brace-expansion@2: ^2.0.3
   defu: ^6.1.5
   handlebars: ^4.7.9
   ip-address: ^10.1.1
-  minimatch@3: ^3.1.4
-  minimatch@9: ^9.0.7
   picomatch@2: ^2.3.2
   picomatch@4: ^4.0.4
   tar: ^7.5.16

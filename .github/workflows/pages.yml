@@ -31,8 +31,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm install
-          pnpm --prefix ./example install
+          pnpm install --frozen-lockfile
+          pnpm --prefix ./example install --frozen-lockfile
 
       - name: Build
         run: |

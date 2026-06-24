@@ -5,6 +5,16 @@
   "author": "AZagatti",
   "license": "MIT",
   "repository": "reactivando/use-pubsub-js",
+  "homepage": "https://github.com/reactivando/use-pubsub-js#readme",
+  "bugs": "https://github.com/reactivando/use-pubsub-js/issues",
+  "keywords": [
+    "react",
+    "react-hooks",
+    "pubsub",
+    "publish",
+    "subscribe",
+    "hooks"
+  ],
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",
@@ -52,6 +62,13 @@
       }
     },
     "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "hooks/usePublish": ["./dist/hooks/usePublish.d.ts"],
+      "hooks/useSubscribe": ["./dist/hooks/useSubscribe.d.ts"],
+      "utils/debounce": ["./dist/utils/debounce.d.ts"]
+    }
   },
   "files": [
     "dist"
