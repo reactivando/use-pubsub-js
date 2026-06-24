@@ -96,4 +96,29 @@ describe('debounce', () => {
 
     expect(func).toBeCalledTimes(1)
   })
+
+  it('should reschedule when the timer fires before the full wait elapses', () => {
+    const func = vi.fn()
+    const debounced = debounce(func, 100)
+
+    debounced()
+    vi.advanceTimersByTime(50)
+    debounced()
+    vi.advanceTimersByTime(50)
+
+    expect(func).not.toBeCalled()
+
+    vi.advanceTimersByTime(50)
+
+    expect(func).toBeCalledTimes(1)
+  })
+
+  it('should do nothing when flush is called with no pending timeout', () => {
+    const func = vi.fn()
+    const debounced = debounce(func, 100)
+
+    debounced.flush()
+
+    expect(func).not.toBeCalled()
+  })
 })

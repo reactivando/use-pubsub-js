@@ -166,4 +166,84 @@ describe('useSubscribe', () => {
     expect(handler1).toBeCalledTimes(1)
     expect(handler2).toBeCalledTimes(1)
   })
+
+  it('should resubscribe when isUnsubscribe is toggled back to false', () => {
+    const handler = vi.fn()
+    let isUnsubscribe = false
+
+    const { rerender } = renderHook(() =>
+      useSubscribe({ token, handler, isUnsubscribe }),
+    )
+
+    isUnsubscribe = true
+    rerender()
+
+    act(() => {
+      publish()
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(0)
+
+    isUnsubscribe = false
+    rerender()
+
+    act(() => {
+      publish()
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+  })
+
+  it('should resubscribe to the new token when token changes', () => {
+    const handler = vi.fn()
+    const token2 = 'test2'
+    let currentToken = token
+
+    const { rerender } = renderHook(() =>
+      useSubscribe({ token: currentToken, handler }),
+    )
+
+    act(() => {
+      publish()
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+
+    currentToken = token2
+    rerender()
+
+    act(() => {
+      publish()
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+
+    act(() => {
+      PubSub.publish(token2, message)
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(2)
+  })
+
+  it('should not duplicate when resubscribe is called while subscribed', () => {
+    const handler = vi.fn()
+
+    const { result } = renderHook(() => useSubscribe({ token, handler }))
+
+    act(() => {
+      result.current.resubscribe()
+    })
+
+    act(() => {
+      publish()
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+  })
 })

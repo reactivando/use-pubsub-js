@@ -15,4 +15,3 @@ overrides:
   js-yaml: ^4.2.0
   minimatch@3: ^3.1.4
   picomatch@4: ^4.0.4
-  yaml: ^2.8.3

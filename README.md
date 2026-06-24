@@ -5,10 +5,10 @@
 <a target="_blank" href="https://www.npmjs.com/package/use-pubsub-js">
   <img src="https://img.shields.io/npm/v/use-pubsub-js.svg" alt="Coverage Status">
 </a>
-<a target="_blank" href="https://coveralls.io/github/reactivando/use-pubsub-js?branch=master">
-  <img src="https://coveralls.io/repos/github/reactivando/use-pubsub-js/badge.svg?branch=master" alt="Coverage Status">
+<a target="_blank" href="https://coveralls.io/github/reactivando/use-pubsub-js?branch=main">
+  <img src="https://coveralls.io/repos/github/reactivando/use-pubsub-js/badge.svg?branch=main" alt="Coverage Status">
 </a>
-<a target="_blank" href="https://github.com/reactivando/use-pubsub-js/blob/master/LICENSE">
+<a target="_blank" href="https://github.com/reactivando/use-pubsub-js/blob/main/LICENSE">
   <img src="https://img.shields.io/github/license/reactivando/use-pubsub-js?style=plastic" alt="LICENSE">
 </a>
 <a target="_blank" href="https://app.codacy.com/gh/reactivando/use-pubsub-js/dashboard">
@@ -122,7 +122,7 @@ const ExampleUsePublish = () => {
 
   return (
     <div>
-      <p>{lastPublish ? Publishing success : Publication failure}</p>
+      <p>{lastPublish ? 'Publishing success' : 'Publication failure'}</p>
     </div>
   )
 }
@@ -139,7 +139,7 @@ message and false if they don't referring to the last publication.
 
 ## Examples
 
-**Checkout the simple examples on [Example folder](https://github.com/reactivando/use-pubsub-js/blob/master/example/src/App.js)**
+**Checkout the simple examples on [Example folder](https://github.com/reactivando/use-pubsub-js/blob/main/example/src/App.tsx)**
 
 or
 
@@ -188,7 +188,7 @@ More real examples:
 
 ## License
 
-MIT © [Reactivando](https://github.com/reactivando/use-pubsub-js/blob/master/LICENSE)
+MIT © [Reactivando](https://github.com/reactivando/use-pubsub-js/blob/main/LICENSE)
 
 ---
 

@@ -144,4 +144,49 @@ describe('usePublish', () => {
 
     expect(result.current.lastPublish).toBe(false)
   })
+  it('should publish immediately when isImmediate and isAutomatic are true', () => {
+    const handler = vi.fn()
+
+    PubSub.subscribe(token, handler)
+
+    defaultRender({ isAutomatic: true, isImmediate: true })
+
+    act(() => {
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+  })
+  it('should publish after the delay when debounceMs is given as a string', () => {
+    const handler = vi.fn()
+
+    PubSub.subscribe(token, handler)
+
+    defaultRender({ isAutomatic: true, debounceMs: '200' })
+
+    act(() => {
+      vi.advanceTimersByTime(199)
+    })
+
+    expect(handler).toBeCalledTimes(0)
+
+    act(() => {
+      vi.advanceTimersByTime(2)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+  })
+  it('should not publish automatically when message is empty', () => {
+    const handler = vi.fn()
+
+    PubSub.subscribe(token, handler)
+
+    renderHook(() => usePublish({ token, message: '', isAutomatic: true }))
+
+    act(() => {
+      vi.advanceTimersByTime(301)
+    })
+
+    expect(handler).toBeCalledTimes(0)
+  })
 })
