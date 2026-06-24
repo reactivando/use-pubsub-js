@@ -1,7 +1,4 @@
-/* eslint-disable */
 // @ts-nocheck
-
-/* eslint-disable @typescript-eslint/ban-types */
 
 export function debounce<T extends Function>(
   func: T,

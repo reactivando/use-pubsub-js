@@ -1,5 +1,5 @@
-import { useEffect, useCallback, useState } from 'react'
 import PubSub from 'pubsub-js'
+import { useCallback, useEffect, useState } from 'react'
 import { debounce } from '../utils/debounce'
 
 export interface IUsePublishResponse {
@@ -8,12 +8,12 @@ export interface IUsePublishResponse {
 }
 
 export interface IUsePublishParams<TokenType extends string | symbol> {
-  token: TokenType
-  message: string
-  isAutomatic?: boolean
-  isInitialPublish?: boolean
-  isImmediate?: boolean
   debounceMs?: number | string
+  isAutomatic?: boolean
+  isImmediate?: boolean
+  isInitialPublish?: boolean
+  message: string
+  token: TokenType
 }
 
 export const usePublish = <TokenType extends string | symbol>({
@@ -32,6 +32,7 @@ export const usePublish = <TokenType extends string | symbol>({
     setLastPublish(isPublished)
   }, [token, message])
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: runs once on mount when isInitialPublish is set; the empty dep array is intentional
   useEffect(() => {
     if (isInitialPublish) {
       publish()

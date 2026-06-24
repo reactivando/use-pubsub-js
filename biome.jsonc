@@ -1,0 +1,64 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": [
+    "ultracite/biome/core",
+    "ultracite/biome/react",
+    "ultracite/biome/vitest"
+  ],
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": ["src/**", "!**/dist", "!**/coverage"]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 80
+  },
+  "javascript": {
+    "formatter": {
+      // Preserve the repo's existing Prettier style (.prettierrc): single
+      // quotes, trailing commas, no semicolons, no arrow parens.
+      "quoteStyle": "single",
+      "trailingCommas": "all",
+      "arrowParentheses": "asNeeded",
+      "semicolons": "asNeeded"
+    }
+  },
+  "linter": {
+    "rules": {
+      "style": {
+        // Files are named after their exported hook (usePublish.ts maps to
+        // the public subpath ./hooks/usePublish); renaming would break the
+        // exports map and the public API.
+        "useFilenamingConvention": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      // Public-API barrel: intentionally re-exports PubSub from pubsub-js
+      // alongside the hooks (documented in the README).
+      "includes": ["src/index.ts"],
+      "linter": { "rules": { "style": { "noExportedImports": "off" } } }
+    },
+    {
+      // Vendored debounce algorithm (kept under @ts-nocheck). Its function
+      // expressions rely on dynamic `this`, so converting them to arrows
+      // would change behavior — keep the lint rules off for this file.
+      "includes": ["src/utils/debounce.ts"],
+      "linter": {
+        "rules": {
+          "complexity": { "noBannedTypes": "off", "useArrowFunction": "off" },
+          "style": { "useBlockStatements": "off" },
+          "suspicious": { "noExplicitAny": "off" }
+        }
+      }
+    }
+  ]
+}
