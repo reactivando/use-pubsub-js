@@ -8,12 +8,18 @@ export type {
 } from './hooks/useSubscribe'
 export { useSubscribe } from './hooks/useSubscribe'
 export type {
+  DescendantKey,
   ErrorHandler,
   EventMap,
+  HierarchicalPubSub,
   Listener,
   PubSubBus,
   SubscriptionToken,
   Token,
   TypedPubSub,
 } from './pubsub'
-export { createPubSub, PubSub } from './pubsub'
+export {
+  createHierarchicalPubSub,
+  createPubSub,
+  PubSub,
+} from './pubsub'

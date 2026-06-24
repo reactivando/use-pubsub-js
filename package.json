@@ -120,6 +120,7 @@
     "build": "tsdown",
     "format": "ultracite fix ./src",
     "lint": "ultracite check ./src",
+    "test:types": "vitest --run --typecheck.only",
     "size": "size-limit",
     "prepare": "lefthook install",
     "test:e2e": "pnpm build && cd e2e && pnpm install --ignore-workspace && pnpm test",

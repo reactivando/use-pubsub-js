@@ -195,6 +195,35 @@ useSubscribe({ bus, token: 'user:login', handler: (_, user) => console.log(user.
 > leave it as the default) to use the shared `PubSub` singleton. Keep the `bus`
 > reference stable (e.g. module scope) — changing it re-subscribes/re-publishes.
 
+### Typed **and** hierarchical: `createHierarchicalPubSub`
+
+`createPubSub` is flat (exact-key); the `PubSub` singleton is hierarchical but
+untyped. `createHierarchicalPubSub<Events>()` gives you both — typed payloads on
+a dotted-topic tree, where publishing `order.created` also notifies `order`:
+
+```ts
+import { createHierarchicalPubSub } from 'use-pubsub-js'
+
+const bus = createHierarchicalPubSub<{
+  order: { id: string }
+  'order.created': { id: string; total: number }
+}>()
+
+bus.subscribe('order', (token, data) => {
+  // token: 'order' | 'order.created'  (the precise descendant union)
+  // data is the union of those payloads — narrow it with a property check:
+  if ('total' in data) {
+    console.log(data.total)
+  }
+})
+
+bus.publish('order.created', { id: '1', total: 9 }) // also notifies 'order'
+```
+
+Two things to know: a handler's `data` is narrowed by a **property check**, not
+by `token` (TypeScript can't correlate the two parameters); and you can only
+publish/subscribe **declared** keys.
+
 ### `useBusState` — read the latest value as state
 
 `useBusState` returns a topic's most recent value as React state (backed by
