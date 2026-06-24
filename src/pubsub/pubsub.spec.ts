@@ -92,6 +92,24 @@ describe('internal pub/sub module', () => {
 
       expect(late).toBeCalledTimes(0)
     })
+
+    it('still fires a sibling unsubscribed by an earlier handler during delivery', () => {
+      const bus = createPubSub()
+      const sibling = vi.fn()
+      // The remover is subscribed FIRST so it runs before the sibling and
+      // removes it mid-dispatch. The sibling is still in the publish-time
+      // snapshot, so it must fire anyway.
+      let siblingToken = ''
+      bus.subscribe('t', () => {
+        bus.unsubscribe(siblingToken)
+      })
+      siblingToken = bus.subscribe('t', sibling)
+
+      bus.publish('t', 'm')
+      flush()
+
+      expect(sibling).toBeCalledTimes(1)
+    })
   })
 
   describe('unsubscribe', () => {
@@ -126,6 +144,16 @@ describe('internal pub/sub module', () => {
       bus.publish('b', 'm')
       flush()
       expect(handler).toBeCalledTimes(0)
+    })
+
+    it('returns false on the second by-reference unsubscribe', () => {
+      const bus = createPubSub()
+      const handler = vi.fn()
+      bus.subscribe('a', handler)
+      bus.subscribe('b', handler)
+
+      expect(bus.unsubscribe(handler)).toBe(true) // removed from both channels
+      expect(bus.unsubscribe(handler)).toBe(false) // nothing left to remove
     })
 
     it('unsubscribing an unknown handler returns false', () => {
@@ -229,6 +257,28 @@ describe('internal pub/sub module', () => {
 
       expect(handler).toBeCalledTimes(0)
     })
+
+    it('removes the abort listener from the signal on manual unsubscribe', () => {
+      const bus = createPubSub()
+      const controller = new AbortController()
+      const removeSpy = vi.spyOn(controller.signal, 'removeEventListener')
+      const off = bus.on('t', vi.fn(), { signal: controller.signal })
+
+      off()
+
+      // No dangling reference left on the signal (prevents an AbortController leak).
+      expect(removeSpy).toHaveBeenCalledWith('abort', expect.any(Function))
+    })
+
+    it('is safe to abort the signal after a manual unsubscribe', () => {
+      const bus = createPubSub()
+      const controller = new AbortController()
+      const off = bus.on('t', vi.fn(), { signal: controller.signal })
+
+      off()
+
+      expect(() => controller.abort()).not.toThrow()
+    })
   })
 
   describe('subscribeOnce', () => {
@@ -273,6 +323,28 @@ describe('internal pub/sub module', () => {
       flush()
 
       expect(handler).toBeCalledTimes(1) // removed before invoking; not re-fired
+    })
+
+    it('cleans the channel after firing — a later publish reports no subscribers', () => {
+      const bus = createPubSub()
+      bus.subscribeOnce('t', vi.fn())
+
+      bus.publish('t', 'a')
+      flush()
+
+      expect(bus.publish('t', 'b')).toBe(false)
+    })
+
+    it('can be cancelled via its returned token before it fires', () => {
+      const bus = createPubSub()
+      const handler = vi.fn()
+      const token = bus.subscribeOnce('t', handler)
+
+      bus.unsubscribe(token)
+      bus.publish('t', 'm')
+      flush()
+
+      expect(handler).toBeCalledTimes(0)
     })
   })
 
@@ -360,6 +432,17 @@ describe('internal pub/sub module', () => {
       flush()
 
       expect(child).toBeCalledTimes(0)
+    })
+
+    it('walks ancestors for a trailing-dot topic', () => {
+      // Pins targetsFor's dotted-segment parsing: 'a.b.' -> ['a.b.', 'a.b', 'a'].
+      const parent = vi.fn()
+      PubSub.subscribe('a.b', parent)
+
+      PubSub.publish('a.b.', 'm')
+      flush()
+
+      expect(parent).toBeCalledTimes(1)
     })
 
     it('symbols are identity-only on the hierarchical bus (no dotted walk)', () => {

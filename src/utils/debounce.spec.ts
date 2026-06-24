@@ -61,6 +61,19 @@ describe('debounce', () => {
     expect(func).toBeCalledTimes(1)
   })
 
+  it('fires immediately again on a new burst after the cooldown elapses', () => {
+    const func = vi.fn()
+    const debounced = debounce(func, 100, true)
+
+    debounced() // leading edge of the first burst
+    expect(func).toBeCalledTimes(1)
+
+    vi.advanceTimersByTime(100) // cooldown elapses; the internal timeout resets
+
+    debounced() // leading edge of the next burst — fires immediately again
+    expect(func).toBeCalledTimes(2)
+  })
+
   it('clears the timeout', () => {
     const func = vi.fn()
     const debounced = debounce(func, 100)

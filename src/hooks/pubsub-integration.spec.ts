@@ -177,4 +177,39 @@ describe('usePublish + useSubscribe with a custom bus', () => {
     })
     expect(handler).toBeCalledTimes(2) // new bus delivers
   })
+
+  it('usePublish re-routes to the new bus when the bus reference changes', () => {
+    const busA = createPubSub<AppEvents>()
+    const busB = createPubSub<AppEvents>()
+    const handlerA = vi.fn()
+    const handlerB = vi.fn()
+    busA.subscribe('user:login', handlerA)
+    busB.subscribe('user:login', handlerB)
+    let currentBus = busA
+
+    const { result, rerender } = renderHook(() =>
+      usePublish({
+        bus: currentBus,
+        token: 'user:login',
+        message: { userId: '1' },
+      }),
+    )
+
+    act(() => {
+      result.current.publish()
+      vi.advanceTimersByTime(0)
+    })
+    expect(handlerA).toBeCalledTimes(1)
+    expect(handlerB).toBeCalledTimes(0)
+
+    currentBus = busB
+    rerender()
+
+    act(() => {
+      result.current.publish()
+      vi.advanceTimersByTime(0)
+    })
+    expect(handlerA).toBeCalledTimes(1) // old bus no longer receives
+    expect(handlerB).toBeCalledTimes(1) // new bus receives
+  })
 })
