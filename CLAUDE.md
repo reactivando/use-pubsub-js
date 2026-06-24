@@ -1,7 +1,8 @@
 # use-pubsub-js — agent notes
 
-React hooks (`usePublish`, `useSubscribe`) + a re-exported `PubSub` wrapping
-`pubsub-js`, plus a `debounce` util. Built with tsdown (dual ESM/CJS),
+React hooks (`usePublish`, `useSubscribe`) + an internal, dependency-free
+`PubSub` bus (`src/pubsub`, also exposed via `createPubSub` and the
+`use-pubsub-js/pubsub` subpath), plus a `debounce` util. Built with tsdown (dual ESM/CJS),
 tested with vitest + @testing-library/react (jsdom), linted/formatted with
 Biome via the ultracite preset, git hooks via lefthook. Package manager:
 pnpm 11 (run via `corepack pnpm …`).

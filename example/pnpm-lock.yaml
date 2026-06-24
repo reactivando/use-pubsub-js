@@ -33,9 +33,6 @@ importers:
       '@types/node':
         specifier: ^26.0.0
         version: 26.0.0
-      '@types/pubsub-js':
-        specifier: ^1.8.6
-        version: 1.8.6
       '@types/react':
         specifier: ^19.2.17
         version: 19.2.17
@@ -512,9 +509,6 @@ packages:
 
   '@types/node@26.0.0':
     resolution: {integrity: sha512-vf2YFi1iY9lHGwNJMs01biZFbKJkrZR1T6/MlzjhJLPdntOHLhTrDSnSVcdtvjihi4VQNlrFRIxLsDBlQpAipA==}
-
-  '@types/pubsub-js@1.8.6':
-    resolution: {integrity: sha512-Kwug5cwV0paUDm/NfwDx1sp9xI0bGIvmWJjJWCU8NngkCCMt3EIC7oPDvb6fV7BR8kPpFyyBu4D11bda/2MdPA==}
 
   '@types/react-dom@19.2.3':
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
@@ -1560,8 +1554,6 @@ snapshots:
   '@types/node@26.0.0':
     dependencies:
       undici-types: 8.3.0
-
-  '@types/pubsub-js@1.8.6': {}
 
   '@types/react-dom@19.2.3(@types/react@19.2.17)':
     dependencies:
