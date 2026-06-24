@@ -23,7 +23,7 @@ describe('usePublish', () => {
     PubSub.clearAllSubscriptions()
   })
 
-  it('should publish a message when call hook', () => {
+  it('publishes a message when call hook', () => {
     const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
@@ -37,7 +37,7 @@ describe('usePublish', () => {
     expect(handler).toBeCalledTimes(1)
     expect(result.current.lastPublish).toBe(true)
   })
-  it('should only publish when invoke a returned function', () => {
+  it('only publishes when invoke a returned function', () => {
     const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
@@ -52,7 +52,7 @@ describe('usePublish', () => {
     expect(handler).toBeCalledTimes(1)
     expect(result.current.lastPublish).toBe(true)
   })
-  it('should publish again after 300ms when message changes', () => {
+  it('publishes again after 300ms when message changes', () => {
     const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
@@ -84,7 +84,7 @@ describe('usePublish', () => {
     expect(handler).toBeCalledTimes(2)
     expect(result.current.lastPublish).toBe(true)
   })
-  it('should publish again after custom ms when message changes', () => {
+  it('publishes again after custom ms when message changes', () => {
     const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
@@ -117,7 +117,7 @@ describe('usePublish', () => {
     expect(handler).toBeCalledTimes(2)
     expect(result.current.lastPublish).toBe(true)
   })
-  it('should not publish again when have debounce pending then unmount', () => {
+  it('does not publish again when have debounce pending then unmount', () => {
     const handler = vi.fn()
     const localMessage = 'message'
 
@@ -135,7 +135,7 @@ describe('usePublish', () => {
 
     expect(handler).toBeCalledTimes(0)
   })
-  it('should return false on lastPublish when not have a subscribe', () => {
+  it('returns false on lastPublish when not have a subscribe', () => {
     const { result } = defaultRender()
 
     act(() => {
@@ -144,7 +144,7 @@ describe('usePublish', () => {
 
     expect(result.current.lastPublish).toBe(false)
   })
-  it('should publish immediately when isImmediate and isAutomatic are true', () => {
+  it('publishes immediately when isImmediate and isAutomatic are true', () => {
     const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
@@ -157,7 +157,7 @@ describe('usePublish', () => {
 
     expect(handler).toBeCalledTimes(1)
   })
-  it('should publish after the delay when debounceMs is given as a string', () => {
+  it('publishes after the delay when debounceMs is given as a string', () => {
     const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
@@ -176,7 +176,7 @@ describe('usePublish', () => {
 
     expect(handler).toBeCalledTimes(1)
   })
-  it('should not publish automatically when message is empty', () => {
+  it('does not publish automatically when message is empty', () => {
     const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
@@ -189,7 +189,7 @@ describe('usePublish', () => {
 
     expect(handler).toBeCalledTimes(0)
   })
-  it('should fall back to the default delay when debounceMs is not a number', () => {
+  it('falls back to the default delay when debounceMs is not a number', () => {
     const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
@@ -208,7 +208,7 @@ describe('usePublish', () => {
 
     expect(handler).toBeCalledTimes(1)
   })
-  it('should set lastPublish to false after the subscriber unsubscribes', () => {
+  it('sets lastPublish to false after the subscriber unsubscribes', () => {
     const handler = vi.fn()
     const subscription = PubSub.subscribe(token, handler)
 
@@ -230,7 +230,7 @@ describe('usePublish', () => {
 
     expect(result.current.lastPublish).toBe(false)
   })
-  it('should publish only once with isInitialPublish across rerenders', () => {
+  it('publishes only once with isInitialPublish across rerenders', () => {
     const handler = vi.fn()
 
     PubSub.subscribe(token, handler)
@@ -258,7 +258,7 @@ describe('usePublish', () => {
 
     expect(handler).toBeCalledTimes(1)
   })
-  it('should not publish again at the trailing edge when isImmediate is true', () => {
+  it('does not publish again at the trailing edge when isImmediate is true', () => {
     const handler = vi.fn()
 
     PubSub.subscribe(token, handler)

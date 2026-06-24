@@ -16,7 +16,7 @@ describe('useSubscribe', () => {
     PubSub.clearAllSubscriptions()
   })
 
-  it('should receive a published message', () => {
+  it('receives a published message', () => {
     const handler = vi.fn()
 
     renderHook(() => useSubscribe({ token, handler }))
@@ -30,7 +30,7 @@ describe('useSubscribe', () => {
     expect(handler).toBeCalledTimes(1)
     expect(isPublished).toBe(true)
   })
-  it('should unsubscribe when isUnsubscribe is changed to true', () => {
+  it('unsubscribes when isUnsubscribe is changed to true', () => {
     const handler = vi.fn()
     let isUnsubscribe = false
 
@@ -59,7 +59,7 @@ describe('useSubscribe', () => {
     expect(handler).toBeCalledTimes(1)
     expect(isPublishedChanged).toBe(false)
   })
-  it('should unsubscribe when invoke unsubscribe function', () => {
+  it('unsubscribes when invoke unsubscribe function', () => {
     const handler = vi.fn()
 
     const { result } = renderHook(() => useSubscribe({ token, handler }))
@@ -84,7 +84,7 @@ describe('useSubscribe', () => {
     expect(handler).toBeCalledTimes(1)
     expect(isPublishedChanged).toBe(false)
   })
-  it('should resubscribe after unsubscribe', () => {
+  it('resubscribes after unsubscribe', () => {
     const handler = vi.fn()
 
     const { result } = renderHook(() => useSubscribe({ token, handler }))
@@ -111,7 +111,7 @@ describe('useSubscribe', () => {
     expect(handler).toBeCalledTimes(1)
     expect(isPublishedChanged).toBe(true)
   })
-  it('should unsubscribe when hook is unmounted', () => {
+  it('unsubscribes when hook is unmounted', () => {
     const handler = vi.fn()
 
     const { unmount } = renderHook(() => useSubscribe({ token, handler }))
@@ -137,7 +137,7 @@ describe('useSubscribe', () => {
     expect(isPublishedChanged).toBe(false)
   })
 
-  it('should not call the old handler when the handler changes', () => {
+  it('does not call the old handler when the handler changes', () => {
     const handler1 = vi.fn()
     const handler2 = vi.fn()
 
@@ -167,7 +167,7 @@ describe('useSubscribe', () => {
     expect(handler2).toBeCalledTimes(1)
   })
 
-  it('should resubscribe when isUnsubscribe is toggled back to false', () => {
+  it('resubscribes when isUnsubscribe is toggled back to false', () => {
     const handler = vi.fn()
     let isUnsubscribe = false
 
@@ -196,7 +196,7 @@ describe('useSubscribe', () => {
     expect(handler).toBeCalledTimes(1)
   })
 
-  it('should resubscribe to the new token when token changes', () => {
+  it('resubscribes to the new token when token changes', () => {
     const handler = vi.fn()
     const token2 = 'test2'
     let currentToken = token
@@ -230,7 +230,7 @@ describe('useSubscribe', () => {
     expect(handler).toBeCalledTimes(2)
   })
 
-  it('should not duplicate when resubscribe is called while subscribed', () => {
+  it('does not duplicate when resubscribe is called while subscribed', () => {
     const handler = vi.fn()
 
     const { result } = renderHook(() => useSubscribe({ token, handler }))
@@ -247,7 +247,7 @@ describe('useSubscribe', () => {
     expect(handler).toBeCalledTimes(1)
   })
 
-  it('should deliver the message asynchronously, not during publish', () => {
+  it('delivers the message asynchronously, not during publish', () => {
     const handler = vi.fn()
 
     renderHook(() => useSubscribe({ token, handler }))
@@ -263,7 +263,7 @@ describe('useSubscribe', () => {
     expect(handler).toBeCalledTimes(1)
   })
 
-  it('should call the handler with the published token and message', () => {
+  it('calls the handler with the published token and message', () => {
     const handler = vi.fn()
 
     renderHook(() => useSubscribe({ token, handler }))
@@ -277,7 +277,7 @@ describe('useSubscribe', () => {
     expect(handler).toHaveBeenCalledWith(token, message)
   })
 
-  it('should deliver object payloads by reference', () => {
+  it('delivers object payloads by reference', () => {
     const handler = vi.fn()
     const payload = { arr: [1, 2, 3], nested: { x: 1 } }
 
@@ -292,7 +292,7 @@ describe('useSubscribe', () => {
     expect(handler.mock.calls[0][1]).toBe(payload)
   })
 
-  it('should deliver to every independent subscriber on the same token', () => {
+  it('delivers to every independent subscriber on the same token', () => {
     const handler1 = vi.fn()
     const handler2 = vi.fn()
 
@@ -308,7 +308,7 @@ describe('useSubscribe', () => {
     expect(handler2).toBeCalledTimes(1)
   })
 
-  it('should only unsubscribe the targeted hook, leaving others subscribed', () => {
+  it('only unsubscribes the targeted hook, leaving others subscribed', () => {
     const handler1 = vi.fn()
     const handler2 = vi.fn()
 
@@ -328,7 +328,7 @@ describe('useSubscribe', () => {
     expect(handler2).toBeCalledTimes(1)
   })
 
-  it('should route messages for a Symbol token', () => {
+  it('routes messages for a Symbol token', () => {
     const symbolToken = Symbol('event')
     const handler = vi.fn()
 
