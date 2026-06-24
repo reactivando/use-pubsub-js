@@ -3,19 +3,19 @@
 > Dependency-free React hooks and a pub/sub bus for publish/subscribe messaging
 
 <a target="_blank" href="https://www.npmjs.com/package/use-pubsub-js">
-  <img src="https://img.shields.io/npm/v/use-pubsub-js.svg" alt="Coverage Status">
+  <img src="https://img.shields.io/npm/v/use-pubsub-js.svg" alt="npm version">
 </a>
 <a target="_blank" href="https://coveralls.io/github/reactivando/use-pubsub-js?branch=main">
   <img src="https://coveralls.io/repos/github/reactivando/use-pubsub-js/badge.svg?branch=main" alt="Coverage Status">
 </a>
 <a target="_blank" href="https://github.com/reactivando/use-pubsub-js/blob/main/LICENSE">
-  <img src="https://img.shields.io/github/license/reactivando/use-pubsub-js?style=plastic" alt="LICENSE">
+  <img src="https://img.shields.io/github/license/reactivando/use-pubsub-js?style=plastic" alt="License">
 </a>
 <a target="_blank" href="https://app.codacy.com/gh/reactivando/use-pubsub-js/dashboard">
-  <img src="https://img.shields.io/codacy/grade/b1c4b6ce43164da49a7fa937ee917df7?style=plastic" alt="LICENSE">
+  <img src="https://img.shields.io/codacy/grade/b1c4b6ce43164da49a7fa937ee917df7?style=plastic" alt="Codacy grade">
 </a>
 <a target="_blank" href="https://bundlephobia.com/result?p=use-pubsub-js">
-  <img src="https://img.shields.io/bundlephobia/min/use-pubsub-js?style=plastic" alt="LICENSE">
+  <img src="https://img.shields.io/bundlephobia/min/use-pubsub-js?style=plastic" alt="Minified bundle size">
 </a>
 
 
@@ -34,6 +34,9 @@ npm i use-pubsub-js
 ```
 ```bash
 yarn add use-pubsub-js
+```
+```bash
+pnpm add use-pubsub-js
 ```
 
 ## Usage
@@ -183,8 +186,10 @@ useSubscribe({ bus, token: 'user:login', handler: (_, user) => console.log(user.
 
 - `pubsub-js` is no longer a dependency; `PubSub` is the library's own bus. If
   you also used `pubsub-js` directly elsewhere you were sharing one global
-  singleton — in v2 the bus is independent, so import `PubSub` only from
-  `use-pubsub-js` for a single shared bus.
+  singleton — in v2 the bus is independent, so those direct subscribers will no
+  longer receive messages from the hooks' `PubSub`. Import `PubSub` only from
+  `use-pubsub-js` for a single shared bus, and remove `pubsub-js` from your own
+  dependencies if you no longer need it.
 - The subscriber `message` payload type is now `unknown` (was `any`) — narrow or
   cast it in your handler. `usePublish`'s `message` is likewise widened from
   `string` to `unknown`, so you can publish any payload through the hook.
@@ -278,7 +283,3 @@ test-title wording, so this is a convention, not a CI check.)
 ## License
 
 MIT © [Reactivando](https://github.com/reactivando/use-pubsub-js/blob/main/LICENSE)
-
----
-
-This hook is created using [create-react-hook](https://github.com/hermanya/create-react-hook).
