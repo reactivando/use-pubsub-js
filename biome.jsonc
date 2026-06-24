@@ -42,23 +42,16 @@
   },
   "overrides": [
     {
-      // Public-API barrel: intentionally re-exports PubSub from pubsub-js
-      // alongside the hooks (documented in the README).
+      // Public-API barrel: the package entry intentionally re-exports the
+      // hooks, PubSub/createPubSub and the public types.
       "includes": ["src/index.ts"],
-      "linter": { "rules": { "style": { "noExportedImports": "off" } } }
+      "linter": { "rules": { "performance": { "noBarrelFile": "off" } } }
     },
     {
-      // Vendored debounce algorithm (kept under @ts-nocheck). Its function
-      // expressions rely on dynamic `this`, so converting them to arrows
-      // would change behavior — keep the lint rules off for this file.
+      // Vendored debounce algorithm: the generic callable constraint
+      // `<T extends (...args: any[]) => any>` and `func.apply` need `any`.
       "includes": ["src/utils/debounce.ts"],
-      "linter": {
-        "rules": {
-          "complexity": { "noBannedTypes": "off", "useArrowFunction": "off" },
-          "style": { "useBlockStatements": "off" },
-          "suspicious": { "noExplicitAny": "off" }
-        }
-      }
+      "linter": { "rules": { "suspicious": { "noExplicitAny": "off" } } }
     }
   ]
 }

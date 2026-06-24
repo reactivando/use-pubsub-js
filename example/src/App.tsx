@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { usePublish, useSubscribe } from 'use-pubsub-js'
 
-import { Token, TokenTwo, TokenThree, TokenFour } from './service/constants'
+import { Token, TokenFour, TokenThree, TokenTwo } from './service/constants'
 import { PublishService } from './service/publish'
 
 PublishService.publish(Token)
@@ -20,10 +20,10 @@ const ManualExternalMessages = () => {
     <div>
       <h2>Manual external messages received:</h2>
       <p>{subscriptionCounter}</p>
-      <button type="button" onClick={unsubscribe}>
+      <button onClick={unsubscribe} type="button">
         Unsubscribe
       </button>
-      <button type="button" onClick={resubscribe}>
+      <button onClick={resubscribe} type="button">
         Resubscribe
       </button>
     </div>
@@ -44,7 +44,7 @@ const AutoExternalMessages = () => {
     <div>
       <h2>Auto external messages received:</h2>
       <p>{subscriptionCounter}</p>
-      <button type="button" onClick={() => setIsUnsubscribe(s => !s)}>
+      <button onClick={() => setIsUnsubscribe(s => !s)} type="button">
         Change isUnsubscribe
       </button>
     </div>
@@ -56,7 +56,7 @@ const ManualPublishMessages = () => {
 
   return (
     <div>
-      <button type="button" onClick={publish}>
+      <button onClick={publish} type="button">
         Publish
       </button>
     </div>
@@ -92,9 +92,9 @@ const AutoPublishMessages = () => {
   return (
     <div>
       <input
+        onChange={e => setMessage(e.target.value)}
         type="text"
         value={message}
-        onChange={e => setMessage(e.target.value)}
       />
     </div>
   )
@@ -104,9 +104,9 @@ const ReceiveAutoPublish = () => {
   const [subscriptionCounter, setSubscriptionCounter] = useState(0)
   const [lastMessage, setLastMessage] = useState('')
 
-  const handler = (_message: string, data: string) => {
+  const handler = (_message: string, data: unknown) => {
     setSubscriptionCounter(c => c + 1)
-    setLastMessage(data)
+    setLastMessage(String(data))
   }
 
   useSubscribe({ token: TokenFour, handler })
@@ -129,36 +129,34 @@ const FailPublish = () => {
   return (
     <div>
       {lastPublish ? <p>Publishing success</p> : <p>Publication failure</p>}
-      <button type="button" onClick={publish}>
+      <button onClick={publish} type="button">
         Publish
       </button>
     </div>
   )
 }
 
-const App = () => {
-  return (
-    <div className="app">
-      <div>
-        <h1>External section</h1>
-        <AutoExternalMessages />
-        <ManualExternalMessages />
-      </div>
-      <div>
-        <h1>Manual section</h1>
-        <ReceiveManualPublish />
-        <ManualPublishMessages />
-      </div>
-      <div>
-        <h1>Automatic section</h1>
-        <ReceiveAutoPublish />
-        <AutoPublishMessages />
-      </div>
-      <div>
-        <h1>Fail section</h1>
-        <FailPublish />
-      </div>
+const App = () => (
+  <div className="app">
+    <div>
+      <h1>External section</h1>
+      <AutoExternalMessages />
+      <ManualExternalMessages />
     </div>
-  )
-}
+    <div>
+      <h1>Manual section</h1>
+      <ReceiveManualPublish />
+      <ManualPublishMessages />
+    </div>
+    <div>
+      <h1>Automatic section</h1>
+      <ReceiveAutoPublish />
+      <AutoPublishMessages />
+    </div>
+    <div>
+      <h1>Fail section</h1>
+      <FailPublish />
+    </div>
+  </div>
+)
 export default App
