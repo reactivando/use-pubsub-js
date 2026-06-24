@@ -183,33 +183,35 @@ const createBus = ({
     // independent of whether anyone is currently subscribed.
     lastValues?.set(token, data)
     const targets = targetsFor(token)
-    // Snapshot every target level synchronously, before scheduling delivery,
-    // so subscribe/unsubscribe during the wait can't corrupt this dispatch.
-    const snapshots: AnyListener[][] = []
+    // Snapshot subscribers synchronously, before scheduling delivery, so
+    // subscribe/unsubscribe during the wait can't corrupt this dispatch. One
+    // flat array preserves delivery order (exact topic first, then ancestors;
+    // subscription order within each) while avoiding an array-per-level alloc.
+    const snapshot: AnyListener[] = []
     for (const target of targets) {
       const channel = channels.get(target)
-      if (channel && channel.size > 0) {
-        snapshots.push([...channel.values()])
+      if (channel) {
+        for (const handler of channel.values()) {
+          snapshot.push(handler)
+        }
       }
     }
-    if (snapshots.length === 0) {
+    if (snapshot.length === 0) {
       return false
     }
     setTimeout(() => {
-      for (const handlers of snapshots) {
-        for (const handler of handlers) {
+      for (const handler of snapshot) {
+        try {
+          handler(token, data)
+        } catch (error) {
+          // Isolate: a throwing subscriber must not stop the rest, and must not
+          // crash the host. Hand the error to onError (default: console.error)
+          // instead of re-throwing. Guard onError itself so a throwing handler
+          // can't re-introduce the uncaught-exception crash.
           try {
-            handler(token, data)
-          } catch (error) {
-            // Isolate: a throwing subscriber must not stop the rest, and must
-            // not crash the host. Hand the error to onError (default:
-            // console.error) instead of re-throwing. Guard onError itself so a
-            // throwing handler can't re-introduce the uncaught-exception crash.
-            try {
-              onError(error)
-            } catch {
-              // onError threw; swallow to preserve delivery isolation.
-            }
+            onError(error)
+          } catch {
+            // onError threw; swallow to preserve delivery isolation.
           }
         }
       }
