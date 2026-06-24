@@ -30,6 +30,11 @@ export type EventMap = Record<string | symbol, unknown>
 /** Untyped, optionally-hierarchical bus (the `PubSub` singleton shape). */
 export interface PubSubBus {
   clearAllSubscriptions(): void
+  /**
+   * The last value published to `token`, or `undefined`. Only retains values
+   * when the bus was created with `{ retained: true }` (powers `useBusState`).
+   */
+  getSnapshot<T = unknown>(token: string | symbol): T | undefined
   on<T = unknown>(
     token: string | symbol,
     handler: Listener<T>,
@@ -52,6 +57,11 @@ export interface PubSubBus {
 /** Flat, fully-typed bus created by `createPubSub<EventMap>()`. */
 export interface TypedPubSub<E extends EventMap> {
   clearAllSubscriptions(): void
+  /**
+   * The last value published to `token`, or `undefined`. Only retains values
+   * when the bus was created with `{ retained: true }` (powers `useBusState`).
+   */
+  getSnapshot<K extends keyof E>(token: K): E[K] | undefined
   on<K extends keyof E>(
     token: K,
     handler: (token: K, data: E[K]) => void,
@@ -86,13 +96,17 @@ const defaultOnError: ErrorHandler = error => {
 
 const createBus = ({
   hierarchical = false,
+  retained = false,
   onError = defaultOnError,
 }: {
   hierarchical?: boolean
+  retained?: boolean
   onError?: ErrorHandler
 } = {}): PubSubBus => {
   const channels = new Map<string | symbol, Map<Token, AnyListener>>()
   const tokenToChannel = new Map<Token, string | symbol>()
+  // Last published value per exact token, kept only in retained mode.
+  const lastValues = retained ? new Map<string | symbol, unknown>() : null
   let uid = 0
 
   const subscribe = <T>(
@@ -165,6 +179,9 @@ const createBus = ({
   }
 
   const publish = <T>(token: string | symbol, data?: T): boolean => {
+    // Retain the latest value per exact token (for getSnapshot/useBusState),
+    // independent of whether anyone is currently subscribed.
+    lastValues?.set(token, data)
     const targets = targetsFor(token)
     // Snapshot every target level synchronously, before scheduling delivery,
     // so subscribe/unsubscribe during the wait can't corrupt this dispatch.
@@ -240,9 +257,13 @@ const createBus = ({
     return id
   }
 
+  const getSnapshot = <T>(token: string | symbol): T | undefined =>
+    lastValues?.get(token) as T | undefined
+
   const clearAllSubscriptions = (): void => {
     channels.clear()
     tokenToChannel.clear()
+    lastValues?.clear()
   }
 
   return {
@@ -251,6 +272,7 @@ const createBus = ({
     on,
     subscribeOnce,
     unsubscribe,
+    getSnapshot,
     clearAllSubscriptions,
   }
 }
@@ -260,12 +282,17 @@ const createBus = ({
  *
  * @param options.onError - called when a subscriber throws during delivery;
  * defaults to `console.error`. Delivery to other subscribers always continues.
+ * @param options.retained - when true, the bus keeps the last value published to
+ * each token so `getSnapshot(token)` (and `useBusState`) can read it. Off by
+ * default to avoid unbounded growth for dynamic topic sets.
  */
 export const createPubSub = <E extends EventMap = EventMap>(options?: {
   onError?: ErrorHandler
+  retained?: boolean
 }): TypedPubSub<E> =>
   createBus({
     hierarchical: false,
+    retained: options?.retained,
     onError: options?.onError,
   }) as unknown as TypedPubSub<E>
 

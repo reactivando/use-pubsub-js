@@ -403,6 +403,40 @@ describe('internal pub/sub module', () => {
     })
   })
 
+  describe('retained mode', () => {
+    it('getSnapshot returns the last published value', () => {
+      const bus = createPubSub({ retained: true })
+      bus.publish('t', 'first')
+      bus.publish('t', 'second')
+
+      expect(bus.getSnapshot('t')).toBe('second')
+    })
+
+    it('retains the value even with no subscribers', () => {
+      const bus = createPubSub({ retained: true })
+      bus.publish('t', { n: 1 }) // returns false (no subscribers)
+      expect(bus.getSnapshot('t')).toEqual({ n: 1 })
+    })
+
+    it('getSnapshot is always undefined when retained is off', () => {
+      const bus = createPubSub() // not retained
+      bus.publish('t', 'x')
+      expect(bus.getSnapshot('t')).toBeUndefined()
+    })
+
+    it('getSnapshot is undefined for a never-published token', () => {
+      const bus = createPubSub({ retained: true })
+      expect(bus.getSnapshot('never')).toBeUndefined()
+    })
+
+    it('clearAllSubscriptions also clears retained values', () => {
+      const bus = createPubSub({ retained: true })
+      bus.publish('t', 'x')
+      bus.clearAllSubscriptions()
+      expect(bus.getSnapshot('t')).toBeUndefined()
+    })
+  })
+
   describe('symbol tokens', () => {
     it('routes by the same symbol instance', () => {
       const bus = createPubSub()

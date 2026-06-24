@@ -63,6 +63,16 @@
         "default": "./dist/hooks/useSubscribe.cjs"
       }
     },
+    "./hooks/useBusState": {
+      "import": {
+        "types": "./dist/hooks/useBusState.d.ts",
+        "default": "./dist/hooks/useBusState.js"
+      },
+      "require": {
+        "types": "./dist/hooks/useBusState.d.cts",
+        "default": "./dist/hooks/useBusState.cjs"
+      }
+    },
     "./utils/debounce": {
       "import": {
         "types": "./dist/utils/debounce.d.ts",
@@ -85,6 +95,9 @@
       ],
       "hooks/useSubscribe": [
         "./dist/hooks/useSubscribe.d.ts"
+      ],
+      "hooks/useBusState": [
+        "./dist/hooks/useBusState.d.ts"
       ],
       "utils/debounce": [
         "./dist/utils/debounce.d.ts"
