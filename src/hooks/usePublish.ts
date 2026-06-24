@@ -1,5 +1,5 @@
-import PubSub from 'pubsub-js'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { PubSub } from '../pubsub'
 import { debounce } from '../utils/debounce'
 
 export interface IUsePublishResponse {
@@ -52,5 +52,5 @@ export const usePublish = <TokenType extends string | symbol>({
     }
   }, [publish, isImmediate, isAutomatic, debounceMs, message])
 
-  return { lastPublish, publish }
+  return useMemo(() => ({ lastPublish, publish }), [lastPublish, publish])
 }

@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react'
-import PubSub from 'pubsub-js'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { PubSub } from '../pubsub'
 import { usePublish } from './usePublish'
 import { useSubscribe } from './useSubscribe'
 

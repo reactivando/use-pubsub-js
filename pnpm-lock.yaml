@@ -18,10 +18,6 @@ overrides:
 importers:
 
   .:
-    dependencies:
-      pubsub-js:
-        specifier: ^1.9.5
-        version: 1.9.5
     devDependencies:
       '@biomejs/biome':
         specifier: 2.5.1
@@ -47,6 +43,9 @@ importers:
       lefthook:
         specifier: ^2.1.9
         version: 2.1.9
+      pubsub-js:
+        specifier: ^1.9.5
+        version: 1.9.5
       react:
         specifier: ^19.2.7
         version: 19.2.7

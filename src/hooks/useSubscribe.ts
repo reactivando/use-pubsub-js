@@ -1,7 +1,7 @@
-import PubSub from 'pubsub-js'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { PubSub } from '../pubsub'
 
-// biome-ignore lint/suspicious/noExplicitAny: pubsub-js delivers untyped message payloads
+// biome-ignore lint/suspicious/noExplicitAny: the bus delivers untyped message payloads
 type Message = any
 
 export interface UseSubscriptionResponse {
@@ -27,7 +27,7 @@ export const useSubscribe = <TokenType extends string | symbol>({
     handlerRef.current = handler
   })
 
-  const internalHandler = useCallback((msg: string, data: Message) => {
+  const internalHandler = useCallback((msg: string | symbol, data: Message) => {
     handlerRef.current(msg as TokenType, data)
   }, [])
 
@@ -53,5 +53,8 @@ export const useSubscribe = <TokenType extends string | symbol>({
     return unsubscribe
   }, [isUnsubscribe, token, resubscribe, unsubscribe])
 
-  return { unsubscribe, resubscribe }
+  return useMemo(
+    () => ({ unsubscribe, resubscribe }),
+    [unsubscribe, resubscribe],
+  )
 }
