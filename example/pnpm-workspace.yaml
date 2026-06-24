@@ -1,23 +1,16 @@
 allowBuilds:
   esbuild: true
+# vite 8.1.0 and @vitejs/plugin-react 6.0.3 are still inside pnpm 11's
+# default minimumReleaseAge window; exclude them until they age out.
 minimumReleaseAgeExclude:
   - '@vitejs/plugin-react@6.0.3'
   - vite@8.1.0
-  - minimatch@3.1.3 || 3.1.4
-  - ajv@6.14.0
-  - flatted@3.4.0 || 3.4.2
-  - brace-expansion@1.1.13
-  - picomatch@4.0.4
-  - yaml@2.8.3
-  - js-yaml@4.1.2
-  - '@babel/core@7.29.1'
 # Transitive security fixes (dev-only deps pulled in by eslint, vite
 # and @vitejs/plugin-react). Forced to patched versions.
 overrides:
   '@babel/core': ^7.29.6
   ajv: ^6.14.0
   brace-expansion@1: ^1.1.13
-  brace-expansion@2: ^2.0.3
   flatted: ^3.4.2
   js-yaml: ^4.2.0
   minimatch@3: ^3.1.4
