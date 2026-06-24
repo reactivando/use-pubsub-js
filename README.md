@@ -1,6 +1,6 @@
 # use-pubsub-js
 
-> A service and hooks for React to publish or subscribe (wrapper of [pubsub-js](https://github.com/mroderick/PubSubJS))
+> Dependency-free React hooks and a pub/sub bus for publish/subscribe messaging
 
 <a target="_blank" href="https://www.npmjs.com/package/use-pubsub-js">
   <img src="https://img.shields.io/npm/v/use-pubsub-js.svg" alt="Coverage Status">
@@ -135,7 +135,52 @@ change is called a new publish with a new message, by default have a debounce wi
 The returned `lastPublish` value is true if have some subscribe to receive a
 message and false if they don't referring to the last publication.
 
-### To see more information for PubSub service check the [official documentation](https://github.com/mroderick/PubSubJS)
+### The `PubSub` bus
+
+Since v2 the `PubSub` bus is built in (no `pubsub-js` dependency). It supports
+`subscribe(token, handler)` (returns a token), `unsubscribe(token | handler)`,
+`publish(token, data)` (async; returns `true` if at least one subscriber
+received it), `subscribeOnce`, `on(token, handler, { signal })` (returns an
+unsubscribe function and supports `AbortSignal`), and `clearAllSubscriptions`.
+Tokens are `string | symbol` (symbols match by identity). String topics are
+**hierarchical**: publishing `a.b.c` also notifies `a.b` and `a` subscribers.
+
+For typed channels, create your own bus and import it where needed (also
+available from the `use-pubsub-js/pubsub` subpath):
+
+```ts
+import { createPubSub } from 'use-pubsub-js'
+
+type AppEvents = {
+  'user:login': { userId: string }
+  'cart:update': { itemCount: number }
+}
+
+export const bus = createPubSub<AppEvents>()
+bus.publish('user:login', { userId: '42' }) // payload is type-checked
+```
+
+> Note: `createPubSub()` returns a **separate** bus instance. The hooks use the
+> default `PubSub` singleton; pass data through it (or wire your typed bus into
+> your own context) if you need the hooks and a typed bus to share state.
+
+### Migrating from v1 to v2
+
+- `pubsub-js` is no longer a dependency; `PubSub` is the library's own bus. If
+  you also used `pubsub-js` directly elsewhere you were sharing one global
+  singleton — in v2 the bus is independent, so import `PubSub` only from
+  `use-pubsub-js` for a single shared bus.
+- The subscriber `message` payload type is now `unknown` (was `any`) — narrow or
+  cast it in your handler.
+- The default export was removed — use named imports.
+- `IUsePublishParams`/`IUsePublishResponse` were renamed to
+  `UsePublishParams`/`UsePublishResponse`.
+- Symbol tokens match by identity (two distinct `Symbol('x')` no longer collide).
+- Removed rarely-used pubsub-js extras (`publishSync`, `subscribeAll`/`*`
+  wildcard, `clearSubscriptions(topic)`, `countSubscriptions`,
+  `getSubscriptions`, `immediateExceptions`). `publish`, `subscribe`,
+  `subscribeOnce`, `unsubscribe`, `clearAllSubscriptions` and hierarchical
+  topics are kept.
 
 ## Examples
 
@@ -155,8 +200,8 @@ More real examples:
 
 | key           | description                                                                | type                                            | default/required |
 | ------------- | -------------------------------------------------------------------------- | ----------------------------------------------- | ---------------- |
-| token         | Token is used to subscribe listen a specific publisher                     | string \| Symbol                                | required         |
-| handler       | Function that is going to be executed when a publication occurs            | (token: string \| Symbol, message: any) => void | required         |
+| token         | Token is used to subscribe listen a specific publisher                     | string \| symbol                                | required         |
+| handler       | Function that is going to be executed when a publication occurs            | (token: string \| symbol, message: unknown) => void | required         |
 | isUnsubscribe | Is the way to dynamically unsubscribe and subscribe based on some variable | boolean                                         | false            |
 
 * Returns of `useSubscribe`
@@ -172,7 +217,7 @@ More real examples:
 
 | key              | description                                                             | type             | default/required |
 | ---------------- | ----------------------------------------------------------------------- | ---------------- | ---------------- |
-| token            | Token is used to subscribe listen a specific publisher                  | string \| Symbol | required         |
+| token            | Token is used to subscribe listen a specific publisher                  | string \| symbol | required         |
 | message          | The value that will be send to subscriber                               | any              | required         |
 | isAutomatic      | Whether the publication should be automatic                             | boolean          | false            |
 | isInitialPublish | Whether to make a publication in the first render                       | boolean          | false            |

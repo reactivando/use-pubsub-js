@@ -1,10 +1,9 @@
 // Bus-contract safety net (M0 of the v2 migration).
 //
 // These tests pin the OBSERVABLE pub/sub contract of the library's public
-// `PubSub` (today pubsub-js; after the v2 swap, the internal module). They
-// import `PubSub` from the package barrel so they survive the swap with NO
-// edit — any divergence in the internal reimplementation turns one of these
-// red. They must pass against the current pubsub-js backend.
+// `PubSub` (the internal module since v2; originally the pubsub-js backend).
+// They import `PubSub` from the package barrel so they're backend-agnostic —
+// any divergence in the bus implementation turns one of these red.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { PubSub } from './index'
 

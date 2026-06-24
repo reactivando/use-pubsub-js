@@ -28,9 +28,6 @@ importers:
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@types/pubsub-js':
-        specifier: ^1.8.6
-        version: 1.8.6
       '@types/react':
         specifier: ^19.2.17
         version: 19.2.17
@@ -43,9 +40,6 @@ importers:
       lefthook:
         specifier: ^2.1.9
         version: 2.1.9
-      pubsub-js:
-        specifier: ^1.9.5
-        version: 1.9.5
       react:
         specifier: ^19.2.7
         version: 19.2.7
@@ -933,9 +927,6 @@ packages:
   '@types/parse-path@7.1.0':
     resolution: {integrity: sha512-EULJ8LApcVEPbrfND0cRQqutIOdiIgJ1Mgrhpy755r14xMohPTEpkV/k28SJvuOs9bHRFW8x+KeDAEPiGQPB9Q==}
     deprecated: This is a stub types definition. parse-path provides its own type definitions, so you do not need this installed.
-
-  '@types/pubsub-js@1.8.6':
-    resolution: {integrity: sha512-Kwug5cwV0paUDm/NfwDx1sp9xI0bGIvmWJjJWCU8NngkCCMt3EIC7oPDvb6fV7BR8kPpFyyBu4D11bda/2MdPA==}
 
   '@types/react@19.2.17':
     resolution: {integrity: sha512-MXfmqaVPEVgkBT/aY0aGCkRWWtByiYQXo3xdQ8r5RzuFrPiRn8Gar2tQdXSUQ2GKV3bkXckek89V8wQBY2Q/Aw==}
@@ -2033,9 +2024,6 @@ packages:
 
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
-
-  pubsub-js@1.9.5:
-    resolution: {integrity: sha512-5MZ0I9i5JWVO7SizvOviKvZU2qaBbl2KQX150FAA+fJBwYpwOUId7aNygURWSdPzlsA/xZ/InUKXqBbzM0czTA==}
 
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
@@ -3234,8 +3222,6 @@ snapshots:
     dependencies:
       parse-path: 7.1.0
 
-  '@types/pubsub-js@1.8.6': {}
-
   '@types/react@19.2.17':
     dependencies:
       csstype: 3.2.3
@@ -4354,8 +4340,6 @@ snapshots:
       - supports-color
 
   proxy-from-env@1.1.0: {}
-
-  pubsub-js@1.9.5: {}
 
   punycode@2.3.1: {}
 
