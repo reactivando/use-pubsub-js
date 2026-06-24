@@ -71,6 +71,10 @@ jobs:
       if: matrix.react == '19'
       run: pnpm exec attw --pack . && pnpm exec publint
 
+    - name: Bundle size guard
+      if: matrix.react == '19'
+      run: pnpm size
+
     - name: Audit dependencies
       if: matrix.react == '19'
       run: pnpm audit --audit-level=high
