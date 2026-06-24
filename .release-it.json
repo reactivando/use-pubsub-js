@@ -11,7 +11,7 @@
     "releaseName": "Release v${version}"
   },
   "hooks": {
-    "before:init": "pnpm lint && pnpm test --run && pnpm test:e2e"
+    "before:init": "pnpm lint && pnpm test --run && pnpm test:e2e && pnpm check:package"
   },
   "plugins": {
     "release-it-pnpm": {

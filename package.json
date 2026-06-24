@@ -109,12 +109,14 @@
     "lint": "ultracite check ./src",
     "prepare": "lefthook install",
     "test:e2e": "pnpm build && cd e2e && pnpm install --ignore-workspace && pnpm test",
+    "check:package": "pnpm build && attw --pack . && publint",
     "release": "release-it"
   },
   "peerDependencies": {
     "react": ">=17.0.0"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.4",
     "@biomejs/biome": "2.5.1",
     "@release-it/conventional-changelog": "^11.0.1",
     "@testing-library/react": "^16.3.2",
@@ -122,6 +124,7 @@
     "@vitest/coverage-v8": "^4.1.9",
     "jsdom": "^29.1.1",
     "lefthook": "^2.1.9",
+    "publint": "^0.3.21",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "release-it": "^20.2.0",

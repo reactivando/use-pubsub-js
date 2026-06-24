@@ -47,6 +47,9 @@ jobs:
     - name: End-to-end import smoke tests (CJS/ESM)
       run: pnpm test:e2e
 
+    - name: Validate package (types resolution + publint)
+      run: pnpm check:package
+
     - name: Coveralls
       uses: coverallsapp/github-action@v2
       with:
