@@ -118,6 +118,57 @@ describe('useBusState', () => {
     expect(result.current).toBe(0)
   })
 
+  it('reads the new token snapshot when the token prop changes on a retained bus', () => {
+    const bus = createPubSub<{ a: number; b: number }>({ retained: true })
+    bus.publish('a', 10)
+    bus.publish('b', 99)
+
+    let currentToken: 'a' | 'b' = 'a'
+    const { result, rerender } = renderHook(() =>
+      useBusState({ bus, token: currentToken, initialValue: 0 }),
+    )
+    expect(result.current).toBe(10)
+
+    currentToken = 'b'
+    rerender()
+
+    expect(result.current).toBe(99) // immediately reads retained 'b', not 0 or 10
+  })
+
+  it('ignores an undefined payload (keeps the prior value)', () => {
+    const bus = createPubSub<{ x: number | undefined }>({ retained: true })
+    const { result } = renderHook(() =>
+      useBusState({ bus, token: 'x', initialValue: 0 }),
+    )
+
+    act(() => {
+      bus.publish('x', 42)
+      vi.advanceTimersByTime(0)
+    })
+    expect(result.current).toBe(42)
+
+    act(() => {
+      bus.publish('x', undefined)
+      vi.advanceTimersByTime(0)
+    })
+    expect(result.current).toBe(42) // undefined is treated as "no value"
+  })
+
+  it('reflects only the last value when publishes arrive in the same tick', () => {
+    const bus = createPubSub<{ count: number }>({ retained: true })
+    const { result } = renderHook(() =>
+      useBusState({ bus, token: 'count', initialValue: 0 }),
+    )
+
+    act(() => {
+      bus.publish('count', 1)
+      bus.publish('count', 2)
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(result.current).toBe(2)
+  })
+
   it('renders the server snapshot (initial value) during SSR', () => {
     const bus = createPubSub<{ count: number }>({ retained: true })
     bus.publish('count', 99) // retained, but SSR must use the server snapshot

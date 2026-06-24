@@ -62,6 +62,11 @@ export const useBusState = <
   const subscribe = useCallback(
     (onStoreChange: () => void) =>
       activeBus.on(token, (_deliveredToken, data) => {
+        // Treat an `undefined` payload as "no value": keep the prior value /
+        // initialValue rather than blanking the displayed state.
+        if (data === undefined) {
+          return
+        }
         latestRef.current = { bus: activeBus, token, value: data as Value }
         onStoreChange()
       }),
