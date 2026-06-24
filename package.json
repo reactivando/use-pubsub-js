@@ -83,16 +83,6 @@
         "default": "./dist/hooks/react19/useSubscribe.cjs"
       }
     },
-    "./utils/debounce": {
-      "import": {
-        "types": "./dist/utils/debounce.d.ts",
-        "default": "./dist/utils/debounce.js"
-      },
-      "require": {
-        "types": "./dist/utils/debounce.d.cts",
-        "default": "./dist/utils/debounce.cjs"
-      }
-    },
     "./package.json": "./package.json"
   },
   "typesVersions": {
@@ -111,9 +101,6 @@
       ],
       "react19/useSubscribe": [
         "./dist/hooks/react19/useSubscribe.d.ts"
-      ],
-      "utils/debounce": [
-        "./dist/utils/debounce.d.ts"
       ]
     }
   },
