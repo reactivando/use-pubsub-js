@@ -200,7 +200,7 @@ More real examples:
 
 | key           | description                                                                | type                                            | default/required |
 | ------------- | -------------------------------------------------------------------------- | ----------------------------------------------- | ---------------- |
-| token         | Token is used to subscribe listen a specific publisher                     | string \| Symbol                                | required         |
+| token         | Token is used to subscribe listen a specific publisher                     | string \| symbol                                | required         |
 | handler       | Function that is going to be executed when a publication occurs            | (token: string \| symbol, message: unknown) => void | required         |
 | isUnsubscribe | Is the way to dynamically unsubscribe and subscribe based on some variable | boolean                                         | false            |
 
@@ -217,7 +217,7 @@ More real examples:
 
 | key              | description                                                             | type             | default/required |
 | ---------------- | ----------------------------------------------------------------------- | ---------------- | ---------------- |
-| token            | Token is used to subscribe listen a specific publisher                  | string \| Symbol | required         |
+| token            | Token is used to subscribe listen a specific publisher                  | string \| symbol | required         |
 | message          | The value that will be send to subscriber                               | any              | required         |
 | isAutomatic      | Whether the publication should be automatic                             | boolean          | false            |
 | isInitialPublish | Whether to make a publication in the first render                       | boolean          | false            |
