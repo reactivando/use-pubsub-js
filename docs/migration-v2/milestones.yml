@@ -1,4 +1,15 @@
 # Machine-readable mirror of 05-milestones.md — for execution tracking.
+# NOTE: amended by 08-review-verdicts.md (authoritative). Key deltas:
+#  - M0: symbol-identity test as it.todo; add contract cases (no-data publish,
+#        double-unsubscribe, cross-publish ordering, handler-added-during-dispatch,
+#        unsubscribe return shape).
+#  - M1: coverage thresholds enabled here (not M6); e2e runtime smoke written here;
+#        deliver original token (not String(token)); pubsub.spec.ts is permanent.
+#  - M2: UPDATE example/src/service/publish.ts to import { PubSub } from 'use-pubsub-js';
+#        add `pnpm --prefix ./example build` to CI gate; add useMemo to hook returns (R3).
+#        (R6 useLayoutEffect DROPPED.)
+#  - M4: Message any->unknown moves here (with the other type breaks).
+#  - Blocked on maintainer: Q1 (hierarchical), Q7 (createPubSub/bus), Q8 (symbol delivery).
 # status: planned | in_progress | done
 version_target: 2.0.0
 sequencing: single-major-as-ordered-prs

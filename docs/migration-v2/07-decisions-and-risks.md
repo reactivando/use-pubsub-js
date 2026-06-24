@@ -28,9 +28,19 @@
 
 ## Open questions for the maintainer (please confirm at review)
 
-- **Q1 — Drop hierarchical/dotted topics?** It's the one prominent pubsub-js
-  feature being removed. Default plan: **drop + document**. OK, or keep it
-  (behind an opt-in)?
+- **Q1 — Hierarchical/dotted topics?** (sharpened by review, 08-V18) Dropping is
+  a *silent* runtime break for consumers who used dotted topics. Pick: **(a)**
+  drop + loud CHANGELOG (lean, default); **(b)** ship an opt-in
+  `createPubSub({ hierarchical: true })` in v2.0.0 (small ancestor-walk on
+  publish) so migrators have a path.
+- **Q7 — `createPubSub` is a separate bus from the hooks (08-V17).** Pick: **(a)**
+  defer `createPubSub` to v2.1, ship v2.0.0 as a clean dep-swap + lean `PubSub` +
+  `on` only; **(b)** ship `createPubSub` *and* add an optional `bus` param to the
+  hooks so a typed bus integrates end-to-end (additive hook-API change); **(c)**
+  ship `createPubSub` standalone with explicit "separate bus" docs.
+- **Q8 — Symbol token delivery (08-V2):** confirm the intentional improvement —
+  handlers now receive the **original** `symbol` token (not its string form).
+  This differs from today's behavior; OK?
 - **Q2 — Symbol identity vs stringify (D3)?** Default: **identity** (better).
   Confirm you're fine with the (pathological) behavior difference vs pubsub-js.
 - **Q3 — Ship the React 19.2 `useEffectEvent` sub-path (R1) inside v2.0.0**

@@ -6,33 +6,28 @@ gating approach. None of these change the hooks' public API or behavior.
 
 ## Ship in v2.0.0 (React 17+, no gating)
 
-### R6 — Latest-handler ref: `useEffect` → isomorphic `useLayoutEffect`
-`useSubscribe` keeps the handler fresh with a dep-less `useEffect`:
+### R6 — ~~`useEffect` → isomorphic `useLayoutEffect`~~ **DROPPED** (see 08-V16)
+Adversarial review showed this is cargo-cult: with `setTimeout(0)` delivery the
+render→effect stale-handler window is **unreachable** (the existing "handler
+changes" test proves the current `useEffect` is correct), and `useLayoutEffect`
+adds SSR/layout cost for no observable gain. **Decision: leave the handler-ref
+`useEffect` as-is in v2.** The render-time ref write
+(`handlerRef.current = handler` during render) and `useEffectEvent` (19.2) are
+recorded in 06 as the preferred options *if* we ever touch this hook.
+
+### R3 — Memoize the hooks' return objects **(now v2.0.0 core — see 08-V3)**
+`useSubscribe` returns a fresh `{ unsubscribe, resubscribe }` each render;
+`usePublish` returns a fresh `{ lastPublish, publish }`. The inner fns are already
+`useCallback`-stable, but the **object identity** changes every render. With
+`eslint-plugin-react-hooks/exhaustive-deps` (ubiquitous), a consumer who captures
+the whole return and puts it in a dep array gets an **infinite effect loop** —
+"document destructuring" doesn't prevent that.
 ```ts
-useEffect(() => { handlerRef.current = handler })
+return useMemo(() => ({ unsubscribe, resubscribe }), [unsubscribe, resubscribe])
 ```
-`useEffect` runs *after paint*, leaving a small window where `handlerRef.current`
-is stale. Switching to `useLayoutEffect` (guarded for SSR) shrinks that window to
-before paint — a pure internal correctness gain, works on all supported React.
-
-```ts
-const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect
-
-useIsomorphicLayoutEffect(() => { handlerRef.current = handler })
-```
-- Min React: 17. Gating: none (SSR handled by the isomorphic guard).
-- Risk: low. No test changes (tests advance timers past 0 before asserting).
-- **Decision: include in v2.0.0 core.**
-
-### R3 — Referential stability of returned objects (document; optional `useMemo`)
-`useSubscribe` returns a fresh `{ unsubscribe, resubscribe }` object each render
-(both fns are already `useCallback`-stable); `usePublish` returns a fresh
-`{ lastPublish, publish }`. Only matters if a consumer passes the whole object to
-a `memo` child / effect dep.
-- **Decision:** document "destructure the return value" in the README. Add
-  `useMemo` on the returned object only if a real re-render cost is shown
-  (deferred; React Compiler handles it automatically for adopters).
+- Min React: 16.8. Gating: none. Behavior-neutral (same values, stable identity).
+- **Decision: include in v2.0.0 core** (was "document only" — upgraded by review).
+  Also document destructuring in the README as a complement.
 
 ## Progressive enhancement (React 19.2+ lane) — opt-in, additive
 
@@ -71,8 +66,11 @@ about `use`).
 
 | Item | Min React | In v2.0.0? | Gating | API change |
 | --- | --- | --- | --- | --- |
-| R6 isomorphic layout effect | 17 | **Yes (core)** | none | none |
-| R3 stable return (doc) | any | Yes (docs) | none | none |
-| R1 `useEffectEvent` | 19.2 | maybe (sub-path) | sub-path export | none |
+| R3 `useMemo` the returns | 16.8 | **Yes (core)** | none | none |
+| R6 isomorphic layout effect | 17 | **No — dropped (08-V16)** | — | — |
+| R1 `useEffectEvent` | 19.2 | maybe (sub-path, Q3) | sub-path export | none |
 | USES | 18 | no | — | — |
 | `use` | 19 | no | — | — |
+
+> v2 core's only React change is **R3** (memoize the return objects). The
+> handler-ref effect is left untouched.

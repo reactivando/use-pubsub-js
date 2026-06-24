@@ -20,7 +20,14 @@ before any code is written.
 | [05-milestones.md](./05-milestones.md) | Step-by-step execution as PR-sized milestones with verification gates. |
 | [06-ideas-backlog.md](./06-ideas-backlog.md) | Version-specific / future progressive-enhancement ideas to "save". |
 | [07-decisions-and-risks.md](./07-decisions-and-risks.md) | Decision log (what I decided and why), open questions for the maintainer, risks. |
+| [08-review-verdicts.md](./08-review-verdicts.md) | **Authoritative.** Adjudication of the 3 adversarial reviews + the resulting amendments. Where it conflicts with 01–07, 08 wins. |
 | [milestones.yml](./milestones.yml) | Machine-readable milestone/checklist mirror of 05, for execution tracking. |
+
+> **Read 08 first.** The plan was put through three adversarial reviews; 08
+> records every verdict and the amendments (two BLOCKERs were verified against the
+> code: the `example/` app breaks on the dep removal, and the `String(token)`
+> delivery contradicts the typed API). 01–07 are the original draft; 08 is the
+> corrected plan of record.
 
 ## Non-negotiable constraints (carried from the whole project)
 

@@ -30,7 +30,9 @@ Plus `clearAllSubscriptions()` used by every test's `afterEach`.
 // src/pubsub/index.ts
 export type Token = string
 
-export type Listener<T = unknown> = (token: string, data: T) => void
+// NOTE (per 08-V2): the handler receives the ORIGINAL token (string | symbol),
+// not its string form — so identity-keyed symbol tokens reach the handler intact.
+export type Listener<T = unknown> = (token: string | symbol, data: T) => void
 
 export interface PubSubBus {
   /** async delivery via setTimeout(0); returns true iff >=1 subscriber. */
@@ -162,10 +164,11 @@ function unsubscribe(value) {
 function publish(token, data) {
   const m = channels.get(token)
   if (!m || m.size === 0) return false
-  const snapshot = [...m.values()]
+  const snapshot = [...m.values()]       // snapshot: subs added mid-dispatch don't fire now
   setTimeout(() => {
     for (const fn of snapshot) {
-      try { fn(String(token), data) } catch (err) { setTimeout(() => { throw err }, 0) }
+      // deliver the ORIGINAL token (string | symbol), not String(token) — see 08-V2
+      try { fn(token, data) } catch (err) { setTimeout(() => { throw err }, 0) }
     }
   }, 0)
   return true
