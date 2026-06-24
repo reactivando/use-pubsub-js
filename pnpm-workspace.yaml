@@ -1,10 +1,6 @@
 allowBuilds:
   esbuild: true
   lefthook: true
-# vite 8.1.0 is still inside pnpm 11's default minimumReleaseAge window;
-# exclude it so installs resolve until it ages out.
-minimumReleaseAgeExclude:
-  - vite@8.1.0
 # Transitive security fixes (all dev-only deps). Forced to patched
 # versions via overrides because they're pulled in by release-it,
 # vitest and tsdown several levels deep.
