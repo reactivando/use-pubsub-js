@@ -1,18 +1,18 @@
-import { useEffect, useCallback, useRef } from 'react'
 import PubSub from 'pubsub-js'
+import { useCallback, useEffect, useRef } from 'react'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: pubsub-js delivers untyped message payloads
 type Message = any
 
 export interface UseSubscriptionResponse {
-  unsubscribe: () => void
   resubscribe: () => void
+  unsubscribe: () => void
 }
 
 export interface UseSubscriptionParams<TokenType extends string | symbol> {
-  token: TokenType
   handler: (token: TokenType, message: Message) => void
   isUnsubscribe?: boolean
+  token: TokenType
 }
 
 export const useSubscribe = <TokenType extends string | symbol>({
@@ -27,12 +27,9 @@ export const useSubscribe = <TokenType extends string | symbol>({
     handlerRef.current = handler
   })
 
-  const internalHandler = useCallback(
-    (msg: string, data: Message) => {
-      handlerRef.current(msg as TokenType, data)
-    },
-    [],
-  )
+  const internalHandler = useCallback((msg: string, data: Message) => {
+    handlerRef.current(msg as TokenType, data)
+  }, [])
 
   const unsubscribe = useCallback(() => {
     if (subscriptionToken.current) {
@@ -46,11 +43,12 @@ export const useSubscribe = <TokenType extends string | symbol>({
     subscriptionToken.current = PubSub.subscribe(token, internalHandler)
   }, [token, internalHandler, unsubscribe])
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: token is kept explicit even though resubscribe/unsubscribe already close over it; preserves the original re-subscribe-on-token-change intent
   useEffect(() => {
-    if (!isUnsubscribe) {
-      resubscribe()
-    } else {
+    if (isUnsubscribe) {
       unsubscribe()
+    } else {
+      resubscribe()
     }
     return unsubscribe
   }, [isUnsubscribe, token, resubscribe, unsubscribe])

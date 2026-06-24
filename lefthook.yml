@@ -1,0 +1,7 @@
+# https://lefthook.dev/configuration/
+pre-commit:
+  jobs:
+    - name: ultracite
+      glob: '**/*.{js,jsx,ts,tsx,json,jsonc}'
+      run: pnpm ultracite fix {staged_files}
+      stage_fixed: true

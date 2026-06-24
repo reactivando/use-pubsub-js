@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
+import { act, renderHook } from '@testing-library/react'
 import PubSub from 'pubsub-js'
-import { renderHook, act } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { useSubscribe } from './useSubscribe'
 
 vi.useFakeTimers()
