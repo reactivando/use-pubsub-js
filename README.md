@@ -184,6 +184,9 @@ useSubscribe({ bus, token: 'user:login', handler: (_, user) => console.log(user.
 
 ### Migrating from v1 to v2
 
+- The minimum supported React version is now **18.0.0** (was 17). The hooks use
+  only stable React primitives, but React 18+ is required so the library can rely
+  on automatic batching and `useSyncExternalStore`.
 - `pubsub-js` is no longer a dependency; `PubSub` is the library's own bus. If
   you also used `pubsub-js` directly elsewhere you were sharing one global
   singleton — in v2 the bus is independent, so those direct subscribers will no
