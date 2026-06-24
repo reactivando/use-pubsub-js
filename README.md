@@ -205,6 +205,10 @@ useSubscribe({ bus, token: 'user:login', handler: (_, user) => console.log(user.
 - Both hooks now accept an optional `bus` param (defaults to the `PubSub`
   singleton), so a `createPubSub<E>()` bus can be driven through the hooks with
   typed payloads.
+- A subscriber that throws no longer re-throws asynchronously (which could crash
+  a Node process). The error now goes to an error handler that defaults to
+  `console.error`; delivery to the other subscribers always continues. Pass your
+  own via `createPubSub({ onError })`.
 - Symbol tokens match by identity (two distinct `Symbol('x')` no longer collide).
 - Removed rarely-used pubsub-js extras (`publishSync`, `subscribeAll`/`*`
   wildcard, `clearSubscriptions(topic)`, `countSubscriptions`,

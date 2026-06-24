@@ -54,7 +54,24 @@ export interface TypedPubSub<E extends EventMap> {
 
 type AnyListener = Listener<unknown>
 
-const createBus = ({ hierarchical = false } = {}): PubSubBus => {
+/** Invoked when a subscriber throws during delivery. */
+export type ErrorHandler = (error: unknown) => void
+
+const defaultOnError: ErrorHandler = error => {
+  // Surface the error without aborting delivery or crashing the host. The
+  // pre-2.0 behavior re-threw via setTimeout, which terminates a Node process
+  // when no uncaughtException handler is registered; console.error is safe in
+  // both Node and the browser. Pass a custom `onError` to override.
+  console.error('[use-pubsub-js] a subscriber threw during delivery:', error)
+}
+
+const createBus = ({
+  hierarchical = false,
+  onError = defaultOnError,
+}: {
+  hierarchical?: boolean
+  onError?: ErrorHandler
+} = {}): PubSubBus => {
   const channels = new Map<string | symbol, Map<Token, AnyListener>>()
   const tokenToChannel = new Map<Token, string | symbol>()
   let uid = 0
@@ -148,11 +165,10 @@ const createBus = ({ hierarchical = false } = {}): PubSubBus => {
           try {
             handler(token, data)
           } catch (error) {
-            // Isolate: a throwing subscriber must not stop the rest. Re-throw
-            // asynchronously so it surfaces without aborting delivery.
-            setTimeout(() => {
-              throw error
-            }, 0)
+            // Isolate: a throwing subscriber must not stop the rest, and must
+            // not crash the host. Hand the error to onError (default:
+            // console.error) instead of re-throwing.
+            onError(error)
           }
         }
       }
@@ -215,9 +231,19 @@ const createBus = ({ hierarchical = false } = {}): PubSubBus => {
   }
 }
 
-/** Create a flat, typed bus for an event map. */
-export const createPubSub = <E extends EventMap = EventMap>(): TypedPubSub<E> =>
-  createBus({ hierarchical: false }) as unknown as TypedPubSub<E>
+/**
+ * Create a flat, typed bus for an event map.
+ *
+ * @param options.onError - called when a subscriber throws during delivery;
+ * defaults to `console.error`. Delivery to other subscribers always continues.
+ */
+export const createPubSub = <E extends EventMap = EventMap>(options?: {
+  onError?: ErrorHandler
+}): TypedPubSub<E> =>
+  createBus({
+    hierarchical: false,
+    onError: options?.onError,
+  }) as unknown as TypedPubSub<E>
 
 /** The default shared bus: untyped payloads, hierarchical dotted topics. */
 export const PubSub: PubSubBus = createBus({ hierarchical: true })

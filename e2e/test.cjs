@@ -29,3 +29,20 @@ test('e2e CJS: PubSub delivers a published message', async () => {
   assert.equal(received[0][0], 'e2e', 'handler receives the token')
   assert.deepEqual(received[0][1], { hi: 1 }, 'handler receives the payload')
 })
+
+test('e2e CJS: a throwing subscriber does not crash the process', async () => {
+  // If delivery re-threw (pre-2.0), the setTimeout throw would be an uncaught
+  // exception and node --test would fail the whole run.
+  const errors = []
+  const bus = createPubSub({ onError: (err) => errors.push(err) })
+  const after = []
+  bus.subscribe('boom', () => {
+    throw new Error('kaboom')
+  })
+  bus.subscribe('boom', () => after.push(1))
+  bus.publish('boom', null)
+  await new Promise((resolve) => setTimeout(resolve, 10))
+
+  assert.equal(after.length, 1, 'other subscribers still run after a throw')
+  assert.equal(errors.length, 1, 'onError received the thrown error')
+})

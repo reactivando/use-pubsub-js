@@ -180,7 +180,7 @@ describe('internal pub/sub module', () => {
 
   describe('error isolation', () => {
     it('a throwing subscriber does not stop the others', () => {
-      const bus = createPubSub()
+      const bus = createPubSub({ onError: () => undefined })
       const after = vi.fn()
       bus.subscribe('t', () => {
         throw new Error('boom')
@@ -188,21 +188,40 @@ describe('internal pub/sub module', () => {
       bus.subscribe('t', after)
 
       bus.publish('t', 'm')
-      flush() // delivery runs; the async re-throw is left pending
+      flush()
 
       expect(after).toBeCalledTimes(1)
     })
 
-    it('re-throws a caught subscriber error asynchronously', () => {
-      const bus = createPubSub()
+    it('routes a subscriber error to onError instead of crashing the host', () => {
+      const onError = vi.fn()
+      const bus = createPubSub({ onError })
+      const err = new Error('boom')
+      bus.subscribe('t', () => {
+        throw err
+      })
+
+      bus.publish('t', 'm')
+
+      // Delivery must never re-throw — flushing the timer is always safe
+      // (the pre-2.0 behavior re-threw and could crash a Node process).
+      expect(() => flush()).not.toThrow()
+      expect(onError).toHaveBeenCalledTimes(1)
+      expect(onError).toHaveBeenCalledWith(err)
+    })
+
+    it('defaults onError to console.error', () => {
+      const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+      const bus = createPubSub() // no onError → default sink
       bus.subscribe('t', () => {
         throw new Error('boom')
       })
 
       bus.publish('t', 'm')
+      flush()
 
-      // runAllTimers drains delivery AND the nested re-throw timer
-      expect(() => vi.runAllTimers()).toThrow('boom')
+      expect(spy).toHaveBeenCalledTimes(1)
+      spy.mockRestore()
     })
   })
 
@@ -311,14 +330,14 @@ describe('internal pub/sub module', () => {
     })
 
     it('does not leak the subscription when the handler throws', () => {
-      const bus = createPubSub()
+      const bus = createPubSub({ onError: () => undefined })
       const handler = vi.fn(() => {
         throw new Error('boom')
       })
       bus.subscribeOnce('t', handler)
 
       bus.publish('t', 'a')
-      flush() // handler throws; async re-throw left pending (cleared in afterEach)
+      flush() // handler throws; onError swallows it
       bus.publish('t', 'b')
       flush()
 
