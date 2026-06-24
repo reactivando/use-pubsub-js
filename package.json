@@ -102,7 +102,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "vitest",
+    "test": "vitest --run",
     "test:watch": "vitest",
     "build": "tsdown",
     "format": "ultracite fix ./src",

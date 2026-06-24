@@ -29,8 +29,8 @@ pnpm 11 (run via `corepack pnpm …`).
 ## Common commands
 
 ```sh
-corepack pnpm test            # vitest (watch); add --run for CI mode
-corepack pnpm test --run --coverage
+corepack pnpm test            # vitest --run (single run); use test:watch to watch
+corepack pnpm test --coverage
 corepack pnpm lint            # ultracite check ./src
 corepack pnpm format          # ultracite fix ./src
 corepack pnpm build           # tsdown

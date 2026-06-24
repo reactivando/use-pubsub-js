@@ -9,15 +9,24 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Verify the supported React peer range, not just the dev version.
+        react: ['18', '19']
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v7
       with:
-        fetch-depth: 0
+        fetch-depth: 1
 
     - name: Install pnpm
       uses: pnpm/action-setup@v6
@@ -29,28 +38,41 @@ jobs:
         cache: 'pnpm'
 
     - name: Install dependencies
-      run: |
-        pnpm install --frozen-lockfile
-        pnpm --prefix ./example install --frozen-lockfile
+      run: pnpm install --frozen-lockfile
+
+    - name: Pin React ${{ matrix.react }}
+      if: matrix.react == '18'
+      run: pnpm add -D -E react@18 react-dom@18 @types/react@18 @types/react-dom@18
 
     - name: Check tests
       run: pnpm test --coverage
 
+    # The steps below are React-version-independent, so run them once (on 19).
     - name: Check linting
+      if: matrix.react == '19'
       run: pnpm lint
 
     - name: Build library and example
+      if: matrix.react == '19'
       run: |
+        pnpm --prefix ./example install --frozen-lockfile
         pnpm build
         pnpm --prefix ./example build
 
     - name: End-to-end import smoke tests (CJS/ESM)
-      run: pnpm test:e2e
+      if: matrix.react == '19'
+      run: cd e2e && pnpm install --ignore-workspace && pnpm test
 
     - name: Validate package (types resolution + publint)
-      run: pnpm check:package
+      if: matrix.react == '19'
+      run: pnpm exec attw --pack . && pnpm exec publint
+
+    - name: Audit dependencies
+      if: matrix.react == '19'
+      run: pnpm audit --audit-level=high
 
     - name: Coveralls
+      if: matrix.react == '19'
       uses: coverallsapp/github-action@v2
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}

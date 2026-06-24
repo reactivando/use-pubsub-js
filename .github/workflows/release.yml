@@ -2,6 +2,11 @@ name: Release and Publish
 
 on:
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (build + checks, no publish/tag)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -9,6 +14,8 @@ permissions:
 
 jobs:
   release:
+    # Releases must run from main (tag/changelog/publish assume it).
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -43,7 +50,7 @@ jobs:
       # permission above — no NPM_TOKEN. release-it-pnpm runs `pnpm publish`,
       # and Node 24 ships npm >= 11.5.1, which is required for OIDC publishing.
       - name: Create Release and Publish
-        run: pnpm release
+        run: pnpm release ${{ inputs.dry_run && '--dry-run' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           NPM_CONFIG_PROVENANCE: true
