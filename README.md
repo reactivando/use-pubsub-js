@@ -182,6 +182,37 @@ useSubscribe({ bus, token: 'user:login', handler: (_, user) => console.log(user.
 > leave it as the default) to use the shared `PubSub` singleton. Keep the `bus`
 > reference stable (e.g. module scope) — changing it re-subscribes/re-publishes.
 
+### `useBusState` — read the latest value as state
+
+`useBusState` returns a topic's most recent value as React state (backed by
+`useSyncExternalStore`, so it's tear-free under concurrent rendering and
+SSR-safe). Create the bus with `{ retained: true }` so the value is available on
+first render, before any publish happens this session:
+
+```tsx
+import { createPubSub, useBusState } from 'use-pubsub-js'
+
+export const bus = createPubSub<{ 'cart:count': number }>({ retained: true })
+
+const CartBadge = () => {
+  const count = useBusState({ bus, token: 'cart:count', initialValue: 0 })
+  return <span>{count}</span> // updates whenever 'cart:count' is published
+}
+```
+
+`initialValue` is returned until a value is available (and as the server
+snapshot during SSR). On a non-retained bus, `useBusState` still updates from
+publishes that happen while mounted, but cannot show a value published before
+mount.
+
+> **SSR:** the server snapshot is always `initialValue`. If a retained bus
+> already holds a different value when the client hydrates, React logs a
+> hydration mismatch — keep `initialValue` aligned with the server render, or
+> populate the retained bus only after hydration.
+>
+> **Memory:** `retained: true` keeps one entry per distinct token forever, so
+> avoid it with dynamic/unbounded token names.
+
 ### Migrating from v1 to v2
 
 - The minimum supported React version is now **18.0.0** (was 17). The hooks use
