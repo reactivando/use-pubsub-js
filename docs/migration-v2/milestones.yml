@@ -1,0 +1,80 @@
+# Machine-readable mirror of 05-milestones.md — for execution tracking.
+# status: planned | in_progress | done
+version_target: 2.0.0
+sequencing: single-major-as-ordered-prs
+constraints:
+  - public hook API + pub/sub runtime behavior unchanged (except documented intentional differences)
+  - delivery stays setTimeout(0) async
+  - react floor >=17; newer-react features opt-in/gated
+  - zero runtime dependencies at release
+
+milestones:
+  - id: M0
+    title: Contract safety net against current pubsub-js
+    status: planned
+    changes:
+      - add contract-gap tests (delivery order, error isolation, unsubscribe-during-delivery, re-entrancy, clearAllSubscriptions)
+    gate: [build, test, lint, e2e, review, ci]
+  - id: M1
+    title: Build internal module (not wired into hooks)
+    status: planned
+    changes:
+      - src/pubsub/index.ts (PubSub, createPubSub, on, subscribeOnce, unsubscribe(token|handler), clearAllSubscriptions)
+      - src/pubsub/pubsub.spec.ts (in-isolation unit tests)
+      - src/pubsub/parity.spec.ts (differential vs pubsub-js; pubsub-js kept as devDep)
+    gate: [build, test, attw, publint, review, ci]
+  - id: M2
+    title: Swap hooks + index to internal module (riskiest)
+    status: planned
+    changes:
+      - useSubscribe/usePublish/index import ../pubsub; repoint spec oracles
+      - remove pubsub-js from dependencies (keep devDep for parity until M6)
+      - Message any -> unknown
+    gate: [build, test, lint, e2e, parity, review, ci]
+  - id: M3
+    title: React correctness (R6) + return-stability docs
+    status: planned
+    changes:
+      - useSubscribe dep-less useEffect -> useIsomorphicLayoutEffect
+      - README destructure-return note
+    gate: [build, test, lint, e2e, review, ci]
+  - id: M4
+    title: Semver-major cleanups
+    status: planned
+    changes:
+      - debounce.ts drop @ts-nocheck, narrow generic (#4)
+      - rename IUsePublish* -> UsePublish* (#5)
+      - remove default export barrel (#8)
+      - keep debounceMs number|string (#7 decided: no narrow)
+    gate: [build, test, lint, e2e, attw, publint, review, ci]
+  - id: M5
+    title: Packaging - ./pubsub subpath + types + metadata
+    status: planned
+    changes:
+      - exports ./pubsub + typesVersions entry
+      - drop empty dependencies key + @types/pubsub-js
+      - description/keywords update
+    gate: [attw, publint, frozen-install, e2e-smoke, review, ci]
+  - id: M6
+    title: Docs + migration notes + remove scaffolding
+    status: planned
+    changes:
+      - README rewrite + CHANGELOG migration section
+      - remove parity.spec.ts + pubsub-js devDep (zero-dep)
+      - vitest coverage thresholds 100%
+    gate: [build, test, lint, e2e, audit, review, ci]
+  - id: M7
+    title: Release v2.0.0 (maintainer-triggered; not by the agent)
+    status: planned
+    changes:
+      - confirm changelog reads as major; trigger OIDC release workflow
+      - optional react19 useEffectEvent sub-path (Q3)
+    gate: [maintainer-approval]
+
+open_questions:
+  - Q1: drop hierarchical/dotted topics? (default: drop + document)
+  - Q2: symbol identity vs stringify? (default: identity)
+  - Q3: ship react19 useEffectEvent sub-path in v2.0.0 or v2.1?
+  - Q4: keep or remove parity test + pubsub-js devDep at release? (default: remove)
+  - Q5: add optional typed Events generic to hooks in v2? (default: defer)
+  - Q6: keep subscribeOnce + unsubscribe(handler), or go fully minimal? (default: keep)
