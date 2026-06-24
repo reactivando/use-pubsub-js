@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { PubSub } from '../pubsub'
+import {
+  type EventMap,
+  PubSub,
+  type PubSubBus,
+  type TypedPubSub,
+} from '../pubsub'
 import { debounce } from '../utils/debounce'
 
 export interface UsePublishResponse {
@@ -7,31 +12,45 @@ export interface UsePublishResponse {
   publish: () => void
 }
 
-export interface UsePublishParams<TokenType extends string | symbol> {
+export interface UsePublishParams<
+  TokenType extends string | symbol,
+  Events extends EventMap = EventMap,
+> {
+  /**
+   * The bus to publish on. Defaults to the shared `PubSub` singleton; pass a
+   * bus from `createPubSub<Events>()` for typed payloads. Keep the reference
+   * stable (e.g. module scope) — changing it re-creates the publisher.
+   */
+  bus?: PubSubBus | TypedPubSub<Events>
   debounceMs?: number | string
   isAutomatic?: boolean
   isImmediate?: boolean
   isInitialPublish?: boolean
-  message: string
+  message: TokenType extends keyof Events ? Events[TokenType] : unknown
   token: TokenType
 }
 
-export const usePublish = <TokenType extends string | symbol>({
+export const usePublish = <
+  TokenType extends string | symbol,
+  Events extends EventMap = EventMap,
+>({
   token,
   message,
   isAutomatic = false,
   isInitialPublish = false,
   isImmediate = false,
   debounceMs = 300,
-}: UsePublishParams<TokenType>): UsePublishResponse => {
+  bus = PubSub,
+}: UsePublishParams<TokenType, Events>): UsePublishResponse => {
+  const activeBus = bus as PubSubBus
   const [lastPublish, setLastPublish] = useState(false)
   const didInitialPublish = useRef(false)
 
   const publish = useCallback(() => {
-    const isPublished = PubSub.publish(token, message)
+    const isPublished = activeBus.publish(token, message)
 
     setLastPublish(isPublished)
-  }, [token, message])
+  }, [activeBus, token, message])
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: runs once on mount when isInitialPublish is set; the empty dep array and the ref guard keep it single-fire even under StrictMode's double-invoke
   useEffect(() => {

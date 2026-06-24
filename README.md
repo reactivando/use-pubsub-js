@@ -160,9 +160,24 @@ export const bus = createPubSub<AppEvents>()
 bus.publish('user:login', { userId: '42' }) // payload is type-checked
 ```
 
-> Note: `createPubSub()` returns a **separate** bus instance. The hooks use the
-> default `PubSub` singleton; pass data through it (or wire your typed bus into
-> your own context) if you need the hooks and a typed bus to share state.
+Both hooks accept an optional `bus` param so they can drive a typed bus with
+full end-to-end inference (the `token` and `message`/`handler` payload are typed
+from the event map):
+
+```tsx
+import { usePublish, useSubscribe } from 'use-pubsub-js'
+import { bus } from './bus'
+
+// message is type-checked as { userId: string }
+usePublish({ bus, token: 'user:login', message: { userId: '42' } })
+
+// handler's second arg is inferred as { userId: string }
+useSubscribe({ bus, token: 'user:login', handler: (_, user) => console.log(user.userId) })
+```
+
+> Note: `createPubSub()` returns a **separate** bus instance. Omit `bus` (or
+> leave it as the default) to use the shared `PubSub` singleton. Keep the `bus`
+> reference stable (e.g. module scope) — changing it re-subscribes/re-publishes.
 
 ### Migrating from v1 to v2
 
@@ -171,10 +186,17 @@ bus.publish('user:login', { userId: '42' }) // payload is type-checked
   singleton — in v2 the bus is independent, so import `PubSub` only from
   `use-pubsub-js` for a single shared bus.
 - The subscriber `message` payload type is now `unknown` (was `any`) — narrow or
-  cast it in your handler.
+  cast it in your handler. `usePublish`'s `message` is likewise widened from
+  `string` to `unknown`, so you can publish any payload through the hook.
 - The default export was removed — use named imports.
 - `IUsePublishParams`/`IUsePublishResponse` were renamed to
   `UsePublishParams`/`UsePublishResponse`.
+- The `useSubscribe` types `UseSubscriptionParams`/`UseSubscriptionResponse`
+  were renamed to `UseSubscribeParams`/`UseSubscribeResponse` for parity with
+  the `usePublish` types.
+- Both hooks now accept an optional `bus` param (defaults to the `PubSub`
+  singleton), so a `createPubSub<E>()` bus can be driven through the hooks with
+  typed payloads.
 - Symbol tokens match by identity (two distinct `Symbol('x')` no longer collide).
 - Removed rarely-used pubsub-js extras (`publishSync`, `subscribeAll`/`*`
   wildcard, `clearSubscriptions(topic)`, `countSubscriptions`,
@@ -203,6 +225,7 @@ More real examples:
 | token         | Token is used to subscribe listen a specific publisher                     | string \| symbol                                | required         |
 | handler       | Function that is going to be executed when a publication occurs            | (token: string \| symbol, message: unknown) => void | required         |
 | isUnsubscribe | Is the way to dynamically unsubscribe and subscribe based on some variable | boolean                                         | false            |
+| bus           | The bus to subscribe on; pass a `createPubSub<E>()` bus for typed payloads | PubSubBus \| TypedPubSub\<E\>                    | PubSub singleton |
 
 * Returns of `useSubscribe`
 
@@ -218,11 +241,12 @@ More real examples:
 | key              | description                                                             | type             | default/required |
 | ---------------- | ----------------------------------------------------------------------- | ---------------- | ---------------- |
 | token            | Token is used to subscribe listen a specific publisher                  | string \| symbol | required         |
-| message          | The value that will be send to subscriber                               | any              | required         |
+| message          | The value that will be send to subscriber                               | unknown          | required         |
 | isAutomatic      | Whether the publication should be automatic                             | boolean          | false            |
 | isInitialPublish | Whether to make a publication in the first render                       | boolean          | false            |
 | isImmediate      | To disable debounce and publish without delay any change in the message | boolean          | false            |
 | debounceMs       | The delay value                                                         | number \| string | 300              |
+| bus              | The bus to publish on; pass a `createPubSub<E>()` bus for typed payloads | PubSubBus \| TypedPubSub\<E\>                    | PubSub singleton |
 
 * Returns of usePublish
 
