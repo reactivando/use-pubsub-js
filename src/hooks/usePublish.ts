@@ -1,5 +1,5 @@
 import PubSub from 'pubsub-js'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { debounce } from '../utils/debounce'
 
 export interface IUsePublishResponse {
@@ -25,6 +25,7 @@ export const usePublish = <TokenType extends string | symbol>({
   debounceMs = 300,
 }: IUsePublishParams<TokenType>): IUsePublishResponse => {
   const [lastPublish, setLastPublish] = useState(false)
+  const didInitialPublish = useRef(false)
 
   const publish = useCallback(() => {
     const isPublished = PubSub.publish(token, message)
@@ -32,15 +33,17 @@ export const usePublish = <TokenType extends string | symbol>({
     setLastPublish(isPublished)
   }, [token, message])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: runs once on mount when isInitialPublish is set; the empty dep array is intentional
+  // biome-ignore lint/correctness/useExhaustiveDependencies: runs once on mount when isInitialPublish is set; the empty dep array and the ref guard keep it single-fire even under StrictMode's double-invoke
   useEffect(() => {
-    if (isInitialPublish) {
+    if (isInitialPublish && !didInitialPublish.current) {
+      didInitialPublish.current = true
       publish()
     }
   }, [])
 
   useEffect(() => {
-    const debouncedPublished = debounce(publish, +debounceMs, isImmediate)
+    const wait = Number.isFinite(+debounceMs) ? +debounceMs : 300
+    const debouncedPublished = debounce(publish, wait, isImmediate)
     if (isAutomatic && message) {
       debouncedPublished()
     }

@@ -189,4 +189,23 @@ describe('usePublish', () => {
 
     expect(handler).toBeCalledTimes(0)
   })
+  it('should fall back to the default delay when debounceMs is not a number', () => {
+    const handler = vi.fn()
+
+    PubSub.subscribe(token, handler)
+
+    defaultRender({ isAutomatic: true, debounceMs: 'not-a-number' })
+
+    act(() => {
+      vi.advanceTimersByTime(299)
+    })
+
+    expect(handler).toBeCalledTimes(0)
+
+    act(() => {
+      vi.advanceTimersByTime(2)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+  })
 })
