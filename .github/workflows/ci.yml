@@ -44,6 +44,9 @@ jobs:
         pnpm build
         pnpm --prefix ./example build
 
+    - name: End-to-end import smoke tests (CJS/ESM)
+      run: pnpm test:e2e
+
     - name: Coveralls
       uses: coverallsapp/github-action@v2
       with:
