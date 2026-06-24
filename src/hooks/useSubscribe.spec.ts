@@ -246,4 +246,101 @@ describe('useSubscribe', () => {
 
     expect(handler).toBeCalledTimes(1)
   })
+
+  it('should deliver the message asynchronously, not during publish', () => {
+    const handler = vi.fn()
+
+    renderHook(() => useSubscribe({ token, handler }))
+
+    publish()
+
+    expect(handler).toBeCalledTimes(0)
+
+    act(() => {
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+  })
+
+  it('should call the handler with the published token and message', () => {
+    const handler = vi.fn()
+
+    renderHook(() => useSubscribe({ token, handler }))
+
+    publish()
+
+    act(() => {
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toHaveBeenCalledWith(token, message)
+  })
+
+  it('should deliver object payloads by reference', () => {
+    const handler = vi.fn()
+    const payload = { arr: [1, 2, 3], nested: { x: 1 } }
+
+    renderHook(() => useSubscribe({ token, handler }))
+
+    PubSub.publish(token, payload)
+
+    act(() => {
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler.mock.calls[0][1]).toBe(payload)
+  })
+
+  it('should deliver to every independent subscriber on the same token', () => {
+    const handler1 = vi.fn()
+    const handler2 = vi.fn()
+
+    renderHook(() => useSubscribe({ token, handler: handler1 }))
+    renderHook(() => useSubscribe({ token, handler: handler2 }))
+
+    act(() => {
+      publish()
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler1).toBeCalledTimes(1)
+    expect(handler2).toBeCalledTimes(1)
+  })
+
+  it('should only unsubscribe the targeted hook, leaving others subscribed', () => {
+    const handler1 = vi.fn()
+    const handler2 = vi.fn()
+
+    const { result } = renderHook(() =>
+      useSubscribe({ token, handler: handler1 }),
+    )
+    renderHook(() => useSubscribe({ token, handler: handler2 }))
+
+    result.current.unsubscribe()
+
+    act(() => {
+      publish()
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler1).toBeCalledTimes(0)
+    expect(handler2).toBeCalledTimes(1)
+  })
+
+  it('should route messages for a Symbol token', () => {
+    const symbolToken = Symbol('event')
+    const handler = vi.fn()
+
+    renderHook(() => useSubscribe({ token: symbolToken, handler }))
+
+    PubSub.publish(symbolToken, message)
+
+    act(() => {
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+    expect(handler.mock.calls[0][1]).toBe(message)
+  })
 })

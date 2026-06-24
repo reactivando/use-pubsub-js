@@ -121,4 +121,30 @@ describe('debounce', () => {
 
     expect(func).not.toBeCalled()
   })
+
+  it('should flush with the last pending arguments', () => {
+    const func = vi.fn()
+    const debounced = debounce(func, 100)
+
+    debounced('first')
+    debounced('second')
+    debounced('third')
+    debounced.flush()
+
+    expect(func).toBeCalledTimes(1)
+    expect(func).toHaveBeenCalledWith('third')
+  })
+
+  it('should start a fresh debounce window after clear', () => {
+    const func = vi.fn()
+    const debounced = debounce(func, 100)
+
+    debounced()
+    debounced.clear()
+
+    debounced()
+    vi.advanceTimersByTime(100)
+
+    expect(func).toBeCalledTimes(1)
+  })
 })
