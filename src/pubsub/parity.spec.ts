@@ -7,8 +7,10 @@
 // Intentionally EXCLUDED (documented divergences, covered by pubsub.spec.ts):
 //  - symbol identity (pubsub-js stringifies symbols; the internal bus keys by
 //    identity) — so this file uses string tokens only.
-//  - subscribeOnce return value (pubsub-js returns the bus; internal returns a
-//    token), wildcard/publishSync and other dropped methods.
+//  - subscribeOnce: both the return value (pubsub-js returns the bus; internal
+//    returns a token) AND the concurrent-publish-before-delivery semantics
+//    differ, so it is exercised only in pubsub.spec.ts, not here.
+//  - wildcard / publishSync and other dropped methods.
 import PubSubJs from 'pubsub-js'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { PubSub as Internal } from './index'

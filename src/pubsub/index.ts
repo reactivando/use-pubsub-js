@@ -184,8 +184,16 @@ const createBus = ({ hierarchical = false } = {}): PubSubBus => {
     token: string | symbol,
     handler: Listener<T>,
   ): Token => {
+    // `fired` guards the case where two publishes in the same tick both
+    // snapshot this wrapper before the first delivery removes it — without it
+    // the handler would run twice. Unsubscribe before invoking so a throwing
+    // handler can't leak the subscription.
+    let fired = false
     const id = subscribe(token, (deliveredToken, data) => {
-      // Unsubscribe before invoking so a throwing handler can't leak the sub.
+      if (fired) {
+        return
+      }
+      fired = true
       removeById(id)
       handler(deliveredToken, data as T)
     })

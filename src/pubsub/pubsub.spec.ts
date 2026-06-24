@@ -245,6 +245,35 @@ describe('internal pub/sub module', () => {
       expect(handler).toBeCalledTimes(1)
       expect(handler.mock.calls[0][1]).toBe('a')
     })
+
+    it('fires once even when two publishes occur before delivery', () => {
+      const bus = createPubSub()
+      const handler = vi.fn()
+      bus.subscribeOnce('t', handler)
+
+      // both publishes snapshot the wrapper before the first delivery runs
+      bus.publish('t', 'a')
+      bus.publish('t', 'b')
+      flush()
+
+      expect(handler).toBeCalledTimes(1)
+      expect(handler.mock.calls[0][1]).toBe('a')
+    })
+
+    it('does not leak the subscription when the handler throws', () => {
+      const bus = createPubSub()
+      const handler = vi.fn(() => {
+        throw new Error('boom')
+      })
+      bus.subscribeOnce('t', handler)
+
+      bus.publish('t', 'a')
+      flush() // handler throws; async re-throw left pending (cleared in afterEach)
+      bus.publish('t', 'b')
+      flush()
+
+      expect(handler).toBeCalledTimes(1) // removed before invoking; not re-fired
+    })
   })
 
   describe('clearAllSubscriptions', () => {
