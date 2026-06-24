@@ -10,7 +10,7 @@ describe('debounce', () => {
     vi.useRealTimers()
   })
 
-  it('should debounce a function', () => {
+  it('debounces a function', () => {
     const func = vi.fn()
     const debounced = debounce(func, 100)
 
@@ -25,7 +25,7 @@ describe('debounce', () => {
     expect(func).toBeCalledTimes(1)
   })
 
-  it('should call the function with the last arguments', () => {
+  it('calls the function with the last arguments', () => {
     const func = vi.fn()
     const debounced = debounce(func, 100)
 
@@ -38,7 +38,7 @@ describe('debounce', () => {
     expect(func).toHaveBeenCalledWith(3)
   })
 
-  it('should call the function immediately', () => {
+  it('calls the function immediately', () => {
     const func = vi.fn()
     const debounced = debounce(func, 100, true)
 
@@ -47,7 +47,7 @@ describe('debounce', () => {
     expect(func).toBeCalledTimes(1)
   })
 
-  it('should not call the function again after immediate call', () => {
+  it('does not call the function again after immediate call', () => {
     const func = vi.fn()
     const debounced = debounce(func, 100, true)
 
@@ -61,7 +61,7 @@ describe('debounce', () => {
     expect(func).toBeCalledTimes(1)
   })
 
-  it('should clear the timeout', () => {
+  it('clears the timeout', () => {
     const func = vi.fn()
     const debounced = debounce(func, 100)
 
@@ -73,7 +73,7 @@ describe('debounce', () => {
     expect(func).not.toBeCalled()
   })
 
-  it('should flush the function', () => {
+  it('flushes the function', () => {
     const func = vi.fn()
     const debounced = debounce(func, 100)
 
@@ -83,7 +83,7 @@ describe('debounce', () => {
     expect(func).toBeCalledTimes(1)
   })
 
-  it('should not call the function twice after flush', () => {
+  it('does not call the function twice after flush', () => {
     const func = vi.fn()
     const debounced = debounce(func, 100)
 
@@ -97,7 +97,7 @@ describe('debounce', () => {
     expect(func).toBeCalledTimes(1)
   })
 
-  it('should reschedule when the timer fires before the full wait elapses', () => {
+  it('reschedules when the timer fires before the full wait elapses', () => {
     const func = vi.fn()
     const debounced = debounce(func, 100)
 
@@ -113,7 +113,7 @@ describe('debounce', () => {
     expect(func).toBeCalledTimes(1)
   })
 
-  it('should do nothing when flush is called with no pending timeout', () => {
+  it('does nothing when flush is called with no pending timeout', () => {
     const func = vi.fn()
     const debounced = debounce(func, 100)
 
@@ -122,7 +122,7 @@ describe('debounce', () => {
     expect(func).not.toBeCalled()
   })
 
-  it('should flush with the last pending arguments', () => {
+  it('flushes with the last pending arguments', () => {
     const func = vi.fn()
     const debounced = debounce(func, 100)
 
@@ -135,7 +135,7 @@ describe('debounce', () => {
     expect(func).toHaveBeenCalledWith('third')
   })
 
-  it('should start a fresh debounce window after clear', () => {
+  it('starts a fresh debounce window after clear', () => {
     const func = vi.fn()
     const debounced = debounce(func, 100)
 

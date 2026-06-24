@@ -15,7 +15,7 @@ describe('usePublish + useSubscribe integration', () => {
     PubSub.clearAllSubscriptions()
   })
 
-  it('should deliver a publish from usePublish to a useSubscribe handler', () => {
+  it('delivers a publish from usePublish to a useSubscribe handler', () => {
     const handler = vi.fn()
 
     renderHook(() => useSubscribe({ token, handler }))
@@ -31,7 +31,7 @@ describe('usePublish + useSubscribe integration', () => {
     expect(result.current.lastPublish).toBe(true)
   })
 
-  it('should deliver automatic publishes from usePublish to useSubscribe', () => {
+  it('delivers automatic publishes from usePublish to useSubscribe', () => {
     const handler = vi.fn()
 
     renderHook(() => useSubscribe({ token, handler }))

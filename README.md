@@ -186,6 +186,23 @@ More real examples:
 | lastPublish | The value is true if you have a subscriber on last publication and false if you don't | boolean    |
 | publish     | A function to manual publish a message                                                | () => void |
 
+## Contributing
+
+Tests use [Vitest](https://vitest.dev) + [Testing Library](https://testing-library.com).
+
+We follow an **assertive test-description style — no `should` prefix**
+(`it('publishes on mount')`, not `it('should publish on mount')`). To
+normalize existing titles, run Spotify's
+[`should-up`](https://github.com/spotify/should-up):
+
+```sh
+pnpm dlx should-up ./src
+```
+
+It strips `should` and conjugates common verbs; for verbs it doesn't know
+you may need a small manual touch-up. (There's no Biome/lint rule for
+test-title wording, so this is a convention, not a CI check.)
+
 ## License
 
 MIT © [Reactivando](https://github.com/reactivando/use-pubsub-js/blob/main/LICENSE)
