@@ -68,7 +68,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"example/src/**/*.js\"",
     "lint": "eslint",
     "prepare": "husky",
-    "test:e2e": "pnpm build && cd e2e && pnpm install && pnpm test",
+    "test:e2e": "pnpm build && cd e2e && pnpm install --ignore-workspace && pnpm test",
     "release": "release-it"
   },
   "dependencies": {
