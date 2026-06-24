@@ -1,0 +1,14 @@
+[
+  {
+    "name": "bus only — createPubSub",
+    "path": "dist/pubsub/index.js",
+    "import": "{ createPubSub }",
+    "limit": "1.5 kB"
+  },
+  {
+    "name": "full entry — hooks + bus (react external)",
+    "path": "dist/index.js",
+    "ignore": ["react", "react-dom"],
+    "limit": "3 kB"
+  }
+]
