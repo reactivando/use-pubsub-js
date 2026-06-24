@@ -121,4 +121,34 @@ describe('debounce', () => {
 
     expect(func).not.toBeCalled()
   })
+
+  it('should flush with the last pending arguments', () => {
+    const func = vi.fn()
+    const debounced = debounce(func, 100)
+
+    debounced('first')
+    debounced('second')
+    debounced('third')
+    debounced.flush()
+
+    expect(func).toBeCalledTimes(1)
+    expect(func).toHaveBeenCalledWith('third')
+  })
+
+  it('should start a fresh debounce window after clear', () => {
+    const func = vi.fn()
+    const debounced = debounce(func, 100)
+
+    debounced()
+    debounced.clear()
+
+    // clear cancelled the pending call (would fail if clear were a no-op)
+    vi.advanceTimersByTime(100)
+    expect(func).not.toBeCalled()
+
+    // a fresh call after clear starts a new window and fires once
+    debounced()
+    vi.advanceTimersByTime(100)
+    expect(func).toBeCalledTimes(1)
+  })
 })

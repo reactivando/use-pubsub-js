@@ -208,4 +208,73 @@ describe('usePublish', () => {
 
     expect(handler).toBeCalledTimes(1)
   })
+  it('should set lastPublish to false after the subscriber unsubscribes', () => {
+    const handler = vi.fn()
+    const subscription = PubSub.subscribe(token, handler)
+
+    const { result } = defaultRender()
+
+    act(() => {
+      result.current.publish()
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(result.current.lastPublish).toBe(true)
+
+    PubSub.unsubscribe(subscription)
+
+    act(() => {
+      result.current.publish()
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(result.current.lastPublish).toBe(false)
+  })
+  it('should publish only once with isInitialPublish across rerenders', () => {
+    const handler = vi.fn()
+
+    PubSub.subscribe(token, handler)
+
+    const { rerender } = renderHook(
+      (props: { message: string }) =>
+        usePublish({
+          token,
+          message: props.message,
+          isInitialPublish: true,
+        }),
+      { initialProps: { message: 'first' } },
+    )
+
+    act(() => {
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+
+    act(() => {
+      rerender({ message: 'second' })
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+  })
+  it('should not publish again at the trailing edge when isImmediate is true', () => {
+    const handler = vi.fn()
+
+    PubSub.subscribe(token, handler)
+
+    defaultRender({ isAutomatic: true, isImmediate: true })
+
+    act(() => {
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+
+    act(() => {
+      vi.advanceTimersByTime(400)
+    })
+
+    expect(handler).toBeCalledTimes(1)
+  })
 })
