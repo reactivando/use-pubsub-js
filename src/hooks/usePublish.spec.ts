@@ -210,6 +210,34 @@ describe('usePublish', () => {
     expect(zeroHandler).toHaveBeenCalledWith('zero', 0)
     expect(falseHandler).toHaveBeenCalledWith('flag', false)
   })
+  it('does not publish automatically when message is null', () => {
+    const handler = vi.fn()
+
+    PubSub.subscribe(token, handler)
+
+    renderHook(() => usePublish({ token, message: null, isAutomatic: true }))
+
+    act(() => {
+      vi.advanceTimersByTime(301)
+    })
+
+    expect(handler).toBeCalledTimes(0)
+  })
+  it('does not publish automatically when message is undefined', () => {
+    const handler = vi.fn()
+
+    PubSub.subscribe(token, handler)
+
+    renderHook(() =>
+      usePublish({ token, message: undefined, isAutomatic: true }),
+    )
+
+    act(() => {
+      vi.advanceTimersByTime(301)
+    })
+
+    expect(handler).toBeCalledTimes(0)
+  })
   it('falls back to the default delay when debounceMs is not a number', () => {
     const handler = vi.fn()
 
