@@ -205,6 +205,14 @@ snapshot during SSR). On a non-retained bus, `useBusState` still updates from
 publishes that happen while mounted, but cannot show a value published before
 mount.
 
+> **SSR:** the server snapshot is always `initialValue`. If a retained bus
+> already holds a different value when the client hydrates, React logs a
+> hydration mismatch — keep `initialValue` aligned with the server render, or
+> populate the retained bus only after hydration.
+>
+> **Memory:** `retained: true` keeps one entry per distinct token forever, so
+> avoid it with dynamic/unbounded token names.
+
 ### Migrating from v1 to v2
 
 - The minimum supported React version is now **18.0.0** (was 17). The hooks use

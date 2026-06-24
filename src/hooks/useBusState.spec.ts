@@ -62,8 +62,19 @@ describe('useBusState', () => {
     expect(result.current).toBe(7)
   })
 
-  it('stops updating the unmounted hook after unmount', () => {
+  it('unsubscribes from the bus on unmount', () => {
     const bus = createPubSub<{ count: number }>({ retained: true })
+    // Wrap the cleanup returned by bus.on so we can prove it was invoked.
+    const cleanupSpy = vi.fn()
+    const realOn = bus.on.bind(bus)
+    vi.spyOn(bus, 'on').mockImplementation((token, handler, options) => {
+      const off = realOn(token, handler, options)
+      return () => {
+        cleanupSpy()
+        off()
+      }
+    })
+
     const { result, unmount } = renderHook(() =>
       useBusState({ bus, token: 'count', initialValue: 0 }),
     )
@@ -75,15 +86,36 @@ describe('useBusState', () => {
     expect(result.current).toBe(1)
 
     unmount()
+    expect(cleanupSpy).toHaveBeenCalledTimes(1) // subscription was cleaned up
 
     act(() => {
       bus.publish('count', 2)
       vi.advanceTimersByTime(0)
     })
+    expect(result.current).toBe(1) // unmounted hook does not re-render
+  })
 
-    // The bus retains the new value, but the unmounted hook does not re-render.
-    expect(bus.getSnapshot('count')).toBe(2)
-    expect(result.current).toBe(1)
+  it('does not surface a stale value after the bus prop changes', () => {
+    const busA = createPubSub<{ v: number }>() // non-retained
+    const busB = createPubSub<{ v: number }>() // non-retained
+    let currentBus = busA
+
+    const { result, rerender } = renderHook(() =>
+      useBusState({ bus: currentBus, token: 'v', initialValue: 0 }),
+    )
+
+    act(() => {
+      busA.publish('v', 42)
+      vi.advanceTimersByTime(0)
+    })
+    expect(result.current).toBe(42)
+
+    currentBus = busB
+    rerender()
+
+    // busB never published 'v', so the hook must fall back to initialValue —
+    // not leak busA's last value through the shared latest-value ref.
+    expect(result.current).toBe(0)
   })
 
   it('renders the server snapshot (initial value) during SSR', () => {

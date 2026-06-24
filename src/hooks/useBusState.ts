@@ -27,6 +27,14 @@ export interface UseBusStateParams<
  *
  * On a `retained` bus the latest published value is available immediately on
  * mount; on any bus, values published while mounted update the returned state.
+ *
+ * SSR note: the server snapshot is always `initialValue`. If the bus already
+ * holds a different retained value when the client hydrates, React will warn
+ * about a hydration mismatch — keep `initialValue` aligned with the server
+ * render, or populate a retained bus only after hydration.
+ *
+ * A value published as `undefined` is treated as "no value" (the hook keeps
+ * showing the previous value / `initialValue`).
  */
 export const useBusState = <
   TokenType extends string | symbol,
@@ -43,13 +51,18 @@ export const useBusState = <
   // Capture the initial value once so getSnapshot stays referentially stable.
   const initialRef = useRef(initialValue)
   // Track values published while mounted, so the hook works on a non-retained
-  // bus too (a retained bus is read directly and takes precedence).
-  const latestRef = useRef<Value | undefined>(undefined)
+  // bus too (a retained bus is read directly and takes precedence). Tagged with
+  // the (bus, token) it came from so a changed prop can't surface a stale value.
+  const latestRef = useRef<{
+    bus: PubSubBus
+    token: TokenType
+    value: Value
+  } | null>(null)
 
   const subscribe = useCallback(
     (onStoreChange: () => void) =>
       activeBus.on(token, (_deliveredToken, data) => {
-        latestRef.current = data as Value
+        latestRef.current = { bus: activeBus, token, value: data as Value }
         onStoreChange()
       }),
     [activeBus, token],
@@ -60,12 +73,15 @@ export const useBusState = <
     if (fromBus !== undefined) {
       return fromBus
     }
-    if (latestRef.current !== undefined) {
-      return latestRef.current
+    const latest = latestRef.current
+    if (latest && latest.bus === activeBus && latest.token === token) {
+      return latest.value
     }
     return initialRef.current as Value
   }, [activeBus, token])
 
+  // initialRef is captured once and never mutated, so an empty dep array keeps
+  // getServerSnapshot referentially stable for the lifetime of the hook.
   const getServerSnapshot = useCallback(
     (): Value => initialRef.current as Value,
     [],
