@@ -36,6 +36,9 @@ describe.skipIf(!hasEffectEvent)(
       expect(handler).toHaveBeenCalledWith(token, message)
     })
 
+    // Asserts external behavior parity with the default hook (latest handler is
+    // used after a prop change). The concurrent-render window that useEffectEvent
+    // specifically closes can't be reproduced with jsdom + fake timers.
     it('invokes the latest handler without resubscribing', () => {
       const handler1 = vi.fn()
       const handler2 = vi.fn()

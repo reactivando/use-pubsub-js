@@ -48,6 +48,13 @@ export const useSubscribe = <
   isUnsubscribe = false,
   bus = PubSub,
 }: UseSubscribeParams<TokenType, Events>): UseSubscribeResponse => {
+  /* v8 ignore start -- guard reachable only on React < 19.2, not the test platform */
+  if (typeof useEffectEvent !== 'function') {
+    throw new Error(
+      'use-pubsub-js/react19/useSubscribe requires React 19.2+ — use the default useSubscribe on older React.',
+    )
+  }
+  /* v8 ignore stop */
   const activeBus = bus as PubSubBus
   const subscriptionToken = useRef<SubscriptionToken | null>(null)
 

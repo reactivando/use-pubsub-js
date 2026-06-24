@@ -46,6 +46,8 @@ jobs:
 
     # Coverage is gated on the React 19 cell only: the react19/ suite (useEffectEvent)
     # is skipped on React 18, so coverage there would be incomplete by design.
+    # The `&& '--coverage' || ''` idiom is safe here because '--coverage' is a
+    # non-empty (truthy) string; it would misbehave only with a falsy value.
     - name: Check tests
       run: pnpm test ${{ matrix.react == '19' && '--coverage' || '' }}
 
