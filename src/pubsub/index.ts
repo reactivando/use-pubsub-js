@@ -29,26 +29,38 @@ export type EventMap = Record<string | symbol, unknown>
 
 /** Untyped, optionally-hierarchical bus (the `PubSub` singleton shape). */
 export interface PubSubBus {
+  /** Remove every subscription (and retained values, if any). */
   clearAllSubscriptions(): void
   /**
    * The last value published to `token`, or `undefined`. Only retains values
    * when the bus was created with `{ retained: true }` (powers `useBusState`).
    */
   getSnapshot<T = unknown>(token: string | symbol): T | undefined
+  /**
+   * Subscribe and get back a cleanup function (preferred for new code). Pass an
+   * `AbortSignal` to auto-unsubscribe when it aborts.
+   */
   on<T = unknown>(
     token: string | symbol,
     handler: Listener<T>,
     options?: { signal?: AbortSignal },
   ): () => void
+  /**
+   * Publish `data` to `token`. Delivery is async; returns `true` if at least one
+   * subscriber was registered at publish time, `false` otherwise.
+   */
   publish<T = unknown>(token: string | symbol, data?: T): boolean
+  /** Subscribe and get back a token to pass to {@link PubSubBus.unsubscribe}. */
   subscribe<T = unknown>(
     token: string | symbol,
     handler: Listener<T>,
   ): SubscriptionToken
+  /** Subscribe for a single delivery, then auto-unsubscribe. */
   subscribeOnce<T = unknown>(
     token: string | symbol,
     handler: Listener<T>,
   ): SubscriptionToken
+  /** Unsubscribe by the token from `subscribe`/`subscribeOnce`, or by handler reference. */
   unsubscribe(
     value: SubscriptionToken | ((...args: never[]) => unknown),
   ): boolean

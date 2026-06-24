@@ -8,7 +8,9 @@ import {
 } from '../pubsub'
 
 export interface UseSubscribeResponse {
+  /** Re-subscribe `handler` to `token` (no-op if already subscribed). */
   resubscribe: () => void
+  /** Unsubscribe `handler` from `token`. */
   unsubscribe: () => void
 }
 
@@ -22,14 +24,26 @@ export interface UseSubscribeParams<
    * stable (e.g. module scope) — changing it re-subscribes.
    */
   bus?: PubSubBus | TypedPubSub<Events>
+  /** Called on each publish to `token`; the message is typed per-token when a typed bus is used. */
   handler: (
     token: TokenType,
     message: TokenType extends keyof Events ? Events[TokenType] : unknown,
   ) => void
+  /** When `true`, stay unsubscribed; toggle to subscribe/unsubscribe reactively. Default `false`. */
   isUnsubscribe?: boolean
+  /** Topic to subscribe to. */
   token: TokenType
 }
 
+/**
+ * Subscribe a handler to a pub/sub topic for the component's lifetime. The
+ * latest `handler` is always invoked without re-subscribing.
+ *
+ * @example
+ * ```tsx
+ * useSubscribe({ token: 'cart:add', handler: (_, item) => addToCart(item) })
+ * ```
+ */
 export const useSubscribe = <
   TokenType extends string | symbol,
   Events extends EventMap = EventMap,

@@ -47,6 +47,19 @@ You can import the hooks or a service to use where you want
 import { PubSub, usePublish, useSubscribe } from 'use-pubsub-js'
 ```
 
+### Choosing a bus
+
+There are two buses, and picking the right one up front avoids the most common
+gotcha:
+
+- **`PubSub`** — the shared singleton. Untyped payloads, **hierarchical** string
+  topics (publishing `a.b.c` also notifies `a.b` and `a`). Use it for quick,
+  app-wide messaging. The hooks use it by default.
+- **`createPubSub<Events>()`** — an independent, **flat, fully-typed** bus. Use it
+  when you want TypeScript-checked payloads per topic. It is a **separate
+  instance**, so wire it into the hooks via their `bus` param everywhere you use
+  it (otherwise the hooks stay on the singleton and won't see its messages).
+
 ### useSubscribe
 ```tsx
 import { PubSub, useSubscribe } from 'use-pubsub-js'
@@ -270,13 +283,10 @@ The default `use-pubsub-js` export is unchanged and stays React-18 compatible.
 
 ## Examples
 
-**Checkout the simple examples on [Example folder](https://github.com/reactivando/use-pubsub-js/blob/main/example/src/App.tsx)**
-
-or
-
-More real examples:
-
-[![Edit use-pubsub-js](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/use-pubsub-js-ei2ly?fontsize=14&hidenavigation=1&theme=dark)
+See the runnable demo in the
+[example folder](https://github.com/reactivando/use-pubsub-js/blob/main/example/src/App.tsx),
+which covers manual/automatic publishing, external messages, and a typed bus
+driven through the hooks.
 
 ## API Documentation
 
