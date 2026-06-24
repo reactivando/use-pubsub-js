@@ -9,4 +9,6 @@ export default defineConfig({
   unbundle: true,
   minify: true,
   platform: 'browser',
+  // Explicit ES target (this is a browser library), independent of engines.node.
+  target: 'es2021',
 })

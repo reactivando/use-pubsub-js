@@ -265,6 +265,8 @@ The default `use-pubsub-js` export is unchanged and stays React-18 compatible.
   `getSubscriptions`, `immediateExceptions`). `publish`, `subscribe`,
   `subscribeOnce`, `unsubscribe`, `clearAllSubscriptions` and hierarchical
   topics are kept.
+- The internal `use-pubsub-js/utils/debounce` subpath is no longer exported (it
+  was undocumented). Use a dedicated debounce utility if you need one.
 
 ## Examples
 

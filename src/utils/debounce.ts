@@ -58,6 +58,3 @@ export function debounce<T extends (...args: any[]) => any>(
 
   return debounced
 }
-
-// Adds compatibility for ES modules
-debounce.debounce = debounce

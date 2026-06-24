@@ -18,6 +18,11 @@ test('e2e CJS: ./pubsub subpath is usable', () => {
   assert.equal(typeof subpathCreatePubSub, 'function', 'subpath createPubSub')
 })
 
+test('e2e CJS: barrel and ./pubsub share one PubSub singleton', () => {
+  // Guards against the exports map accidentally instantiating two singletons.
+  assert.strictEqual(PubSub, subpathPubSub, 'same PubSub instance')
+})
+
 test('e2e CJS: PubSub delivers a published message', async () => {
   const received = []
   PubSub.subscribe('e2e', (token, data) => received.push([token, data]))

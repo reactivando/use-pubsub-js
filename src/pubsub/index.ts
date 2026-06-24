@@ -296,5 +296,8 @@ export const createPubSub = <E extends EventMap = EventMap>(options?: {
     onError: options?.onError,
   }) as unknown as TypedPubSub<E>
 
+// The package sets `sideEffects: false`, so a bundler may tree-shake this
+// singleton for consumers that only import `createPubSub`. (A `/*#__PURE__*/`
+// annotation here is stripped by minification, so it would be a no-op.)
 /** The default shared bus: untyped payloads, hierarchical dotted topics. */
 export const PubSub: PubSubBus = createBus({ hierarchical: true })
