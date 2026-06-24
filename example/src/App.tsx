@@ -1,11 +1,21 @@
 import { useState } from 'react'
-import { usePublish, useSubscribe } from 'use-pubsub-js'
+import {
+  createPubSub,
+  useBusState,
+  usePublish,
+  useSubscribe,
+} from 'use-pubsub-js'
 
 import { Token, TokenFour, TokenThree, TokenTwo } from './service/constants'
 import { PublishService } from './service/publish'
 
 PublishService.publish(Token)
 PublishService.publish(TokenTwo)
+
+// A typed, retained bus driven through the hooks (the v2 headline feature).
+// biome-ignore lint/style/useConsistentTypeDefinitions: must be a type alias, not an interface — createPubSub<E extends EventMap> needs the implicit index signature interfaces lack
+type TypedEvents = { 'counter:set': number }
+const typedBus = createPubSub<TypedEvents>({ retained: true })
 
 const ManualExternalMessages = () => {
   const [subscriptionCounter, setSubscriptionCounter] = useState(0)
@@ -136,6 +146,58 @@ const FailPublish = () => {
   )
 }
 
+const TypedPublish = () => {
+  const [count, setCount] = useState(0)
+
+  // `message` is type-checked as number (from TypedEvents['counter:set']).
+  usePublish({
+    bus: typedBus,
+    token: 'counter:set',
+    message: count,
+    isAutomatic: true,
+  })
+
+  return (
+    <button onClick={() => setCount(c => c + 1)} type="button">
+      Increment typed counter
+    </button>
+  )
+}
+
+const TypedReceiveViaSubscribe = () => {
+  const [value, setValue] = useState(0)
+
+  // `received` is inferred as number — no cast.
+  useSubscribe({
+    bus: typedBus,
+    token: 'counter:set',
+    handler: (_token, received) => setValue(received),
+  })
+
+  return (
+    <div>
+      <h2>Typed counter (useSubscribe):</h2>
+      <p>{value}</p>
+    </div>
+  )
+}
+
+const TypedReceiveViaBusState = () => {
+  // Reads the latest value as state — available on mount from the retained bus.
+  const count = useBusState({
+    bus: typedBus,
+    token: 'counter:set',
+    initialValue: 0,
+  })
+
+  return (
+    <div>
+      <h2>Typed counter (useBusState):</h2>
+      <p>{count}</p>
+    </div>
+  )
+}
+
 const App = () => (
   <div className="app">
     <div>
@@ -156,6 +218,12 @@ const App = () => (
     <div>
       <h1>Fail section</h1>
       <FailPublish />
+    </div>
+    <div>
+      <h1>Typed bus section</h1>
+      <TypedReceiveViaSubscribe />
+      <TypedReceiveViaBusState />
+      <TypedPublish />
     </div>
   </div>
 )

@@ -8,7 +8,9 @@ import {
 import { debounce } from '../utils/debounce'
 
 export interface UsePublishResponse {
+  /** `true` if the most recent publish reached at least one subscriber. */
   lastPublish: boolean
+  /** Publish the current `message` to `token` on demand. */
   publish: () => void
 }
 
@@ -22,14 +24,30 @@ export interface UsePublishParams<
    * stable (e.g. module scope) — changing it re-creates the publisher.
    */
   bus?: PubSubBus | TypedPubSub<Events>
+  /** Debounce window (ms) for automatic publishing. Default `300`. */
   debounceMs?: number | string
+  /** Re-publish automatically whenever `message` changes. Default `false`. */
   isAutomatic?: boolean
+  /** With `isAutomatic`, publish on the leading edge (no debounce delay). */
   isImmediate?: boolean
+  /** Publish once on mount. Default `false`. */
   isInitialPublish?: boolean
+  /** Payload to publish; typed per-token when a typed bus is used. */
   message: TokenType extends keyof Events ? Events[TokenType] : unknown
+  /** Topic to publish to. */
   token: TokenType
 }
 
+/**
+ * Publish messages to a pub/sub topic from a component.
+ *
+ * @example
+ * ```tsx
+ * const { publish, lastPublish } = usePublish({ token: 'cart:add', message: item })
+ * // automatic: re-publishes (debounced) whenever `message` changes
+ * usePublish({ token: 'search', message: query, isAutomatic: true })
+ * ```
+ */
 export const usePublish = <
   TokenType extends string | symbol,
   Events extends EventMap = EventMap,
