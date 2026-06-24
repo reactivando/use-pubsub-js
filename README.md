@@ -209,6 +209,11 @@ useSubscribe({ bus, token: 'user:login', handler: (_, user) => console.log(user.
   a Node process). The error now goes to an error handler that defaults to
   `console.error`; delivery to the other subscribers always continues. Pass your
   own via `createPubSub({ onError })`.
+- `subscribe`/`subscribeOnce` now return a branded `SubscriptionToken` (still a
+  string at runtime). `unsubscribe` only accepts that token or a handler
+  reference, so passing an arbitrary string (e.g. a topic name by mistake) is a
+  type error. The `Token` type is kept as a deprecated alias of
+  `SubscriptionToken`.
 - Symbol tokens match by identity (two distinct `Symbol('x')` no longer collide).
 - Removed rarely-used pubsub-js extras (`publishSync`, `subscribeAll`/`*`
   wildcard, `clearSubscriptions(topic)`, `countSubscriptions`,

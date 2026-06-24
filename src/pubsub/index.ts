@@ -9,7 +9,19 @@
 // publish time; a throwing subscriber never aborts delivery to the others.
 // Symbol tokens are matched by identity (no stringification, no hierarchy).
 
-export type Token = string
+declare const subscriptionTokenBrand: unique symbol
+
+/**
+ * Opaque handle returned by `subscribe`/`subscribeOnce`. Pass it to
+ * `unsubscribe`. It is a branded `string`, so an arbitrary string (e.g. a topic
+ * name passed by mistake) is rejected at compile time.
+ */
+export type SubscriptionToken = string & {
+  readonly [subscriptionTokenBrand]: typeof subscriptionTokenBrand
+}
+
+/** @deprecated Renamed to {@link SubscriptionToken}. */
+export type Token = SubscriptionToken
 
 export type Listener<T = unknown> = (token: string | symbol, data: T) => void
 
@@ -24,12 +36,17 @@ export interface PubSubBus {
     options?: { signal?: AbortSignal },
   ): () => void
   publish<T = unknown>(token: string | symbol, data?: T): boolean
-  subscribe<T = unknown>(token: string | symbol, handler: Listener<T>): Token
+  subscribe<T = unknown>(
+    token: string | symbol,
+    handler: Listener<T>,
+  ): SubscriptionToken
   subscribeOnce<T = unknown>(
     token: string | symbol,
     handler: Listener<T>,
-  ): Token
-  unsubscribe(value: Token | ((...args: never[]) => unknown)): boolean
+  ): SubscriptionToken
+  unsubscribe(
+    value: SubscriptionToken | ((...args: never[]) => unknown),
+  ): boolean
 }
 
 /** Flat, fully-typed bus created by `createPubSub<EventMap>()`. */
@@ -44,12 +61,14 @@ export interface TypedPubSub<E extends EventMap> {
   subscribe<K extends keyof E>(
     token: K,
     handler: (token: K, data: E[K]) => void,
-  ): Token
+  ): SubscriptionToken
   subscribeOnce<K extends keyof E>(
     token: K,
     handler: (token: K, data: E[K]) => void,
-  ): Token
-  unsubscribe(value: Token | ((...args: never[]) => unknown)): boolean
+  ): SubscriptionToken
+  unsubscribe(
+    value: SubscriptionToken | ((...args: never[]) => unknown),
+  ): boolean
 }
 
 type AnyListener = Listener<unknown>
@@ -80,7 +99,7 @@ const createBus = ({
     token: string | symbol,
     handler: Listener<T>,
   ): Token => {
-    const id = `uid_${uid++}`
+    const id = `uid_${uid++}` as SubscriptionToken
     let channel = channels.get(token)
     if (!channel) {
       channel = new Map()

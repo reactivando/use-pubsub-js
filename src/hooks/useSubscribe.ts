@@ -3,6 +3,7 @@ import {
   type EventMap,
   PubSub,
   type PubSubBus,
+  type SubscriptionToken,
   type TypedPubSub,
 } from '../pubsub'
 
@@ -40,7 +41,7 @@ export const useSubscribe = <
 }: UseSubscribeParams<TokenType, Events>): UseSubscribeResponse => {
   const activeBus = bus as PubSubBus
   const handlerRef = useRef(handler)
-  const subscriptionToken = useRef<string | null>(null)
+  const subscriptionToken = useRef<SubscriptionToken | null>(null)
 
   useEffect(() => {
     handlerRef.current = handler
