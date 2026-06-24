@@ -137,6 +137,30 @@ extension; it isn't written, and `ci.yml` doesn't run e2e at all (only
 - `@types/react@19` type-shape differences would matter for a future `react19`
   sub-path (06).
 
+## Round-2 maintainer decisions (LOCKED)
+
+- **Q1 → KEEP hierarchical topics as DEFAULT.** Replicate pubsub-js's dotted
+  ancestor propagation (`publish('a.b.c')` notifies `a.b.c`, `a.b`, `a`) in the
+  default bus. This *removes* the silent-break risk (maximally compatible) but
+  adds scope and a design tension (below). Symbols match by **identity** (no
+  hierarchy); only string tokens get dotted propagation. Parity tests can now
+  cover hierarchical behavior (we match pubsub-js). Contract/module tests MUST
+  add ancestor-propagation cases.
+- **Q7 → DO NOT defer `createPubSub`.** Ship the typed API in v2.0.0. The
+  integration design (standalone vs hooks accept an optional `bus`) is delegated
+  to a **persona-lens critique round** (below) to recommend; then implement.
+- **Q8 → symbol delivery improvement confirmed** (handlers receive the original
+  symbol).
+
+### New design tension to resolve in the critique (hierarchical × typed)
+A typed `createPubSub<EventMap>()` keyed by exact `keyof E` does not naturally
+model hierarchical propagation: a subscriber to `'a'` typed as `E['a']` may now
+receive payloads published to `'a.b.c'` (type `E['a.b.c']`). Options to weigh:
+(i) hierarchical only on the untyped default `PubSub`, typed `createPubSub` stays
+flat; (ii) typed API models a parent payload as a union of descendants; (iii)
+hierarchical is a per-bus option `createPubSub({ hierarchical })` with relaxed
+(`unknown`) payloads for ancestor delivery. The critique recommends.
+
 ## Net effect on the milestones
 See the updated 05/`milestones.yml`: example fix + build gate and the e2e smoke
 move into **M2/M1**; coverage thresholds into **M1**; `Message:any→unknown` into
