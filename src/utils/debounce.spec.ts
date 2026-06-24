@@ -142,9 +142,13 @@ describe('debounce', () => {
     debounced()
     debounced.clear()
 
+    // clear cancelled the pending call (would fail if clear were a no-op)
+    vi.advanceTimersByTime(100)
+    expect(func).not.toBeCalled()
+
+    // a fresh call after clear starts a new window and fires once
     debounced()
     vi.advanceTimersByTime(100)
-
     expect(func).toBeCalledTimes(1)
   })
 })
