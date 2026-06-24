@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/reactivando/use-pubsub-js/compare/v1.3.2...v1.3.3) (2026-06-24)
+
+
+### Bug Fixes
+
+* **usePublish:** guard initial publish under StrictMode + harden debounceMs ([#65](https://github.com/reactivando/use-pubsub-js/issues/65)) ([537fd6c](https://github.com/reactivando/use-pubsub-js/commit/537fd6cf9734503fcdd8de81ababd46e76dbab8d)), closes [#1](https://github.com/reactivando/use-pubsub-js/issues/1) [#2](https://github.com/reactivando/use-pubsub-js/issues/2)
+
 ## [1.3.2](https://github.com/reactivando/use-pubsub-js/compare/v1.3.1...v1.3.2) (2025-12-18)
 
 ## [1.3.1](https://github.com/reactivando/use-pubsub-js/compare/v1.3.0...v1.3.1) (2025-12-18)

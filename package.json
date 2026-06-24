@@ -1,6 +1,6 @@
 {
   "name": "use-pubsub-js",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "A service and hooks for React to publish or subscribe",
   "author": "AZagatti",
   "license": "MIT",
