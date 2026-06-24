@@ -167,8 +167,13 @@ const createBus = ({
           } catch (error) {
             // Isolate: a throwing subscriber must not stop the rest, and must
             // not crash the host. Hand the error to onError (default:
-            // console.error) instead of re-throwing.
-            onError(error)
+            // console.error) instead of re-throwing. Guard onError itself so a
+            // throwing handler can't re-introduce the uncaught-exception crash.
+            try {
+              onError(error)
+            } catch {
+              // onError threw; swallow to preserve delivery isolation.
+            }
           }
         }
       }

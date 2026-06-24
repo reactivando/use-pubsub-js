@@ -46,3 +46,24 @@ test('e2e ESM: a throwing subscriber does not crash the process', async () => {
   assert.equal(after.length, 1, 'other subscribers still run after a throw')
   assert.equal(errors.length, 1, 'onError received the thrown error')
 })
+
+test('e2e ESM: a throwing subscriber on the PubSub singleton does not crash', async () => {
+  const originalError = console.error
+  const logged = []
+  console.error = (...args) => logged.push(args)
+  try {
+    const after = []
+    PubSub.subscribe('singleton-boom', () => {
+      throw new Error('kaboom')
+    })
+    PubSub.subscribe('singleton-boom', () => after.push(1))
+    PubSub.publish('singleton-boom', null)
+    await new Promise((resolve) => setTimeout(resolve, 10))
+    PubSub.clearAllSubscriptions()
+
+    assert.equal(after.length, 1, 'other singleton subscribers still run')
+    assert.ok(logged.length >= 1, 'default sink (console.error) got the error')
+  } finally {
+    console.error = originalError
+  }
+})

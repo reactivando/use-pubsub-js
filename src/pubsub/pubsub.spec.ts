@@ -210,18 +210,41 @@ describe('internal pub/sub module', () => {
       expect(onError).toHaveBeenCalledWith(err)
     })
 
-    it('defaults onError to console.error', () => {
+    it('defaults onError to console.error with the thrown error', () => {
       const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
       const bus = createPubSub() // no onError → default sink
+      const err = new Error('boom')
       bus.subscribe('t', () => {
-        throw new Error('boom')
+        throw err
       })
 
       bus.publish('t', 'm')
       flush()
 
       expect(spy).toHaveBeenCalledTimes(1)
+      expect(spy).toHaveBeenCalledWith(
+        '[use-pubsub-js] a subscriber threw during delivery:',
+        err,
+      )
       spy.mockRestore()
+    })
+
+    it('a throwing onError neither crashes delivery nor stops other subscribers', () => {
+      const after = vi.fn()
+      const bus = createPubSub({
+        onError: () => {
+          throw new Error('onError itself threw')
+        },
+      })
+      bus.subscribe('t', () => {
+        throw new Error('boom')
+      })
+      bus.subscribe('t', after)
+
+      bus.publish('t', 'm')
+
+      expect(() => flush()).not.toThrow()
+      expect(after).toBeCalledTimes(1) // delivery continued past the throwing pair
     })
   })
 

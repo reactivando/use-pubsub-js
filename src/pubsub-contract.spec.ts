@@ -91,6 +91,7 @@ describe('PubSub contract', () => {
     flush() // runs delivery; both handlers are invoked despite the throw
 
     expect(after).toBeCalledTimes(1)
+    expect(errSpy).toHaveBeenCalledTimes(1) // the error reached the default sink
     errSpy.mockRestore()
   })
 
