@@ -46,6 +46,9 @@ export const useSubscribe = <
     handlerRef.current = handler
   })
 
+  // The bus delivers `(string | symbol, unknown)`. The casts narrow back to the
+  // caller's declared token/payload types — sound by construction: a typed bus
+  // only ever delivers the payload registered for that token.
   const internalHandler = useCallback((msg: string | symbol, data: unknown) => {
     handlerRef.current(
       msg as TokenType,

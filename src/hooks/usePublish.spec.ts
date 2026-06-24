@@ -189,6 +189,27 @@ describe('usePublish', () => {
 
     expect(handler).toBeCalledTimes(0)
   })
+  it('publishes automatically for valid falsy payloads (0, false)', () => {
+    const zeroHandler = vi.fn()
+    const falseHandler = vi.fn()
+
+    PubSub.subscribe('zero', zeroHandler)
+    PubSub.subscribe('flag', falseHandler)
+
+    renderHook(() =>
+      usePublish({ token: 'zero', message: 0, isAutomatic: true }),
+    )
+    renderHook(() =>
+      usePublish({ token: 'flag', message: false, isAutomatic: true }),
+    )
+
+    act(() => {
+      vi.advanceTimersByTime(301)
+    })
+
+    expect(zeroHandler).toHaveBeenCalledWith('zero', 0)
+    expect(falseHandler).toHaveBeenCalledWith('flag', false)
+  })
   it('falls back to the default delay when debounceMs is not a number', () => {
     const handler = vi.fn()
 

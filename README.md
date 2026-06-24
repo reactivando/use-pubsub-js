@@ -227,6 +227,9 @@ More real examples:
 | isUnsubscribe | Is the way to dynamically unsubscribe and subscribe based on some variable | boolean                                         | false            |
 | bus           | The bus to subscribe on; pass a `createPubSub<E>()` bus for typed payloads | PubSubBus \| TypedPubSub\<E\>                    | PubSub singleton |
 
+> The `handler` `message` is `unknown` by default; when a typed `bus` is passed
+> it is narrowed to the payload type for that token (`Events[token]`).
+
 * Returns of `useSubscribe`
 
 | key         | description                                                                                                         | type       |

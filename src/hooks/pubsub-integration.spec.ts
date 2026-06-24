@@ -108,6 +108,44 @@ describe('usePublish + useSubscribe with a custom bus', () => {
     expect(defaultHandler).toBeCalledTimes(0)
   })
 
+  it('delivers automatic publishes through a custom bus', () => {
+    const bus = createPubSub<AppEvents>()
+    const handler = vi.fn()
+
+    renderHook(() => useSubscribe({ bus, token: 'user:login', handler }))
+    renderHook(() =>
+      usePublish({
+        bus,
+        token: 'user:login',
+        message: { userId: '42' },
+        isAutomatic: true,
+      }),
+    )
+
+    act(() => {
+      vi.advanceTimersByTime(301)
+    })
+
+    expect(handler).toHaveBeenCalledWith('user:login', { userId: '42' })
+  })
+
+  it('cleans up the custom-bus subscription on unmount', () => {
+    const bus = createPubSub<AppEvents>()
+    const handler = vi.fn()
+
+    const { unmount } = renderHook(() =>
+      useSubscribe({ bus, token: 'user:login', handler }),
+    )
+    unmount()
+
+    act(() => {
+      bus.publish('user:login', { userId: '42' })
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(handler).toBeCalledTimes(0)
+  })
+
   it('re-subscribes on the new bus when the bus reference changes', () => {
     const busA = createPubSub<AppEvents>()
     const busB = createPubSub<AppEvents>()

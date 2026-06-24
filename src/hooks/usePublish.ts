@@ -63,7 +63,12 @@ export const usePublish = <
   useEffect(() => {
     const wait = Number.isFinite(+debounceMs) ? +debounceMs : 300
     const debouncedPublished = debounce(publish, wait, isImmediate)
-    if (isAutomatic && message) {
+    // Skip auto-publish only for the "unset" sentinels (undefined/null/empty
+    // string). Now that `message` is `unknown`, a plain truthiness check would
+    // wrongly swallow valid falsy payloads like 0 or false.
+    const hasMessage =
+      message !== undefined && message !== null && message !== ''
+    if (isAutomatic && hasMessage) {
       debouncedPublished()
     }
     return () => {
