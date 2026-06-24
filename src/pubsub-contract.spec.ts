@@ -76,6 +76,11 @@ describe('PubSub contract', () => {
   })
 
   it('isolates subscriber errors: a throwing handler does not stop the others', () => {
+    // The default singleton routes subscriber errors to console.error; silence
+    // it here so the assertion output stays clean.
+    const errSpy = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined)
     const after = vi.fn()
     PubSub.subscribe('t', () => {
       throw new Error('boom')
@@ -86,10 +91,8 @@ describe('PubSub contract', () => {
     flush() // runs delivery; both handlers are invoked despite the throw
 
     expect(after).toBeCalledTimes(1)
-    // pubsub-js re-throws a caught handler error via setTimeout(0). Scheduled
-    // *inside* the delivery callback, that nested timer gets callAt=1 under
-    // @sinonjs/fake-timers, so advanceTimersByTime(0) skips it; clearAllTimers()
-    // in afterEach discards it. (We assert isolation, not the async re-throw.)
+    expect(errSpy).toHaveBeenCalledTimes(1) // the error reached the default sink
+    errSpy.mockRestore()
   })
 
   it('preserves order across two publishes in the same tick (A before B)', () => {

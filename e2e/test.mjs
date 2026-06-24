@@ -29,3 +29,41 @@ test('e2e ESM: PubSub delivers a published message', async () => {
   assert.equal(received[0][0], 'e2e', 'handler receives the token')
   assert.deepEqual(received[0][1], { hi: 1 }, 'handler receives the payload')
 })
+
+test('e2e ESM: a throwing subscriber does not crash the process', async () => {
+  // If delivery re-threw (pre-2.0), the setTimeout throw would be an uncaught
+  // exception and node --test would fail the whole run.
+  const errors = []
+  const bus = createPubSub({ onError: (err) => errors.push(err) })
+  const after = []
+  bus.subscribe('boom', () => {
+    throw new Error('kaboom')
+  })
+  bus.subscribe('boom', () => after.push(1))
+  bus.publish('boom', null)
+  await new Promise((resolve) => setTimeout(resolve, 10))
+
+  assert.equal(after.length, 1, 'other subscribers still run after a throw')
+  assert.equal(errors.length, 1, 'onError received the thrown error')
+})
+
+test('e2e ESM: a throwing subscriber on the PubSub singleton does not crash', async () => {
+  const originalError = console.error
+  const logged = []
+  console.error = (...args) => logged.push(args)
+  try {
+    const after = []
+    PubSub.subscribe('singleton-boom', () => {
+      throw new Error('kaboom')
+    })
+    PubSub.subscribe('singleton-boom', () => after.push(1))
+    PubSub.publish('singleton-boom', null)
+    await new Promise((resolve) => setTimeout(resolve, 10))
+    PubSub.clearAllSubscriptions()
+
+    assert.equal(after.length, 1, 'other singleton subscribers still run')
+    assert.ok(logged.length >= 1, 'default sink (console.error) got the error')
+  } finally {
+    console.error = originalError
+  }
+})

@@ -6,6 +6,7 @@ export type {
 } from './hooks/useSubscribe'
 export { useSubscribe } from './hooks/useSubscribe'
 export type {
+  ErrorHandler,
   EventMap,
   Listener,
   PubSubBus,
