@@ -246,6 +246,27 @@ describe('internal pub/sub module', () => {
       expect(() => flush()).not.toThrow()
       expect(after).toBeCalledTimes(1) // delivery continued past the throwing pair
     })
+
+    it('calls onError once per throwing subscriber (N throwers → N calls)', () => {
+      const onError = vi.fn()
+      const bus = createPubSub({ onError })
+      const after = vi.fn()
+      bus.subscribe('t', () => {
+        throw new Error('first')
+      })
+      bus.subscribe('t', () => {
+        throw new Error('second')
+      })
+      bus.subscribe('t', after)
+
+      bus.publish('t', 'm')
+      flush()
+
+      expect(onError).toHaveBeenCalledTimes(2)
+      expect(onError.mock.calls[0][0]).toMatchObject({ message: 'first' })
+      expect(onError.mock.calls[1][0]).toMatchObject({ message: 'second' })
+      expect(after).toBeCalledTimes(1)
+    })
   })
 
   describe('on() / AbortSignal', () => {
@@ -367,6 +388,21 @@ describe('internal pub/sub module', () => {
       expect(handler).toBeCalledTimes(1) // removed before invoking; not re-fired
     })
 
+    it('routes a throwing once-handler through onError exactly once', () => {
+      const onError = vi.fn()
+      const bus = createPubSub({ onError })
+      bus.subscribeOnce('t', () => {
+        throw new Error('once-boom')
+      })
+
+      bus.publish('t', 'a')
+      expect(() => flush()).not.toThrow()
+
+      expect(onError).toHaveBeenCalledTimes(1)
+      expect(onError.mock.calls[0][0]).toMatchObject({ message: 'once-boom' })
+      expect(bus.publish('t', 'b')).toBe(false) // already removed before the throw
+    })
+
     it('cleans the channel after firing — a later publish reports no subscribers', () => {
       const bus = createPubSub()
       bus.subscribeOnce('t', vi.fn())
@@ -434,6 +470,32 @@ describe('internal pub/sub module', () => {
       bus.publish('t', 'x')
       bus.clearAllSubscriptions()
       expect(bus.getSnapshot('t')).toBeUndefined()
+    })
+
+    it('retains per exact token — no spill to dotted ancestors (flat bus)', () => {
+      const bus = createPubSub({ retained: true })
+      bus.publish('a.b.c', 'val')
+
+      expect(bus.getSnapshot('a.b.c')).toBe('val')
+      expect(bus.getSnapshot('a.b')).toBeUndefined()
+      expect(bus.getSnapshot('a')).toBeUndefined()
+    })
+
+    it('retains and returns a symbol-keyed value via getSnapshot', () => {
+      const bus = createPubSub({ retained: true })
+      const sym = Symbol('evt')
+      bus.publish(sym, { n: 7 })
+
+      expect(bus.getSnapshot(sym)).toEqual({ n: 7 })
+    })
+
+    it('stores an explicitly published undefined (indistinguishable from unpublished)', () => {
+      const bus = createPubSub({ retained: true })
+      bus.publish('t', 'initial')
+      expect(bus.getSnapshot('t')).toBe('initial')
+
+      bus.publish('t', undefined)
+      expect(bus.getSnapshot('t')).toBeUndefined() // prior value is clobbered
     })
   })
 

@@ -133,5 +133,60 @@ describe.skipIf(!hasEffectEvent)(
 
       expect(handler).toBeCalledTimes(0)
     })
+
+    it('routes messages for a Symbol token', () => {
+      const symbolToken = Symbol('event')
+      const handler = vi.fn()
+      renderHook(() => useSubscribe({ token: symbolToken, handler }))
+
+      act(() => {
+        PubSub.publish(symbolToken, 'payload')
+        vi.advanceTimersByTime(0)
+      })
+
+      expect(handler).toBeCalledTimes(1)
+      expect(handler.mock.calls[0][1]).toBe('payload')
+    })
+
+    it('delivers to multiple independent subscribers and by reference', () => {
+      const handler1 = vi.fn()
+      const handler2 = vi.fn()
+      const payload = { nested: 1 }
+      renderHook(() => useSubscribe({ token, handler: handler1 }))
+      renderHook(() => useSubscribe({ token, handler: handler2 }))
+
+      act(() => {
+        PubSub.publish(token, payload)
+        vi.advanceTimersByTime(0)
+      })
+
+      expect(handler1).toBeCalledTimes(1)
+      expect(handler2).toBeCalledTimes(1)
+      expect(handler1.mock.calls[0][1]).toBe(payload) // same reference, not cloned
+    })
+
+    it('resubscribes when isUnsubscribe is toggled back to false', () => {
+      const handler = vi.fn()
+      let isUnsubscribe = true
+
+      const { rerender } = renderHook(() =>
+        useSubscribe({ token, handler, isUnsubscribe }),
+      )
+
+      act(() => {
+        publish()
+        vi.advanceTimersByTime(0)
+      })
+      expect(handler).toBeCalledTimes(0)
+
+      isUnsubscribe = false
+      rerender()
+
+      act(() => {
+        publish()
+        vi.advanceTimersByTime(0)
+      })
+      expect(handler).toBeCalledTimes(1)
+    })
   },
 )
