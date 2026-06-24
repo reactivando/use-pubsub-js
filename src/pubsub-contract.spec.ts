@@ -84,10 +84,13 @@ describe('PubSub contract', () => {
     PubSub.subscribe('t', after)
 
     PubSub.publish('t', 'm')
-    flush() // runs delivery; the re-thrown error is left as a pending timer
+    flush() // runs delivery; both handlers are invoked despite the throw
 
     expect(after).toBeCalledTimes(1)
-    // pending error timer is discarded by clearAllTimers in afterEach
+    // pubsub-js re-throws a caught handler error via setTimeout(0). Scheduled
+    // *inside* the delivery callback, that nested timer gets callAt=1 under
+    // @sinonjs/fake-timers, so advanceTimersByTime(0) skips it; clearAllTimers()
+    // in afterEach discards it. (We assert isolation, not the async re-throw.)
   })
 
   it('preserves order across two publishes in the same tick (A before B)', () => {
@@ -185,7 +188,7 @@ describe('PubSub contract', () => {
   })
 
   describe('symbol tokens', () => {
-    it('routes a symbol token by the same instance', () => {
+    it('delivers correctly when subscribing and publishing the same symbol instance', () => {
       const sym = Symbol('event')
       const handler = vi.fn()
       PubSub.subscribe(sym, handler)
