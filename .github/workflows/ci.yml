@@ -56,6 +56,10 @@ jobs:
       if: matrix.react == '19'
       run: pnpm lint
 
+    - name: Type-level tests
+      if: matrix.react == '19'
+      run: pnpm test:types
+
     - name: Build library and example
       if: matrix.react == '19'
       run: |

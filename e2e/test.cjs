@@ -1,6 +1,13 @@
 const assert = require('node:assert')
 const test = require('node:test')
-const { PubSub, createPubSub, useSubscribe, usePublish } = require('use-pubsub-js')
+const {
+  PubSub,
+  createPubSub,
+  createHierarchicalPubSub,
+  useBusState,
+  useSubscribe,
+  usePublish,
+} = require('use-pubsub-js')
 const {
   PubSub: subpathPubSub,
   createPubSub: subpathCreatePubSub,
@@ -9,6 +16,12 @@ const {
 test('e2e CJS: public named exports are present', () => {
   assert.notEqual(PubSub, undefined, 'PubSub should be defined')
   assert.equal(typeof createPubSub, 'function', 'createPubSub should be a function')
+  assert.equal(
+    typeof createHierarchicalPubSub,
+    'function',
+    'createHierarchicalPubSub should be a function',
+  )
+  assert.equal(typeof useBusState, 'function', 'useBusState should be a function')
   assert.equal(typeof useSubscribe, 'function', 'useSubscribe should be a function')
   assert.equal(typeof usePublish, 'function', 'usePublish should be a function')
 })

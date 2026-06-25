@@ -1,6 +1,13 @@
 import assert from 'node:assert'
 import test from 'node:test'
-import { createPubSub, PubSub, usePublish, useSubscribe } from 'use-pubsub-js'
+import {
+  createHierarchicalPubSub,
+  createPubSub,
+  PubSub,
+  useBusState,
+  usePublish,
+  useSubscribe,
+} from 'use-pubsub-js'
 import {
   createPubSub as subpathCreatePubSub,
   PubSub as subpathPubSub,
@@ -9,6 +16,12 @@ import {
 test('e2e ESM: public named exports are present', () => {
   assert.notEqual(PubSub, undefined, 'PubSub should be defined')
   assert.equal(typeof createPubSub, 'function', 'createPubSub should be a function')
+  assert.equal(
+    typeof createHierarchicalPubSub,
+    'function',
+    'createHierarchicalPubSub should be a function',
+  )
+  assert.equal(typeof useBusState, 'function', 'useBusState should be a function')
   assert.equal(typeof useSubscribe, 'function', 'useSubscribe should be a function')
   assert.equal(typeof usePublish, 'function', 'usePublish should be a function')
 })

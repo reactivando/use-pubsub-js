@@ -315,3 +315,79 @@ export const createPubSub = <E extends EventMap = EventMap>(options?: {
 // annotation here is stripped by minification, so it would be a no-op.)
 /** The default shared bus: untyped payloads, hierarchical dotted topics. */
 export const PubSub: PubSubBus = createBus({ hierarchical: true })
+
+/**
+ * The keys of `E` that a hierarchical subscription to `K` will receive: `K`
+ * itself plus any dotted descendant (`a` matches `a.b`, `a.b.c`; not `ab`).
+ * Symbol keys match only themselves (no hierarchy).
+ */
+export type DescendantKey<E extends EventMap, K extends keyof E> = {
+  [P in keyof E]: P extends K
+    ? P
+    : K extends string
+      ? P extends `${K}.${string}`
+        ? P
+        : never
+      : never
+}[keyof E]
+
+/**
+ * A flat-keyed but **hierarchical** typed bus: publishing `'a.b.c'` also
+ * notifies subscribers of `'a.b'` and `'a'`, delivering the descendant's token
+ * and payload. Create with {@link createHierarchicalPubSub}.
+ *
+ * A handler's `token` is the precise union of descendant keys; `data` is the
+ * union of their payloads — narrow `data` with a property check (e.g.
+ * `'total' in data`), since TypeScript can't correlate the two parameters.
+ * Only declared keys can be published or subscribed.
+ */
+export interface HierarchicalPubSub<E extends EventMap> {
+  clearAllSubscriptions(): void
+  getSnapshot<K extends keyof E>(token: K): E[K] | undefined
+  on<K extends keyof E, D extends DescendantKey<E, K> = DescendantKey<E, K>>(
+    token: K,
+    handler: (token: D, data: E[D]) => void,
+    options?: { signal?: AbortSignal },
+  ): () => void
+  publish<K extends keyof E>(token: K, data: E[K]): boolean
+  subscribe<
+    K extends keyof E,
+    D extends DescendantKey<E, K> = DescendantKey<E, K>,
+  >(token: K, handler: (token: D, data: E[D]) => void): SubscriptionToken
+  subscribeOnce<
+    K extends keyof E,
+    D extends DescendantKey<E, K> = DescendantKey<E, K>,
+  >(token: K, handler: (token: D, data: E[D]) => void): SubscriptionToken
+  unsubscribe(
+    value: SubscriptionToken | ((...args: never[]) => unknown),
+  ): boolean
+}
+
+/**
+ * Create a typed bus with **hierarchical** dotted-topic delivery — the typed
+ * counterpart of the `PubSub` singleton. Same options as {@link createPubSub}.
+ *
+ * @example
+ * ```ts
+ * const bus = createHierarchicalPubSub<{
+ *   order: { id: string }
+ *   'order.created': { id: string; total: number }
+ * }>()
+ * bus.subscribe('order', (token, data) => {
+ *   // token: 'order' | 'order.created'; narrow data by a property check
+ *   if ('total' in data) console.log(data.total)
+ * })
+ * bus.publish('order.created', { id: '1', total: 9 }) // also notifies 'order'
+ * ```
+ */
+export const createHierarchicalPubSub = <
+  E extends EventMap = EventMap,
+>(options?: {
+  onError?: ErrorHandler
+  retained?: boolean
+}): HierarchicalPubSub<E> =>
+  createBus({
+    hierarchical: true,
+    retained: options?.retained,
+    onError: options?.onError,
+  }) as unknown as HierarchicalPubSub<E>
