@@ -1,5 +1,88 @@
 # Changelog
 
+# [2.0.0](https://github.com/reactivando/use-pubsub-js/compare/v1.3.3...v2.0.0) (2026-06-25)
+
+
+* chore!: bundle/packaging hygiene (drop utils/debounce subpath, es2021 target) (#88) ([242a54f](https://github.com/reactivando/use-pubsub-js/commit/242a54f9ffa3ce562cb8ff22cc802ac67c7b6c82)), closes [#88](https://github.com/reactivando/use-pubsub-js/issues/88)
+* feat!: brand SubscriptionToken so unsubscribe rejects arbitrary strings (#84) ([d401dd8](https://github.com/reactivando/use-pubsub-js/commit/d401dd8294b91984f48ae0de97c4008a34f12558)), closes [#84](https://github.com/reactivando/use-pubsub-js/issues/84) [hi#value](https://github.com/hi/issues/value)
+* feat!: route subscriber errors to a configurable onError (default console.error) (#83) ([b680b95](https://github.com/reactivando/use-pubsub-js/commit/b680b959d327f6bf97bec8672e0cdb2dde33f2d2)), closes [#83](https://github.com/reactivando/use-pubsub-js/issues/83)
+* feat!: drop React 17 support; require React >=18 (#82) ([7245adc](https://github.com/reactivando/use-pubsub-js/commit/7245adc528b008f74d8ec3b84ae70c0ccfb57dd6)), closes [#82](https://github.com/reactivando/use-pubsub-js/issues/82)
+* feat(hooks)!: typed bus param + Events generic; widen message; rename useSubscribe types (#77) ([fa60f82](https://github.com/reactivando/use-pubsub-js/commit/fa60f82add7a4436522c93be8b56a85de2cac415)), closes [#77](https://github.com/reactivando/use-pubsub-js/issues/77)
+
+
+### Features
+
+* createHierarchicalPubSub<E> — typed + hierarchical bus ([#93](https://github.com/reactivando/use-pubsub-js/issues/93)) ([d664ac8](https://github.com/reactivando/use-pubsub-js/commit/d664ac862c1fcd86d1594a4327dd680b29708280))
+* react19/useSubscribe built on useEffectEvent (opt-in subpath) ([#87](https://github.com/reactivando/use-pubsub-js/issues/87)) ([85b129d](https://github.com/reactivando/use-pubsub-js/commit/85b129d1c05cf41196396d02fb72fe13cc319d92))
+* retained-value bus mode + useBusState hook (useSyncExternalStore) ([#86](https://github.com/reactivando/use-pubsub-js/issues/86)) ([4079d8a](https://github.com/reactivando/use-pubsub-js/commit/4079d8a12dee9442e5097614129ad3d4c14755b9))
+* **v2-M1:** internal pub/sub module + isolation & parity tests (not yet wired) ([#71](https://github.com/reactivando/use-pubsub-js/issues/71)) ([e2605ab](https://github.com/reactivando/use-pubsub-js/commit/e2605abc22539fe4dc21202faa121a3c46d2d441))
+* **v2-M2:** swap the hooks to the internal pub/sub module (zero runtime deps) ([#72](https://github.com/reactivando/use-pubsub-js/issues/72)) ([b85f121](https://github.com/reactivando/use-pubsub-js/commit/b85f121ccef2b1f43153e48110e4482d5e21b267))
+* **v2-M5:** add ./pubsub subpath export, metadata, behavioral e2e smoke ([#74](https://github.com/reactivando/use-pubsub-js/issues/74)) ([1842ac9](https://github.com/reactivando/use-pubsub-js/commit/1842ac9646c13586eadabdea975fce0b2734b377))
+
+
+### Performance Improvements
+
+* **pubsub:** flatten the publish snapshot to one array ([#89](https://github.com/reactivando/use-pubsub-js/issues/89)) ([b4d9d76](https://github.com/reactivando/use-pubsub-js/commit/b4d9d7687d22855ada3d9df9c0e843f121e6c098))
+
+
+### BREAKING CHANGES
+
+* the `use-pubsub-js/utils/debounce` subpath is no longer exported.
+
+Co-authored-by: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+* `subscribe`/`subscribeOnce` return `SubscriptionToken` (branded)
+instead of a plain string; code that stored the token as `string` and passed it
+to `unsubscribe` must type it as `SubscriptionToken`.
+
+Co-authored-by: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+* subscriber errors no longer re-throw asynchronously; they go to
+onError (default console.error). Pass `createPubSub({ onError })` to customize,
+or `onError: (e) => { setTimeout(() => { throw e }) }` to restore the old behavior.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+* fix(pubsub): guard against a throwing onError; strengthen error tests
+
+Adversarial review found that a user onError that itself throws would propagate
+out of the delivery setTimeout and re-introduce the uncaught-exception crash
+(and abort delivery to remaining subscribers). Wrap the onError call in its own
+try/catch (EventEmitter-style) so it can never crash the host.
+
+Tests from review:
+- a throwing onError neither crashes delivery nor stops other subscribers
+- default sink asserts console.error is called WITH the thrown error
+- contract spec asserts the error reached the default sink (errSpy called once)
+- e2e (CJS+ESM): a throwing subscriber on the PubSub singleton does not crash
+
+107 tests, 100% coverage, e2e 10/10.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+* React 17 is no longer supported; the minimum is React 18.
+
+Co-authored-by: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+* `UseSubscriptionParams`/`UseSubscriptionResponse` are renamed to
+`UseSubscribeParams`/`UseSubscribeResponse`; `usePublish` `message` is now
+`unknown` instead of `string`.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+* fix(usePublish): don't swallow valid falsy auto-publish payloads; address review
+
+Adversarial review of the typed-hooks change found that widening `message` to
+`unknown` made the `isAutomatic && message` truthiness guard silently skip valid
+falsy payloads (0, false). Guard now skips only the unset sentinels
+(undefined / null / empty string), preserving the original empty-string behavior
+while letting 0/false/NaN publish. Mutation-verified: the new test fails against
+the old guard.
+
+Also from review:
+- Add integration coverage for a custom bus: automatic publish, unmount cleanup
+  (the others — typed delivery, isolation, bus-change re-subscribe — already added).
+- Document why the useSubscribe internalHandler casts are sound by construction.
+- README: note that handler `message` narrows to Events[token] with a typed bus.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
 ## [1.3.3](https://github.com/reactivando/use-pubsub-js/compare/v1.3.2...v1.3.3) (2026-06-24)
 
 

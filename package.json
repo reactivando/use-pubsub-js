@@ -1,6 +1,6 @@
 {
   "name": "use-pubsub-js",
-  "version": "1.3.3",
+  "version": "2.0.0",
   "description": "Dependency-free React hooks and pub/sub bus for publish/subscribe messaging",
   "author": "AZagatti",
   "license": "MIT",
