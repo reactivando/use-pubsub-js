@@ -83,4 +83,35 @@ describe('createHierarchicalPubSub', () => {
     expect(onError).toHaveBeenCalledTimes(1)
     expect(after).toBeCalledTimes(1)
   })
+
+  it('subscribeOnce fires once for a descendant publish, then auto-removes', () => {
+    const bus = createHierarchicalPubSub<Events>()
+    const handler = vi.fn()
+    bus.subscribeOnce('order', handler)
+
+    bus.publish('order.created', { id: '1', total: 9 })
+    flush()
+    bus.publish('order.created', { id: '2', total: 5 })
+    flush()
+
+    expect(handler).toBeCalledTimes(1)
+  })
+
+  it('on() returns a cleanup that stops delivery, and supports AbortSignal', () => {
+    const bus = createHierarchicalPubSub<Events>()
+    const offHandler = vi.fn()
+    const signalHandler = vi.fn()
+    const off = bus.on('order', offHandler)
+    const controller = new AbortController()
+    bus.on('order', signalHandler, { signal: controller.signal })
+
+    off()
+    controller.abort()
+
+    bus.publish('order.created', { id: '1', total: 9 })
+    flush()
+
+    expect(offHandler).toBeCalledTimes(0)
+    expect(signalHandler).toBeCalledTimes(0)
+  })
 })

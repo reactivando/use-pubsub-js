@@ -6,7 +6,9 @@ describe('package entry (src/index)', () => {
   it('exposes the named public API', () => {
     expect(typeof api.usePublish).toBe('function')
     expect(typeof api.useSubscribe).toBe('function')
+    expect(typeof api.useBusState).toBe('function')
     expect(typeof api.createPubSub).toBe('function')
+    expect(typeof api.createHierarchicalPubSub).toBe('function')
     expect(api.PubSub).toBeDefined()
     expect(typeof api.PubSub.subscribe).toBe('function')
   })
