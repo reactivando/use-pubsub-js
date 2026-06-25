@@ -321,6 +321,24 @@ describe('internal pub/sub module', () => {
       expect(handler).toBeCalledTimes(0)
     })
 
+    it('cleanup is safe when options are passed without a signal', () => {
+      const bus = createPubSub()
+      const off = bus.on('t', vi.fn(), {})
+
+      expect(() => off()).not.toThrow()
+    })
+
+    it('subscribes and cleans up safely when called without options', () => {
+      const bus = createPubSub()
+      const handler = vi.fn()
+      const off = bus.on('t', handler)
+
+      expect(() => off()).not.toThrow()
+      bus.publish('t', 'm')
+      flush()
+      expect(handler).toBeCalledTimes(0)
+    })
+
     it('removes the abort listener from the signal on manual unsubscribe', () => {
       const bus = createPubSub()
       const controller = new AbortController()
